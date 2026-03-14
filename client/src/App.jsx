@@ -1,119 +1,73 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { useEffect, lazy, Suspense } from 'react'
+import { AnimatePresence } from 'framer-motion'
+import useAuthStore from './store/useAuthStore'
+import useCartStore from './store/useCartStore'
+import useWishlistStore from './store/useWishlistStore'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
+import CartDrawer from './components/CartDrawer'
+import LoadingSpinner from './components/LoadingSpinner'
+
+// Lazy-loaded pages
+const HomePage = lazy(() => import('./pages/HomePage'))
+const ShopPage = lazy(() => import('./pages/ShopPage'))
+const ProductPage = lazy(() => import('./pages/ProductPage'))
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const RegisterPage = lazy(() => import('./pages/RegisterPage'))
+const CartPage = lazy(() => import('./pages/CartPage'))
+const CheckoutPage = lazy(() => import('./pages/CheckoutPage'))
+const OrderSuccessPage = lazy(() => import('./pages/OrderSuccessPage'))
+const AccountPage = lazy(() => import('./pages/AccountPage'))
+const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'))
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
+const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'))
+const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'))
+
+const ADMIN_ROUTES = ['/admin']
+const NO_FOOTER_ROUTES = ['/login', '/register', '/admin']
 
 function App() {
-  const [count, setCount] = useState(0)
+  const location = useLocation()
+  const hydrate = useAuthStore(s => s.hydrate)
+  const fetchCart = useCartStore(s => s.fetchCart)
+  const fetchWishlist = useWishlistStore(s => s.fetchWishlist)
+
+  useEffect(() => {
+    hydrate()
+    fetchCart()
+    fetchWishlist()
+  }, [])
+
+  const isAdminRoute = location.pathname.startsWith('/admin')
+  const showFooter = !NO_FOOTER_ROUTES.some(r => location.pathname.startsWith(r))
+  const showNavbar = !isAdminRoute
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      {showNavbar && <Navbar />}
+      <CartDrawer />
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><LoadingSpinner /></div>}>
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/shop" element={<ShopPage />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/order-success" element={<OrderSuccessPage />} />
+            <Route path="/account" element={<AccountPage />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<AdminDashboard />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="orders" element={<AdminOrders />} />
+            </Route>
+          </Routes>
+        </AnimatePresence>
+      </Suspense>
+      {showFooter && <Footer />}
     </>
   )
 }
