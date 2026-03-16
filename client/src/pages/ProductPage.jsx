@@ -128,9 +128,9 @@ export default function ProductPage() {
         </p>
 
         {/* Product detail grid */}
-        <div className="grid md:grid-cols-5 gap-12 mb-24">
-          {/* Images - 60% */}
-          <div className="md:col-span-3">
+        <div className="grid md:grid-cols-2 gap-16 mb-24">
+          {/* Images */}
+          <div>
             <div className="overflow-hidden mb-4" style={{ aspectRatio: '3/4', backgroundColor: '#F0EBE3' }}>
               <img
                 src={mainImage || product.images?.[0]?.url}
@@ -155,12 +155,12 @@ export default function ProductPage() {
             </div>
           </div>
 
-          {/* Info - 40% */}
-          <div className="md:col-span-2">
-            <p className="text-xs font-sans font-400 tracking-widest uppercase mb-4" style={{ color: 'var(--color-gold)', letterSpacing: '0.2em' }}>
+          {/* Info */}
+          <div>
+            <p className="text-10px font-400 tracking-0.25em uppercase mb-4" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-gold)', letterSpacing: '0.25em' }}>
               {product.category}
             </p>
-            <h1 className="font-garamond-serif text-4xl font-300 mb-4 leading-tight" style={{ color: 'var(--color-black)' }}>
+            <h1 className="font-garamond-serif font-300 mb-4 leading-tight" style={{ fontFamily: 'var(--font-heading)', fontSize: 'clamp(32px, 5vw, 42px)', color: 'var(--color-black)' }}>
               {product.name}
             </h1>
             <div className="flex items-center gap-3 mb-6">
@@ -172,17 +172,17 @@ export default function ProductPage() {
 
             {/* Price */}
             <div className="mb-6">
-              <span className="font-sans text-xl font-300" style={{ color: product.discountPrice ? 'var(--color-gold)' : 'var(--color-black)' }}>
+              <span className="font-sans text-lg font-light" style={{ fontFamily: 'var(--font-body)', color: product.discountPrice ? 'var(--color-gold)' : 'var(--color-black)' }}>
                 {formatPrice(displayPrice)}
               </span>
               {product.discountPrice && (
-                <span className="text-sm line-through ml-3 font-san font-200" style={{ color: 'var(--color-muted)' }}>
+                <span className="text-sm line-through ml-3 font-san font-200" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-muted)' }}>
                   {formatPrice(product.price)}
                 </span>
               )}
             </div>
 
-            <p className="text-sm font-sans font-200 leading-relaxed mb-8" style={{ color: 'var(--color-black)' }}>
+            <p className="text-sm font-light leading-relaxed mb-8" style={{ fontFamily: 'var(--font-italic)', fontStyle: 'italic', color: 'var(--color-muted)' }}>
               {product.description?.slice(0, 300)}
             </p>
 
@@ -230,23 +230,15 @@ export default function ProductPage() {
             <div className="flex flex-col gap-4 mb-12">
               <button
                 onClick={handleAddToCart}
-                className="w-full py-4 font-sans font-400 text-xs tracking-widest uppercase transition-all duration-300 rounded-none"
-                style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-gold-light)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-gold)'}
+                className="btn-gold w-full py-5"
+                style={{ fontFamily: 'var(--font-body)' }}
               >
                 ADD TO CART — {totalPrice}
               </button>
               <button
                 onClick={() => toggle(product._id)}
-                className={`w-full py-4 font-sans font-400 text-xs tracking-widest uppercase border rounded-none transition-all duration-300 flex items-center justify-center gap-2`}
-                style={{
-                  borderColor: liked ? 'var(--color-gold)' : 'var(--color-border)',
-                  color: liked ? 'var(--color-gold)' : 'var(--color-black)',
-                  backgroundColor: liked ? 'transparent' : 'transparent',
-                }}
-                onMouseEnter={(e) => { if (!liked) e.target.style.borderColor = 'var(--color-gold)'; e.target.style.color = 'var(--color-gold)'; }}
-                onMouseLeave={(e) => { if (!liked) e.target.style.borderColor = 'var(--color-border)'; e.target.style.color = 'var(--color-black)'; }}
+                className="btn-outline w-full py-4 flex items-center justify-center gap-2"
+                style={{ fontFamily: 'var(--font-body)' }}
               >
                 <FiHeart fill={liked ? 'currentColor' : 'none'} size={16} strokeWidth={1.5} />
                 {liked ? 'IN WISHLIST' : 'ADD TO WISHLIST'}
@@ -254,13 +246,13 @@ export default function ProductPage() {
             </div>
 
             {/* Accordion */}
-            <AccordionItem title="FULL DESCRIPTION">
+            <AccordionItem title="Full Description">
               <p>{product.description}</p>
             </AccordionItem>
-            <AccordionItem title="MATERIAL & CARE">
+            <AccordionItem title="Material & Care">
               <p>Our garments are crafted from premium materials. For care instructions, follow the label or dry clean only for wool and silk pieces. Machine wash cold with like colors for cotton garments.</p>
             </AccordionItem>
-            <AccordionItem title="SHIPPING & RETURNS">
+            <AccordionItem title="Shipping & Returns">
               <p>Standard 3-5 business day shipping. Free on orders above ₹4,999. Easy 30-day returns on all unworn, tagged items.</p>
             </AccordionItem>
           </div>
@@ -337,7 +329,7 @@ export default function ProductPage() {
         {related.length > 0 && (
           <div>
             <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: 'var(--color-black)' }}>You May Also Like</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-7">
               {related.slice(0, 4).map(p => <ProductCard key={p._id} product={p} />)}
             </div>
           </div>
