@@ -8,6 +8,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import CartDrawer from './components/CartDrawer'
 import LoadingSpinner from './components/LoadingSpinner'
+import LeftSidebar from './components/LeftSidebar'
 
 // Lazy-loaded pages
 const HomePage = lazy(() => import('./pages/HomePage'))
@@ -46,6 +47,7 @@ function App() {
   return (
     <>
       {showNavbar && <Navbar />}
+      {showNavbar && <LeftSidebar />}
       <CartDrawer />
       <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><LoadingSpinner /></div>}>
         <AnimatePresence mode="wait">
