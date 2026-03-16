@@ -22,8 +22,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
-  background-color: #0F0D0B;
-  color: #FDFCFA;
+  background-color: #F5F0E8;
+  color: #0A0A0A;
   font-family: 'Jost', sans-serif;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;

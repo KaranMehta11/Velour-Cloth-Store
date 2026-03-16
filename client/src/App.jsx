@@ -52,9 +52,10 @@ function App() {
       <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><LoadingSpinner /></div>}>
         <div style={{
           paddingTop: '100px',
-          paddingLeft: 0,
           paddingBottom: isAdminRoute ? 0 : '0px'
-        }}>
+        }}
+        className="responsive-padding"
+        >
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<HomePage />} />
@@ -75,6 +76,13 @@ function App() {
           </AnimatePresence>
         </div>
       </Suspense>
+      <style>{`
+        @media (max-width: 768px) {
+          .responsive-padding {
+            padding-top: 100px !important;
+          }
+        }
+      `}</style>
       {showFooter && <Footer />}
     </>
   )
