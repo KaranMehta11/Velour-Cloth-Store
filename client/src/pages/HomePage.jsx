@@ -298,14 +298,14 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════
           SECTION 8: TESTIMONIALS
           ══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32" style={{ backgroundColor: 'var(--color-cream)' }}>
+      <section className="py-24 md:py-32" style={{ backgroundColor: 'var(--color-charcoal)' }}>
         <div className="max-w-6xl mx-auto px-6">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="font-garamond-serif italic text-center mb-16"
-            style={{ fontSize: '48px', fontWeight: 300, color: 'var(--color-black)', fontStyle: 'italic', lineHeight: 1.1 }}
+            style={{ fontSize: '48px', fontWeight: 300, color: '#FDFCFA', fontStyle: 'italic', lineHeight: 1.1 }}
           >
             Voices of Our Community
           </motion.h2>
@@ -325,17 +325,17 @@ export default function HomePage() {
                 {/* Quote */}
                 <p 
                   className="font-garamond-italic text-lg leading-relaxed mb-6"
-                  style={{ color: 'var(--color-black)', fontStyle: 'italic', lineHeight: 1.7 }}
+                  style={{ color: '#FDFCFA', fontStyle: 'italic', lineHeight: 1.7 }}
                 >
                   {t.quote}
                 </p>
                 {/* Line */}
                 <div className="w-8 h-px mb-6" style={{ backgroundColor: 'var(--color-gold)' }} />
                 {/* Name */}
-                <p className="text-xs font-sans font-400 tracking-widest uppercase mb-1" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>
+                <p className="text-xs font-sans font-400 tracking-widest uppercase mb-1" style={{ color: '#FDFCFA', letterSpacing: '0.2em' }}>
                   {t.name}
                 </p>
-                <p className="text-xs font-sans font-200 mb-3" style={{ color: 'var(--color-muted)' }}>
+                <p className="text-xs font-sans font-200 mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
                   Verified Buyer
                 </p>
                 {/* Stars */}
