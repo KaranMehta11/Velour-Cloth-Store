@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { FiFilter, FiX } from 'react-icons/fi'
 import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
@@ -69,8 +69,8 @@ export default function ShopPage() {
     <div className="space-y-10">
       {/* Category */}
       <div>
-        <h3 className="font-sans font-400 text-xs tracking-widest uppercase mb-6" style={{ color: 'var(--color-gold)', letterSpacing: '0.2em' }}>Category</h3>
-        <div className="space-y-3 border-b border-luxury-border pb-6" style={{ borderColor: 'var(--color-border)' }}>
+        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-gold)', borderColor: 'var(--color-border)', letterSpacing: '0.25em' }}>Category</h3>
+        <div className="space-y-3">
           {CATEGORIES.map(cat => (
             <label key={cat} className="flex items-center gap-3 cursor-pointer group">
               <input
@@ -90,17 +90,18 @@ export default function ShopPage() {
 
       {/* Size */}
       <div>
-        <h3 className="font-sans font-400 text-xs tracking-widest uppercase mb-6" style={{ color: 'var(--color-gold)', letterSpacing: '0.2em' }}>Size</h3>
-        <div className="flex flex-wrap gap-3 border-b border-luxury-border pb-6" style={{ borderColor: 'var(--color-border)' }}>
+        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-gold)', borderColor: 'var(--color-border)', letterSpacing: '0.25em' }}>Size</h3>
+        <div className="flex flex-wrap gap-3">
           {SIZES.map(s => (
             <button
               key={s}
               onClick={() => setParam('size', size === s ? '' : s)}
-              className={`px-4 py-2 text-xs font-sans font-400 rounded-none border transition-all duration-200 tracking-widest uppercase`}
+              className={`px-4 py-2 text-11px font-400 rounded-none border transition-all duration-200 tracking-widest uppercase`}
               style={{
+                fontFamily: 'var(--font-body)',
                 borderColor: size === s ? 'var(--color-gold)' : 'var(--color-border)',
-                backgroundColor: size === s ? 'var(--color-gold)' : 'transparent',
-                color: size === s ? 'var(--color-white)' : 'var(--color-gold)',
+                backgroundColor: size === s ? 'rgba(184, 150, 62, 0.05)' : 'transparent',
+                color: size === s ? 'var(--color-gold)' : 'var(--color-black)',
               }}
             >
               {s}
@@ -111,8 +112,8 @@ export default function ShopPage() {
 
       {/* Price range */}
       <div>
-        <h3 className="font-sans font-400 text-xs tracking-widest uppercase mb-6" style={{ color: 'var(--color-gold)', letterSpacing: '0.2em' }}>Price Range</h3>
-        <div className="flex gap-3 items-center border-b border-luxury-border pb-6" style={{ borderColor: 'var(--color-border)' }}>
+        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-gold)', borderColor: 'var(--color-border)', letterSpacing: '0.25em' }}>Price Range</h3>
+        <div className="flex gap-3 items-center">
           <input
             type="number"
             min="0"
@@ -139,8 +140,8 @@ export default function ShopPage() {
 
       <button
         onClick={clearFilters}
-        className="w-full py-3 text-xs font-sans font-400 tracking-widest uppercase transition-all duration-300 rounded-none"
-        style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
+        className="w-full py-3 text-11px font-400 tracking-widest uppercase transition-all duration-300 rounded-none"
+        style={{ fontFamily: 'var(--font-body)', backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
         onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-gold-light)'}
         onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-gold)'}
       >
@@ -208,7 +209,7 @@ export default function ShopPage() {
               <EmptyState title="No products found" desc="Try adjusting your filters" linkTo="/shop" linkLabel="Clear Filters" />
             ) : (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-7">
                   {products.map(product => (
                     <ProductCard key={product._id} product={product} />
                   ))}
@@ -273,5 +274,5 @@ export default function ShopPage() {
   )
 }
 
-import { AnimatePresence } from 'framer-motion'
+
 
