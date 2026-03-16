@@ -32,49 +32,49 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen grid md:grid-cols-2" style={{ backgroundColor: 'var(--color-cream)' }}>
       {/* Left Panel: Image + Quote */}
-      <div className="hidden md:flex flex-col items-end justify-end relative overflow-hidden">
+      <div className="hidden md:flex md:h-screen flex-col items-center justify-center relative overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80"
           alt="Fashion"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
+        {/* Dark overlay 50% */}
+        <div className="absolute inset-0 bg-black/50" />
         {/* Quote */}
-        <div className="absolute inset-0 flex items-center justify-center px-12">
+        <div className="absolute inset-0 flex items-center justify-center px-12 z-10">
           <blockquote className="text-center">
-            <p className="font-garamond-italic text-4xl text-white leading-tight mb-6">
+            <p className="text-base md:text-2xl text-white leading-tight mb-6" style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontSize: 'clamp(20px, 4vw, 28px)' }}>
               "Fashion is self-expression. Join the circle of modern luxury today."
             </p>
-            <p className="font-garamond-italic text-sm text-white/70">— The Velour Collective</p>
+            <p className="text-sm text-white/70" style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic' }}>— The Velour Collective</p>
           </blockquote>
         </div>
       </div>
 
       {/* Right Panel: Form */}
-      <div className="flex items-center justify-center p-8" style={{ backgroundColor: 'var(--color-cream)' }}>
+      <div className="flex h-screen items-center justify-center px-16" style={{ backgroundColor: 'var(--color-cream)' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="w-full max-w-sm"
         >
+          {/* Logo */}
+          <h1 className="text-center mb-12" style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontSize: '28px', color: 'var(--color-black)', letterSpacing: '0.35em' }}>VELOUR</h1>
+
           {/* Header */}
           <div className="mb-12">
-            <h1 className="font-garamond-serif text-4xl font-300 mb-3" style={{ color: 'var(--color-black)' }}>
-              Create Account
-            </h1>
-            <p className="text-sm font-sans font-200 tracking-wide" style={{ color: 'var(--color-muted)' }}>
+            <p className="text-sm font-200 tracking-wide" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-muted)' }}>
               Join Velour for exclusive access and early drops
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-8 mb-10">
+          <form onSubmit={handleSubmit} className="space-y-6 mb-10">
             {/* Full Name */}
             <div>
-              <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4 transition-all" style={{ color: focusedField === 'name' ? 'var(--color-gold)' : 'var(--color-muted)', letterSpacing: '0.2em' }}>
-                Full Name
+              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'name' ? 'var(--color-gold)' : 'var(--color-muted)', letterSpacing: '0.15em' }}>
+                FULL NAME
               </label>
               <input
                 type="text"
@@ -83,9 +83,10 @@ export default function RegisterPage() {
                 onFocus={() => setFocusedField('name')}
                 onBlur={() => setFocusedField(null)}
                 required
-                className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
+                className="w-full bg-transparent pb-3 pt-1 text-sm font-300 focus:outline-none transition-all"
                 style={{
-                  borderBottom: focusedField === 'name' ? '2px solid var(--color-gold)' : '1px solid var(--color-border)',
+                  fontFamily: 'var(--font-body)',
+                  borderBottom: focusedField === 'name' ? '1px solid var(--color-gold)' : '1px solid var(--color-border)',
                   color: 'var(--color-black)',
                 }}
                 placeholder="Jane Smith"
@@ -94,8 +95,8 @@ export default function RegisterPage() {
 
             {/* Email */}
             <div>
-              <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4 transition-all" style={{ color: focusedField === 'email' ? 'var(--color-gold)' : 'var(--color-muted)', letterSpacing: '0.2em' }}>
-                Email
+              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'email' ? 'var(--color-gold)' : 'var(--color-muted)', letterSpacing: '0.15em' }}>
+                EMAIL
               </label>
               <input
                 type="email"
@@ -104,9 +105,10 @@ export default function RegisterPage() {
                 onFocus={() => setFocusedField('email')}
                 onBlur={() => setFocusedField(null)}
                 required
-                className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
+                className="w-full bg-transparent pb-3 pt-1 text-sm font-300 focus:outline-none transition-all"
                 style={{
-                  borderBottom: focusedField === 'email' ? '2px solid var(--color-gold)' : '1px solid var(--color-border)',
+                  fontFamily: 'var(--font-body)',
+                  borderBottom: focusedField === 'email' ? '1px solid var(--color-gold)' : '1px solid var(--color-border)',
                   color: 'var(--color-black)',
                 }}
                 placeholder="you@example.com"
@@ -115,8 +117,8 @@ export default function RegisterPage() {
 
             {/* Password */}
             <div>
-              <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4 transition-all" style={{ color: focusedField === 'password' ? 'var(--color-gold)' : 'var(--color-muted)', letterSpacing: '0.2em' }}>
-                Password
+              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'password' ? 'var(--color-gold)' : 'var(--color-muted)', letterSpacing: '0.15em' }}>
+                PASSWORD
               </label>
               <input
                 type="password"
@@ -125,9 +127,10 @@ export default function RegisterPage() {
                 onFocus={() => setFocusedField('password')}
                 onBlur={() => setFocusedField(null)}
                 required
-                className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
+                className="w-full bg-transparent pb-3 pt-1 text-sm font-300 focus:outline-none transition-all"
                 style={{
-                  borderBottom: focusedField === 'password' ? '2px solid var(--color-gold)' : '1px solid var(--color-border)',
+                  fontFamily: 'var(--font-body)',
+                  borderBottom: focusedField === 'password' ? '1px solid var(--color-gold)' : '1px solid var(--color-border)',
                   color: 'var(--color-black)',
                 }}
                 placeholder="••••••••"
@@ -136,8 +139,8 @@ export default function RegisterPage() {
 
             {/* Confirm Password */}
             <div>
-              <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4 transition-all" style={{ color: focusedField === 'confirm' ? 'var(--color-gold)' : 'var(--color-muted)', letterSpacing: '0.2em' }}>
-                Confirm Password
+              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'confirm' ? 'var(--color-gold)' : 'var(--color-muted)', letterSpacing: '0.15em' }}>
+                CONFIRM PASSWORD
               </label>
               <input
                 type="password"
@@ -146,9 +149,10 @@ export default function RegisterPage() {
                 onFocus={() => setFocusedField('confirm')}
                 onBlur={() => setFocusedField(null)}
                 required
-                className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
+                className="w-full bg-transparent pb-3 pt-1 text-sm font-300 focus:outline-none transition-all"
                 style={{
-                  borderBottom: focusedField === 'confirm' ? '2px solid var(--color-gold)' : '1px solid var(--color-border)',
+                  fontFamily: 'var(--font-body)',
+                  borderBottom: focusedField === 'confirm' ? '1px solid var(--color-gold)' : '1px solid var(--color-border)',
                   color: 'var(--color-black)',
                 }}
                 placeholder="••••••••"
@@ -163,13 +167,13 @@ export default function RegisterPage() {
                 onChange={set('terms')}
                 className="mt-1 w-4 h-4 accent-gold"
               />
-              <span className="text-xs font-sans font-200 leading-relaxed" style={{ color: 'var(--color-muted)' }}>
+              <span className="text-11px font-200 leading-relaxed" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-muted)' }}>
                 I agree to the{' '}
-                <a href="#" className="font-400 hover-underline" style={{ color: 'var(--color-gold)' }}>
+                <a href="#" className="font-400 transition-colors" style={{ color: 'var(--color-gold)' }}>
                   Terms of Service
                 </a>
                 {' '}and{' '}
-                <a href="#" className="font-400 hover-underline" style={{ color: 'var(--color-gold)' }}>
+                <a href="#" className="font-400 transition-colors" style={{ color: 'var(--color-gold)' }}>
                   Privacy Policy
                 </a>
               </span>
@@ -179,23 +183,19 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-none font-sans font-400 text-xs tracking-widest uppercase transition-all duration-300 mt-8"
+              className="btn-gold w-full mt-8"
               style={{
-                backgroundColor: 'var(--color-gold)',
-                color: 'var(--color-white)',
                 opacity: loading ? 0.6 : 1,
               }}
-              onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = 'var(--color-gold-light)')}
-              onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'var(--color-gold)')}
             >
               {loading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
             </button>
           </form>
 
           {/* Login Link */}
-          <p className="text-sm text-center font-sans font-200" style={{ color: 'var(--color-muted)' }}>
+          <p className="text-sm text-center font-200" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-muted)' }}>
             Already have an account?{' '}
-            <Link to="/login" className="font-400 hover-underline" style={{ color: 'var(--color-gold)' }}>
+            <Link to="/login" className="font-400 transition-colors" style={{ color: 'var(--color-gold)' }}>
               SIGN IN
             </Link>
           </p>
