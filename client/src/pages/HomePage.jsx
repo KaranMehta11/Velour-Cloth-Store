@@ -339,14 +339,14 @@ export default function HomePage() {
       </div>
 
       {/* COLLECTIONS SECTION */}
-      <section className="py-16 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#FDFCFA' }}>
-        <div className="flex justify-between items-end mb-14 border-b border-border pb-5" style={{ borderColor: '#E8E0D0' }}>
+      <section className="py-16 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#0F0D0B' }}>
+        <div className="flex justify-between items-end mb-14 border-b border-border pb-5" style={{ borderColor: 'rgba(184,150,62,0.2)' }}>
           <div>
             <p className="text-[10px] text-gold tracking-[0.3em] uppercase mb-4" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>SHOP BY CATEGORY</p>
             <h2 className="font-light" style={{
               fontFamily:'var(--font-heading)',
               fontSize:'clamp(36px,4vw,54px)',
-              color: '#0A0A0A'
+              color: '#FDFCFA'
             }}>
               Curated for the<br/>Discerning Eye.
             </h2>
@@ -385,13 +385,13 @@ export default function HomePage() {
       </section>
 
       {/* NEW ARRIVALS */}
-      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#F5F0E8' }}>
-        <div className="flex justify-between items-baseline mb-12 pb-5" style={{ borderBottom: '1px solid #E8E0D0' }}>
+      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#141210' }}>
+        <div className="flex justify-between items-baseline mb-12 pb-5" style={{ borderBottom: '1px solid rgba(184,150,62,0.2)' }}>
           <h2 className="font-light" style={{
             fontFamily:'var(--font-heading)',
             fontSize:'clamp(32px,4vw,50px)',
-            color: '#0A0A0A'
-          }}>New Arrivals</h2>
+            color: '#FDFCFA'
+          }}>New<span style={{fontStyle:'italic', color:'#B8963E'}}> Arrivals</span></h2>
           <Link to="/shop" className="gold-underline text-[11px] text-gold tracking-[0.15em]" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
             VIEW ALL →
           </Link>
@@ -429,12 +429,12 @@ export default function HomePage() {
       </section>
 
       {/* BESTSELLERS */}
-      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#FDFCFA' }}>
-        <div className="flex justify-between items-baseline mb-12 pb-5" style={{ borderBottom: '1px solid #E8E0D0' }}>
+      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#0F0D0B' }}>
+        <div className="flex justify-between items-baseline mb-12 pb-5" style={{ borderBottom: '1px solid rgba(184,150,62,0.2)' }}>
           <h2 className="font-light" style={{
             fontFamily:'var(--font-heading)',
             fontSize:'clamp(32px,4vw,50px)',
-            color: '#0A0A0A'
+            color: '#FDFCFA'
           }}>Bestsellers</h2>
           <Link to="/shop" className="gold-underline text-[11px] text-gold tracking-[0.15em]" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
             VIEW ALL →
@@ -542,14 +542,14 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════
           SECTION 9: FEATURED IN PRESS
           ══════════════════════════════════════════════════════════════ */}
-      <section className="py-20" style={{ backgroundColor: 'var(--color-white)' }}>
+      <section className="py-20" style={{ backgroundColor: '#1C1C1C' }}>
         <div className="max-w-6xl mx-auto px-6">
-          <p className="text-xs font-sans font-200 tracking-widest uppercase text-center mb-10" style={{ color: 'var(--color-muted)', letterSpacing: '0.3em' }}>
+          <p className="text-xs font-sans font-200 tracking-widest uppercase text-center mb-10" style={{ color: 'rgba(255,255,255,0.3)', letterSpacing: '0.3em' }}>
             AS FEATURED IN
           </p>
           <div className="flex items-center justify-center gap-8 md:gap-16 flex-wrap">
             {['Vogue', 'GQ', "Harper's Bazaar", 'Elle', 'Hypebeast'].map(brand => (
-              <a key={brand} href="#" className="transition-colors duration-300 text-center" style={{ color: 'var(--color-muted)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-gold)'} onMouseLeave={(e) => e.target.style.color = 'var(--color-muted)'}>
+              <a key={brand} href="#" className="transition-colors duration-300 text-center" style={{ color: 'rgba(255,255,255,0.2)' }} onMouseEnter={(e) => e.target.style.color = '#B8963E'} onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.2)'}>
                 <span className="font-garamond-italic text-2xl font-300" style={{ fontStyle: 'italic', display: 'block' }}>
                   {brand}
                 </span>
