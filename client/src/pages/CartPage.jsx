@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { FiTrash2, FiShoppingBag } from 'react-icons/fi'
 import useCartStore from '../store/useCartStore'
 import useAuthStore from '../store/useAuthStore'
+import useScrollReveal from '../hooks/useScrollReveal'
 
 const formatPrice = (price) => {
   if (!price) return '₹0'
@@ -16,6 +17,8 @@ export default function CartPage() {
   const shipping = cartTotal > 0 ? (cartTotal >= 100 ? 0 : 10) : 0
   const tax = cartTotal * 0.08
   const orderTotal = cartTotal + shipping + tax
+
+  useScrollReveal()
 
   return (
     <motion.div

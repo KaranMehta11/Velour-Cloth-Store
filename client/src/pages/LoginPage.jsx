@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import useAuthStore from '../store/useAuthStore'
+import useScrollReveal from '../hooks/useScrollReveal'
 import toast from 'react-hot-toast'
 
 export default function LoginPage() {
@@ -24,6 +25,8 @@ export default function LoginPage() {
       setLoading(false)
     }
   }
+
+  useScrollReveal()
 
   return (
     <div className="min-h-screen grid md:grid-cols-2" style={{ backgroundColor: 'var(--color-cream)' }}>

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import api from '../api/axios'
 import useAuthStore from '../store/useAuthStore'
 import useWishlistStore from '../store/useWishlistStore'
+import useScrollReveal from '../hooks/useScrollReveal'
 import Badge from '../components/Badge'
 import ProductCard from '../components/ProductCard'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -40,6 +41,8 @@ export default function AccountPage() {
       setProfileForm({ name: user.name, email: user.email })
     }
   }, [user])
+
+  useScrollReveal()
 
   useEffect(() => {
     if (tab === 'orders') {

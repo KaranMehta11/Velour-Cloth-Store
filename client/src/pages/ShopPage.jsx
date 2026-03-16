@@ -6,6 +6,7 @@ import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 import EmptyState from '../components/EmptyState'
+import useScrollReveal from '../hooks/useScrollReveal'
 
 const CATEGORIES = ['All', 'Men', 'Women', 'Accessories']
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
@@ -54,6 +55,8 @@ export default function ShopPage() {
     document.title = 'Shop — Velour'
     fetchProducts()
   }, [fetchProducts])
+
+  useScrollReveal()
 
   const setParam = (key, val) => {
     const params = Object.fromEntries(searchParams)

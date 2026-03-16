@@ -1,6 +1,7 @@
 import { useSearchParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useEffect } from 'react'
+import useScrollReveal from '../hooks/useScrollReveal'
 
 export default function OrderSuccessPage() {
   const [params] = useSearchParams()
@@ -9,6 +10,8 @@ export default function OrderSuccessPage() {
   useEffect(() => {
     document.title = 'Order Confirmed — Velour'
   }, [])
+
+  useScrollReveal()
 
   return (
     <motion.div

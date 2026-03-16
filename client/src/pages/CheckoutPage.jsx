@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import api from '../api/axios'
 import useCartStore from '../store/useCartStore'
 import useAuthStore from '../store/useAuthStore'
+import useScrollReveal from '../hooks/useScrollReveal'
 import toast from 'react-hot-toast'
 import LoadingSpinner from '../components/LoadingSpinner'
 
@@ -25,6 +26,8 @@ export default function CheckoutPage() {
   const { items, total: getTotal, clearCart } = useCartStore()
   const { user } = useAuthStore()
   const navigate = useNavigate()
+
+  useScrollReveal()
 
   const cartTotal = getTotal()
   const shippingCost = cartTotal >= 100 ? 0 : 10

@@ -11,6 +11,7 @@ import SizeSelector from '../components/SizeSelector'
 import ColorSelector from '../components/ColorSelector'
 import ProductCard from '../components/ProductCard'
 import LoadingSpinner from '../components/LoadingSpinner'
+import useScrollReveal from '../hooks/useScrollReveal'
 import toast from 'react-hot-toast'
 
 const formatPrice = (price) => {
@@ -69,6 +70,8 @@ export default function ProductPage() {
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [id])
+
+  useScrollReveal()
 
   const handleAddToCart = async () => {
     if (!user) { toast.error('Please login to add to cart'); return }
