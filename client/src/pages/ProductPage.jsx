@@ -13,18 +13,24 @@ import ProductCard from '../components/ProductCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 import toast from 'react-hot-toast'
 
+const formatPrice = (price) => {
+  if (!price) return '₹0'
+  return '₹' + Math.round(price * 83).toLocaleString('en-IN')
+}
+
 const AccordionItem = ({ title, children }) => {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border-b border-gray-100">
+    <div className="border-b" style={{ borderColor: 'var(--color-border)' }}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center justify-between w-full py-4 text-sm font-medium text-left"
+        className="flex items-center justify-between w-full py-4 text-sm font-400 text-left font-sans"
+        style={{ color: 'var(--color-black)' }}
       >
         {title}
-        {open ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+        {open ? <FiChevronUp size={16} strokeWidth={1.5} /> : <FiChevronDown size={16} strokeWidth={1.5} />}
       </button>
-      {open && <div className="pb-4 text-sm text-velour-muted leading-relaxed">{children}</div>}
+      {open && <div className="pb-4 text-sm font-sans font-200 leading-relaxed" style={{ color: 'var(--color-muted)' }}>{children}</div>}
     </div>
   )
 }
@@ -57,7 +63,6 @@ export default function ProductPage() {
         setSelectedSize(p.sizes?.[0] || '')
         setSelectedColor(p.colors?.[0]?.name || '')
         document.title = `${p.name} — Velour`
-        // Fetch related
         return api.get('/products', { params: { category: p.category, limit: 4 } })
       })
       .then(res => setRelated(res.data.products.filter(p => p._id !== id)))
@@ -89,54 +94,60 @@ export default function ProductPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center pt-20">
+    <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: 'var(--color-cream)' }}>
       <LoadingSpinner size="lg" />
     </div>
   )
 
   if (!product) return (
-    <div className="min-h-screen flex items-center justify-center pt-20">
+    <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: 'var(--color-cream)' }}>
       <div className="text-center">
-        <h2 className="font-serif text-2xl mb-2">Product not found</h2>
-        <Link to="/shop" className="text-velour-accent hover:underline">Back to Shop</Link>
+        <h2 className="font-garamond-serif text-2xl mb-2" style={{ color: 'var(--color-black)' }}>Product not found</h2>
+        <Link to="/shop" className="text-xs font-sans font-400 tracking-widest uppercase hover-underline" style={{ color: 'var(--color-gold)' }}>Back to Shop</Link>
       </div>
     </div>
   )
 
   const displayPrice = product.discountPrice || product.price
+  const totalPrice = formatPrice(displayPrice * qty)
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-velour-bg min-h-screen pt-20"
+      className="pt-20 pb-20"
+      style={{ backgroundColor: 'var(--color-cream)' }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-6">
         {/* Breadcrumb */}
-        <p className="text-xs text-velour-muted tracking-wide mb-8">
-          <Link to="/" className="hover:text-velour-accent">Home</Link> /{' '}
-          <Link to={`/shop?category=${product.category}`} className="hover:text-velour-accent">{product.category}</Link> /{' '}
-          <span className="text-velour-text">{product.name}</span>
+        <p className="text-xs font-sans font-200 tracking-widest mb-12" style={{ color: 'var(--color-muted)' }}>
+          <Link to="/" className="hover:text-luxury-gold transition-colors" style={{ color: 'var(--color-muted)' }}>HOME</Link> /
+          <Link to={`/shop?category=${product.category}`} className="hover:text-luxury-gold transition-colors" style={{ color: 'var(--color-muted)' }}> {product.category.toUpperCase()}</Link> /
+          <span style={{ color: 'var(--color-black)' }}> {product.name}</span>
         </p>
 
         {/* Product detail grid */}
-        <div className="grid md:grid-cols-2 gap-12 mb-20">
-          {/* Images */}
-          <div>
-            <div className="overflow-hidden bg-gray-100 mb-3" style={{ aspectRatio: '4/5' }}>
+        <div className="grid md:grid-cols-5 gap-12 mb-24">
+          {/* Images - 60% */}
+          <div className="md:col-span-3">
+            <div className="overflow-hidden mb-4" style={{ aspectRatio: '3/4', backgroundColor: '#F0EBE3' }}>
               <img
                 src={mainImage || product.images?.[0]?.url}
                 alt={product.name}
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
               />
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            <div className="flex gap-3 overflow-x-auto pb-2">
               {product.images?.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setMainImage(img.url)}
-                  className={`flex-shrink-0 w-16 h-20 overflow-hidden ${mainImage === img.url ? 'ring-2 ring-velour-text' : 'opacity-60 hover:opacity-100'} transition-all`}
+                  className={`flex-shrink-0 w-20 h-24 overflow-hidden border-2 transition-all`}
+                  style={{
+                    borderColor: mainImage === img.url ? 'var(--color-gold)' : 'var(--color-border)',
+                    opacity: mainImage === img.url ? 1 : 0.6,
+                  }}
                 >
                   <img src={img.url} alt="" className="w-full h-full object-cover" />
                 </button>
@@ -144,146 +155,178 @@ export default function ProductPage() {
             </div>
           </div>
 
-          {/* Info */}
-          <div>
-            <span className="text-velour-accent text-xs tracking-widest uppercase">{product.category}</span>
-            <h1 className="font-serif text-3xl md:text-4xl mt-2 mb-3">{product.name}</h1>
-            <div className="flex items-center gap-2 mb-4">
+          {/* Info - 40% */}
+          <div className="md:col-span-2">
+            <p className="text-xs font-sans font-400 tracking-widest uppercase mb-4" style={{ color: 'var(--color-gold)', letterSpacing: '0.2em' }}>
+              {product.category}
+            </p>
+            <h1 className="font-garamond-serif text-4xl font-300 mb-4 leading-tight" style={{ color: 'var(--color-black)' }}>
+              {product.name}
+            </h1>
+            <div className="flex items-center gap-3 mb-6">
               <ReviewStars rating={product.rating} showCount count={product.numReviews} />
             </div>
 
+            {/* Divider */}
+            <div className="h-px mb-6" style={{ backgroundColor: 'var(--color-border)' }} />
+
             {/* Price */}
-            <div className="flex items-center gap-3 mb-4">
-              <span className={`text-2xl font-semibold ${product.discountPrice ? 'text-velour-accent' : 'text-velour-text'}`}>
-                ${displayPrice}
+            <div className="mb-6">
+              <span className="font-sans text-xl font-300" style={{ color: product.discountPrice ? 'var(--color-gold)' : 'var(--color-black)' }}>
+                {formatPrice(displayPrice)}
               </span>
               {product.discountPrice && (
-                <span className="text-velour-muted line-through">${product.price}</span>
+                <span className="text-sm line-through ml-3 font-san font-200" style={{ color: 'var(--color-muted)' }}>
+                  {formatPrice(product.price)}
+                </span>
               )}
             </div>
 
-            <p className="text-velour-muted text-sm leading-relaxed mb-6">{product.description?.slice(0, 250)}</p>
+            <p className="text-sm font-sans font-200 leading-relaxed mb-8" style={{ color: 'var(--color-black)' }}>
+              {product.description?.slice(0, 300)}
+            </p>
+
+            {/* Divider */}
+            <div className="h-px mb-8" style={{ backgroundColor: 'var(--color-border)' }} />
 
             {/* Color */}
             {product.colors?.length > 0 && (
-              <div className="mb-5">
-                <p className="text-sm font-medium mb-2">Color</p>
+              <div className="mb-8">
+                <p className="text-xs font-sans font-400 tracking-widest uppercase mb-3" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>Color</p>
                 <ColorSelector colors={product.colors} selected={selectedColor} onSelect={setSelectedColor} />
               </div>
             )}
 
             {/* Size */}
             {product.sizes?.length > 0 && (
-              <div className="mb-5">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium">Size</p>
-                  <button className="text-xs text-velour-accent underline">Size Guide</button>
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-sans font-400 tracking-widest uppercase" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>Size</p>
+                  <button className="text-xs font-sans font-200" style={{ color: 'var(--color-gold)' }}>SIZE GUIDE</button>
                 </div>
                 <SizeSelector sizes={product.sizes} selected={selectedSize} onSelect={setSelectedSize} />
               </div>
             )}
 
             {/* Qty */}
-            <div className="mb-6">
-              <p className="text-sm font-medium mb-2">Quantity</p>
-              <div className="flex items-center border border-gray-200 w-fit">
+            <div className="mb-8">
+              <p className="text-xs font-sans font-400 tracking-widest uppercase mb-3" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>Quantity</p>
+              <div className="flex items-center border rounded-none w-fit" style={{ borderColor: 'var(--color-border)' }}>
                 <button
                   onClick={() => setQty(q => Math.max(1, q - 1))}
-                  className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                >-</button>
-                <span className="w-12 text-center text-sm font-medium">{qty}</span>
+                  className="w-12 h-12 flex items-center justify-center transition-colors font-200"
+                  style={{ color: 'var(--color-black)', borderRight: '1px solid var(--color-border)' }}
+                >−</button>
+                <span className="w-16 text-center text-sm font-sans font-300" style={{ color: 'var(--color-black)' }}>{qty}</span>
                 <button
                   onClick={() => setQty(q => q + 1)}
-                  className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                  className="w-12 h-12 flex items-center justify-center transition-colors font-200"
+                  style={{ color: 'var(--color-black)', borderLeft: '1px solid var(--color-border)' }}
                 >+</button>
               </div>
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-col gap-3 mb-8">
+            <div className="flex flex-col gap-4 mb-12">
               <button
                 onClick={handleAddToCart}
-                className="w-full bg-velour-accent text-white py-4 font-medium text-sm tracking-wide hover:opacity-90 transition-opacity"
+                className="w-full py-4 font-sans font-400 text-xs tracking-widest uppercase transition-all duration-300 rounded-none"
+                style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-gold-light)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-gold)'}
               >
-                Add to Cart — ${(displayPrice * qty).toFixed(2)}
+                ADD TO CART — {totalPrice}
               </button>
               <button
                 onClick={() => toggle(product._id)}
-                className={`w-full border py-3 text-sm font-medium flex items-center justify-center gap-2 transition-all ${
-                  liked ? 'border-red-300 text-red-500 bg-red-50' : 'border-velour-text text-velour-text hover:bg-gray-50'
-                }`}
+                className={`w-full py-4 font-sans font-400 text-xs tracking-widest uppercase border rounded-none transition-all duration-300 flex items-center justify-center gap-2`}
+                style={{
+                  borderColor: liked ? 'var(--color-gold)' : 'var(--color-border)',
+                  color: liked ? 'var(--color-gold)' : 'var(--color-black)',
+                  backgroundColor: liked ? 'transparent' : 'transparent',
+                }}
+                onMouseEnter={(e) => { if (!liked) e.target.style.borderColor = 'var(--color-gold)'; e.target.style.color = 'var(--color-gold)'; }}
+                onMouseLeave={(e) => { if (!liked) e.target.style.borderColor = 'var(--color-border)'; e.target.style.color = 'var(--color-black)'; }}
               >
-                <FiHeart fill={liked ? 'currentColor' : 'none'} size={16} />
-                {liked ? 'In Wishlist' : 'Add to Wishlist'}
+                <FiHeart fill={liked ? 'currentColor' : 'none'} size={16} strokeWidth={1.5} />
+                {liked ? 'IN WISHLIST' : 'ADD TO WISHLIST'}
               </button>
             </div>
 
             {/* Accordion */}
-            <AccordionItem title="Full Description">
+            <AccordionItem title="FULL DESCRIPTION">
               <p>{product.description}</p>
             </AccordionItem>
-            <AccordionItem title="Material & Care">
+            <AccordionItem title="MATERIAL & CARE">
               <p>Our garments are crafted from premium materials. For care instructions, follow the label or dry clean only for wool and silk pieces. Machine wash cold with like colors for cotton garments.</p>
             </AccordionItem>
-            <AccordionItem title="Shipping & Returns">
-              <p>Standard 3-5 business day shipping. Free on orders over $100. Easy 30-day returns on all unworn, tagged items.</p>
+            <AccordionItem title="SHIPPING & RETURNS">
+              <p>Standard 3-5 business day shipping. Free on orders above ₹4,999. Easy 30-day returns on all unworn, tagged items.</p>
             </AccordionItem>
           </div>
         </div>
 
         {/* Reviews */}
-        <div className="mb-20">
-          <div className="flex items-center gap-4 mb-8 border-b border-gray-200 pb-4">
-            <button
-              onClick={() => setReviewTab(false)}
-              className={`text-sm font-medium pb-4 -mb-4 border-b-2 transition-colors ${!reviewTab ? 'border-velour-text text-velour-text' : 'border-transparent text-velour-muted'}`}
-            >Reviews ({product.numReviews})</button>
-          </div>
+        <div className="mb-24">
+          <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: 'var(--color-black)' }}>
+            Reviews ({product.numReviews})
+          </h2>
 
           {/* Review list */}
           {product.reviews?.length === 0 && (
-            <p className="text-velour-muted text-sm">No reviews yet. Be the first to review this product.</p>
+            <p className="text-sm font-sans font-200" style={{ color: 'var(--color-muted)' }}>No reviews yet. Be the first to review this product.</p>
           )}
-          <div className="space-y-6 mb-10">
+          <div className="space-y-8 mb-16">
             {product.reviews?.map(r => (
-              <div key={r._id} className="border-b border-gray-100 pb-6">
-                <div className="flex items-center gap-2 mb-1">
+              <div key={r._id} className="border-b" style={{ borderColor: 'var(--color-border)', paddingBottom: '32px' }}>
+                <div className="flex items-center gap-3 mb-2">
                   <ReviewStars rating={r.rating} size={12} />
-                  <span className="font-medium text-sm">{r.name}</span>
-                  <span className="text-xs text-velour-muted">{new Date(r.date).toLocaleDateString()}</span>
+                  <span className="font-sans font-400 text-sm" style={{ color: 'var(--color-black)' }}>{r.name}</span>
+                  <span className="text-xs font-sans font-200" style={{ color: 'var(--color-muted)' }}>{new Date(r.date).toLocaleDateString()}</span>
                 </div>
-                <p className="text-sm text-velour-muted">{r.comment}</p>
+                <p className="text-sm font-sans font-200" style={{ color: 'var(--color-muted)' }}>{r.comment}</p>
               </div>
             ))}
           </div>
 
           {/* Add review form */}
           {user && (
-            <div className="max-w-lg">
-              <h3 className="font-serif text-xl mb-4">Write a Review</h3>
-              <form onSubmit={handleReviewSubmit} className="space-y-4">
+            <div className="max-w-2xl border-t" style={{ borderColor: 'var(--color-border)', paddingTop: '32px' }}>
+              <h3 className="font-garamond-serif text-2xl font-300 mb-6" style={{ color: 'var(--color-black)' }}>Write a Review</h3>
+              <form onSubmit={handleReviewSubmit} className="space-y-6">
                 <div>
-                  <label className="text-sm font-medium block mb-1">Rating</label>
+                  <label className="text-xs font-sans font-400 tracking-widest uppercase block mb-2" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>Rating</label>
                   <select
                     value={reviewForm.rating}
                     onChange={e => setReviewForm(f => ({ ...f, rating: Number(e.target.value) }))}
-                    className="border border-gray-200 px-3 py-2 text-sm w-full"
+                    className="border px-4 py-2 text-sm w-full rounded-none font-sans"
+                    style={{ borderColor: 'var(--color-border)', backgroundColor: 'transparent', color: 'var(--color-black)' }}
                   >
                     {[5, 4, 3, 2, 1].map(r => <option key={r} value={r}>{r} Star{r > 1 ? 's' : ''}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium block mb-1">Comment</label>
+                  <label className="text-xs font-sans font-400 tracking-widest uppercase block mb-2" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>Comment</label>
                   <textarea
                     value={reviewForm.comment}
                     onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))}
                     rows={4}
-                    className="border border-gray-200 px-3 py-2 text-sm w-full focus:outline-none focus:border-velour-text"
+                    className="border px-4 py-3 text-sm w-full rounded-none font-sans focus:outline-none"
+                    style={{ borderColor: 'var(--color-border)', backgroundColor: 'transparent', color: 'var(--color-black)' }}
                     placeholder="Share your thoughts on this product..."
+                    onFocus={(e) => e.target.style.borderColor = 'var(--color-gold)'}
+                    onBlur={(e) => e.target.style.borderColor = 'var(--color-border)'}
                   />
                 </div>
-                <button type="submit" disabled={submittingReview} className="bg-velour-text text-white px-8 py-3 text-sm font-medium hover:bg-velour-accent transition-colors disabled:opacity-60">
-                  {submittingReview ? 'Submitting...' : 'Submit Review'}
+                <button 
+                  type="submit" 
+                  disabled={submittingReview} 
+                  className="px-8 py-3.5 text-xs font-sans font-400 tracking-widest uppercase rounded-none transition-all duration-300"
+                  style={{ backgroundColor: 'var(--color-black)', color: 'var(--color-white)' }}
+                  onMouseEnter={(e) => e.button.disabled || (e.target.style.backgroundColor = 'var(--color-gold)')}
+                  onMouseLeave={(e) => e.button.disabled || (e.target.style.backgroundColor = 'var(--color-black)')}
+                >
+                  {submittingReview ? 'SUBMITTING...' : 'SUBMIT REVIEW'}
                 </button>
               </form>
             </div>
@@ -293,8 +336,8 @@ export default function ProductPage() {
         {/* Related */}
         {related.length > 0 && (
           <div>
-            <h2 className="font-serif text-3xl mb-8">You May Also Like</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8">
+            <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: 'var(--color-black)' }}>You May Also Like</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {related.slice(0, 4).map(p => <ProductCard key={p._id} product={p} />)}
             </div>
           </div>
@@ -303,3 +346,4 @@ export default function ProductPage() {
     </motion.div>
   )
 }
+

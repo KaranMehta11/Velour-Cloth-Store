@@ -1,6 +1,6 @@
 export default function SizeSelector({ sizes = [], selected, onSelect, outOfStock = [] }) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-3">
       {sizes.map(size => {
         const unavailable = outOfStock.includes(size)
         return (
@@ -8,13 +8,18 @@ export default function SizeSelector({ sizes = [], selected, onSelect, outOfStoc
             key={size}
             onClick={() => !unavailable && onSelect(size)}
             disabled={unavailable}
-            className={`w-12 h-10 text-sm font-medium border transition-all duration-200 rounded-full ${
+            className={`px-4 py-2.5 text-sm font-sans font-400 border rounded-none transition-all duration-300 ${
               unavailable
-                ? 'border-gray-200 text-gray-300 cursor-not-allowed line-through'
+                ? 'opacity-40 cursor-not-allowed'
                 : selected === size
-                  ? 'border-velour-text bg-velour-text text-white'
-                  : 'border-gray-300 text-velour-text hover:border-velour-text'
+                  ? 'border-luxury-gold bg-luxury-gold text-luxury-white'
+                  : 'border-luxury-border text-luxury-black hover:border-luxury-gold'
             }`}
+            style={{
+              borderColor: selected === size ? 'var(--color-gold)' : unavailable ? 'var(--color-border)' : 'var(--color-border)',
+              backgroundColor: selected === size ? 'var(--color-gold)' : 'transparent',
+              color: selected === size ? 'var(--color-white)' : unavailable ? 'var(--color-muted)' : 'var(--color-black)',
+            }}
           >
             {size}
           </button>
@@ -23,3 +28,4 @@ export default function SizeSelector({ sizes = [], selected, onSelect, outOfStoc
     </div>
   )
 }
+
