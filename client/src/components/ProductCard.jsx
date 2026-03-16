@@ -48,9 +48,8 @@ export default function ProductCard({ product }) {
     <Link to={`/product/${product._id}`} className="cursor-pointer group">
       {/* Image */}
       <div
-        className="relative overflow-hidden bg-[#F0EBE3]"
-        style={{aspectRatio:'3/4'}}
-      >
+        className="relative overflow-hidden bg-[#1E1A16]"
+        style={{aspectRatio:'3/4'}}>
         
         <img src={product.images?.[0]?.url || product.image}
           alt={product.name}
@@ -66,10 +65,10 @@ export default function ProductCard({ product }) {
         <button
           onClick={e => { e.stopPropagation(); handleWishlist(e) }}
           className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-0"
-          style={{backgroundColor:'rgba(255,255,255,0.85)'}}
+          style={{backgroundColor:'rgba(18,15,12,0.85)'}}
         >
           <FiHeart size={14}
-            style={{color: liked ? '#B8963E' : '#0A0A0A'}}
+            style={{color: liked ? '#B8963E' : 'rgba(255,255,255,0.7)'}}
             fill={liked ? 'currentColor' : 'none'}/>
         </button>
 
@@ -85,14 +84,14 @@ export default function ProductCard({ product }) {
       {/* Info */}
       <div className="pt-4">
         <p className="text-[10px] text-gold tracking-[0.2em] uppercase mb-1.5" style={{fontFamily:'var(--font-body)', color: '#B8963E'}}>{product.category}</p>
-        <p className="text-[17px] font-normal mb-1.5 text-black" style={{fontFamily:'var(--font-heading)'}}>{product.name}</p>
+        <p className="text-[17px] font-normal mb-1.5" style={{fontFamily:'var(--font-heading)', color: '#FDFCFA'}}>{product.name}</p>
         <div className="flex items-center gap-3">
-          <span className="text-sm font-light">
+          <span className="text-sm font-light" style={{color: 'rgba(255,255,255,0.85)'}}>
             ₹{(product.discountPrice || product.price)
               ?.toLocaleString('en-IN')}
           </span>
           {product.discountPrice && (
-            <span className="text-xs text-muted line-through" style={{color: '#6B6560'}}>
+            <span className="text-xs line-through" style={{color: 'rgba(255,255,255,0.3)'}}>
               ₹{product.price?.toLocaleString('en-IN')}
             </span>
           )}
