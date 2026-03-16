@@ -150,7 +150,7 @@ export default function HomePage() {
       </div>
 
       {/* COLLECTIONS SECTION */}
-      <section className="py-28 px-10 mx-auto" style={{ maxWidth: '1400px' }}>
+      <section className="py-16 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#FDFCFA' }}>
         <div className="flex justify-between items-end mb-14 border-b border-border pb-5" style={{ borderColor: '#E8E0D0' }}>
           <div>
             <p className="text-[10px] text-gold tracking-[0.3em] uppercase mb-4" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>SHOP BY CATEGORY</p>
@@ -196,7 +196,7 @@ export default function HomePage() {
       </section>
 
       {/* NEW ARRIVALS */}
-      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#FDFCFA' }}>
+      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#F5F0E8' }}>
         <div className="flex justify-between items-baseline mb-12 pb-5" style={{ borderBottom: '1px solid #E8E0D0' }}>
           <h2 className="font-light" style={{
             fontFamily:'var(--font-heading)',
@@ -240,7 +240,7 @@ export default function HomePage() {
       </section>
 
       {/* BESTSELLERS */}
-      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#F9F7F5' }}>
+      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#FDFCFA' }}>
         <div className="flex justify-between items-baseline mb-12 pb-5" style={{ borderBottom: '1px solid #E8E0D0' }}>
           <h2 className="font-light" style={{
             fontFamily:'var(--font-heading)',
@@ -298,14 +298,14 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════
           SECTION 8: TESTIMONIALS
           ══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32" style={{ backgroundColor: '#F9F7F5' }}>
+      <section className="py-24 md:py-32" style={{ backgroundColor: '#1C1C1C' }}>
         <div className="max-w-6xl mx-auto px-6">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="font-garamond-serif italic text-center mb-16"
-            style={{ fontSize: '48px', fontWeight: 300, color: 'var(--color-black)', fontStyle: 'italic', lineHeight: 1.1 }}
+            style={{ fontSize: '48px', fontWeight: 300, color: '#FDFCFA', fontStyle: 'italic', lineHeight: 1.1 }}
           >
             Voices of Our Community
           </motion.h2>
@@ -325,17 +325,17 @@ export default function HomePage() {
                 {/* Quote */}
                 <p 
                   className="font-garamond-italic text-lg leading-relaxed mb-6"
-                  style={{ color: 'var(--color-black)', fontStyle: 'italic', lineHeight: 1.7 }}
+                  style={{ color: '#FDFCFA', fontStyle: 'italic', lineHeight: 1.7 }}
                 >
                   {t.quote}
                 </p>
                 {/* Line */}
                 <div className="w-8 h-px mb-6" style={{ backgroundColor: 'var(--color-gold)' }} />
                 {/* Name */}
-                <p className="text-xs font-sans font-400 tracking-widest uppercase mb-1" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>
+                <p className="text-xs font-sans font-400 tracking-widest uppercase mb-1" style={{ color: '#FDFCFA', letterSpacing: '0.2em' }}>
                   {t.name}
                 </p>
-                <p className="text-xs font-sans font-200 mb-3" style={{ color: 'var(--color-muted)' }}>
+                <p className="text-xs font-sans font-200 mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
                   Verified Buyer
                 </p>
                 {/* Stars */}
