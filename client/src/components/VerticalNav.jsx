@@ -93,8 +93,6 @@ export default function VerticalNav() {
             <Link
               to={item.path}
               title={item.label}
-              onMouseEnter={() => setActiveTooltip(i)}
-              onMouseLeave={() => setActiveTooltip(null)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
