@@ -45,398 +45,253 @@ export default function HomePage() {
   }, [])
 
   return (
-    <main className="mt-12">
+    <main style={{ marginTop: '9rem' }}>
       {/* ══════════════════════════════════════════════════════════════
           SECTION 1: HERO — TWO PANEL SPLIT
           ══════════════════════════════════════════════════════════════ */}
-      <section className="relative h-screen flex" style={{ marginTop: '-3rem' }}>
+      <section className="w-full h-screen flex">
         {/* LEFT PANEL - 55% */}
         <div
-          className="w-full md:w-7/12 relative overflow-hidden flex items-end"
+          className="relative overflow-hidden"
           style={{
+            width: '55%',
             backgroundImage: "url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1400&q=90')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         >
           <div className="absolute inset-0" style={{
-            backgroundImage: 'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.4))'
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.45))'
           }} />
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative z-10 p-16 md:p-20"
-            style={{ maxWidth: '500px' }}
+            className="absolute bottom-16 left-16 right-16"
           >
-            <p className="text-luxury-white text-xs font-sans font-400 tracking-widest mb-6 uppercase" style={{ letterSpacing: '0.3em' }}>
+            <p className="text-white text-[10px] tracking-[0.35em] uppercase mb-5" style={{fontFamily:'var(--font-body)', opacity: 0.8}}>
               SS 2024 COLLECTION
             </p>
             <h1 
-              className="font-garamond-serif text-white mb-6 leading-none"
-              style={{ fontSize: '72px', fontWeight: 300, lineHeight: 1.0 }}
+              className="text-white font-light leading-none mb-6"
+              style={{ fontFamily:'var(--font-heading)', fontSize:'clamp(48px,6vw,78px)' }}
             >
               The Art of<br />Refined<br />Dressing.
             </h1>
-            <div className="mb-6" style={{ width: '40px', height: '1px', backgroundColor: 'var(--color-white)' }} />
-            <p className="text-luxury-white text-sm font-sans font-200" style={{ opacity: 0.7 }}>
+            <div className="mb-6" style={{ width: '40px', height: '1px', backgroundColor: 'rgba(255,255,255,0.5)' }} />
+            <p className="text-white text-[13px] font-extralight tracking-wide" style={{fontFamily:'var(--font-body)', opacity: 0.65}}>
               Where heritage meets contemporary vision
             </p>
           </motion.div>
         </div>
 
         {/* RIGHT PANEL - 45% */}
-        <div className="hidden md:flex w-5/12 py-20 px-16 flex-col items-center justify-center" style={{ backgroundColor: 'var(--color-cream)' }}>
+        <div className="hidden md:flex flex-col items-center justify-center px-16 text-center" style={{ width: '45%', backgroundColor: '#F5F0E8' }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-center max-w-md"
+            className="max-w-sm"
           >
             <p 
-              className="font-garamond-italic text-lg leading-relaxed mb-8"
-              style={{ color: 'var(--color-muted)', fontStyle: 'italic', lineHeight: 1.7 }}
+              className="text-lg leading-relaxed mb-12 italic"
+              style={{ fontFamily:'var(--font-italic)', color: '#6B6560', lineHeight: 1.75 }}
             >
-              Each piece in our collection is a conversation between tradition and modernity — crafted for those who appreciate the extraordinary.
+              "Each piece in our collection is a conversation between tradition and modernity — crafted for those who appreciate the extraordinary."
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col gap-4 mb-12">
+            <div className="flex flex-col gap-3 mb-16 w-full">
               <button
-                className="w-full py-3.5 text-xs font-sans font-400 tracking-widest uppercase transition-all duration-300"
-                style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-gold-light)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-gold)'}
+                className="btn-gold w-full"
+                onClick={() => {}}
               >
                 EXPLORE COLLECTION
               </button>
               <button
-                className="w-full py-3.5 text-xs font-sans font-400 tracking-widest uppercase border transition-all duration-300"
-                style={{ borderColor: 'var(--color-gold)', color: 'var(--color-gold)' }}
-                onMouseEnter={(e) => { e.target.style.backgroundColor = 'var(--color-gold)'; e.target.style.color = 'var(--color-white)'; }}
-                onMouseLeave={(e) => { e.target.style.backgroundColor = 'transparent'; e.target.style.color = 'var(--color-gold)'; }}
+                className="btn-outline w-full"
               >
                 VIEW LOOKBOOK
               </button>
             </div>
 
             {/* Stats */}
-            <div className="flex justify-between">
-              <div className="text-center">
-                <p className="font-garamond-serif text-2xl font-300" style={{ color: 'var(--color-black)' }}>200+</p>
-                <p className="text-xs font-sans font-400 tracking-widest uppercase mt-1" style={{ color: 'var(--color-muted)', letterSpacing: '0.15em' }}>Curated Pieces</p>
-              </div>
-              <div className="text-center">
-                <p className="font-garamond-serif text-2xl font-300" style={{ color: 'var(--color-black)' }}>48hr</p>
-                <p className="text-xs font-sans font-400 tracking-widest uppercase mt-1" style={{ color: 'var(--color-muted)', letterSpacing: '0.15em' }}>Express Delivery</p>
-              </div>
-              <div className="text-center">
-                <p className="font-garamond-serif text-2xl font-300" style={{ color: 'var(--color-black)' }}>30 Days</p>
-                <p className="text-xs font-sans font-400 tracking-widest uppercase mt-1" style={{ color: 'var(--color-muted)', letterSpacing: '0.15em' }}>Free Returns</p>
-              </div>
+            <div className="flex gap-10 border-t border-border pt-10 w-full justify-center" style={{ borderColor: '#E8E0D0' }}>
+              {[
+                {num:'200+', label:'Curated Pieces'},
+                {num:'48hr', label:'Express Delivery'},
+                {num:'30 Days', label:'Free Returns'}
+              ].map(s => (
+                <div key={s.num} className="text-center">
+                  <p className="text-2xl mb-1" style={{fontFamily:'var(--font-heading)'}}>{ s.num}</p>
+                  <p className="text-[10px] uppercase tracking-[0.15em] text-muted" style={{fontFamily:'var(--font-body)', color: '#6B6560'}}>{s.label}</p>
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════
-          SECTION 2: SCROLLING ANNOUNCEMENT STRIP
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="h-11 flex items-center overflow-hidden" style={{ backgroundColor: 'var(--color-gold)' }}>
-        <div className="flex animate-marquee w-full whitespace-nowrap">
-          {Array(3).fill('NEW ARRIVALS EVERY FRIDAY  ✦  FREE SHIPPING ABOVE ₹4,999  ✦  SUSTAINABLE FABRICS  ✦  EXCLUSIVE MEMBER DROPS  ✦  EASY 30-DAY RETURNS  ✦  HANDCRAFTED IN INDIA  ✦  ').map((text, i) => (
-            <span key={i} className="text-luxury-white text-xs font-sans font-400 tracking-widest mr-0" style={{ letterSpacing: '0.2em' }}>
-              {text}
+      {/* ANNOUNCEMENT STRIP */}
+      <div className="h-11 flex items-center overflow-hidden" style={{ backgroundColor: '#B8963E' }}>
+        <div className="marquee-track">
+          {[1,2].map(i => (
+            <span key={i} className="whitespace-nowrap pr-16" style={{
+              fontFamily:'var(--font-body)',
+              fontSize: '11px',
+              letterSpacing: '0.2em',
+              color: '#FDFCFA',
+              fontWeight: 'normal'
+            }}>
+              NEW ARRIVALS EVERY FRIDAY &nbsp;✦&nbsp; FREE SHIPPING ABOVE ₹4,999 &nbsp;✦&nbsp; SUSTAINABLE FABRICS &nbsp;✦&nbsp; EXCLUSIVE DROPS &nbsp;✦&nbsp; EASY 30-DAY RETURNS &nbsp;✦&nbsp; HANDCRAFTED IN INDIA &nbsp;✦&nbsp;
             </span>
+          ))}
+        </div>
+      </div>
+
+      {/* COLLECTIONS SECTION */}
+      <section className="py-28 px-10 mx-auto" style={{ maxWidth: '1400px' }}>
+        <div className="flex justify-between items-end mb-14 border-b border-border pb-5" style={{ borderColor: '#E8E0D0' }}>
+          <div>
+            <p className="text-[10px] text-gold tracking-[0.3em] uppercase mb-4" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>SHOP BY CATEGORY</p>
+            <h2 className="font-light" style={{
+              fontFamily:'var(--font-heading)',
+              fontSize:'clamp(36px,4vw,54px)',
+              color: '#0A0A0A'
+            }}>
+              Curated for the<br/>Discerning Eye.
+            </h2>
+          </div>
+          <Link to="/shop" className="gold-underline text-gold text-[12px] tracking-[0.15em]" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
+            View All Collections →
+          </Link>
+        </div>
+
+        <div className="grid gap-5 items-end" style={{gridTemplateColumns:'1fr 1.2fr 1fr'}}>
+          {[
+            { title:"MEN'S EDIT", count:'124 Pieces', h:'520px',
+              img:'https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=800&q=85' },
+            { title:"WOMEN'S EDIT", count:'186 Pieces', h:'640px',
+              img:'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&q=85' },
+            { title:'ACCESSORIES', count:'67 Pieces', h:'520px',
+              img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=85' }
+          ].map(col => (
+            <div key={col.title}
+              className="relative overflow-hidden cursor-pointer group"
+              style={{height:col.h}}
+            >
+              <img src={col.img} alt={col.title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
+              <div className="absolute inset-0 transition-all duration-350" style={{background:'linear-gradient(to bottom,rgba(0,0,0,0.55),transparent)}}/>
+              <div className="absolute bottom-8 left-7">
+                <p className="text-white text-xl font-light mb-1" style={{fontFamily:'var(--font-heading)'}}>{ col.title}</p>
+                <p className="text-white text-[10px] tracking-[0.2em] uppercase" style={{fontFamily:'var(--font-body)', opacity: 0.7}}>{ col.count}</p>
+              </div>
+              <p className="absolute bottom-8 right-7 text-gold-light text-[11px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-350" style={{ color: '#D4AF6A', fontFamily:'var(--font-body)' }}>
+                EXPLORE →
+              </p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════
-          SECTION 3: EDITORIAL COLLECTIONS
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32" style={{ backgroundColor: 'var(--color-cream)' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          {/* Title */}
-          <div className="grid md:grid-cols-3 gap-12 mb-16">
-            <div className="md:col-span-2">
-              <p className="text-xs font-sans font-400 tracking-widest uppercase mb-4" style={{ color: 'var(--color-gold)', letterSpacing: '0.3em' }}>
-                SHOP BY CATEGORY
-              </p>
-              <h2 
-                className="font-garamond-serif leading-tight mb-0"
-                style={{ fontSize: '52px', fontWeight: 300, color: 'var(--color-black)', lineHeight: 1.1 }}
-              >
-                Curated for the<br />Discerning Eye.
-              </h2>
-            </div>
-            <div className="flex flex-col justify-end">
-              <p className="text-sm font-sans font-200 leading-relaxed mb-4" style={{ color: 'var(--color-black)' }}>
-                Explore our meticulously curated collections, each designed to celebrate individual style and elevate everyday moments.
-              </p>
-              <a href="/shop" className="text-xs font-sans font-400 tracking-widest uppercase hover-underline transition-all" style={{ color: 'var(--color-gold)', letterSpacing: '0.15em' }}>
-                VIEW ALL COLLECTIONS →
-              </a>
-            </div>
-          </div>
-
-          {/* 3 Collection Cards */}
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Card 1 */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="relative overflow-hidden group"
-              style={{ aspectRatio: '3/4', cursor: 'pointer' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.querySelector('img').style.transform = 'scale(1.04)'
-                e.currentTarget.querySelector('.overlay').style.opacity = '1'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.querySelector('img').style.transform = 'scale(1)'
-                e.currentTarget.querySelector('.overlay').style.opacity = '0.6'
-              }}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=800&q=85"
-                alt="Men's Edit"
-                className="w-full h-full object-cover transition-transform duration-500"
-              />
-              <div
-                className="overlay absolute inset-0 flex flex-col justify-end p-6 transition-all duration-300"
-                style={{
-                  backgroundImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 100%)',
-                  opacity: 0.6,
-                }}
-              >
-                <p className="text-luxury-white text-xs font-sans font-400 tracking-widest uppercase mb-1" style={{ letterSpacing: '0.15em' }}>EXPLORE →</p>
-                <h3 className="font-garamond-serif text-2xl font-300 text-luxury-white mb-2">MEN'S EDIT</h3>
-                <p className="text-luxury-white text-xs font-sans font-200">124 Pieces</p>
-              </div>
-            </motion.div>
-
-            {/* Card 2 - TALLER */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="relative overflow-hidden group md:row-span-1"
-              style={{ aspectRatio: '3/5', cursor: 'pointer' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.querySelector('img').style.transform = 'scale(1.04)'
-                e.currentTarget.querySelector('.overlay').style.opacity = '1'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.querySelector('img').style.transform = 'scale(1)'
-                e.currentTarget.querySelector('.overlay').style.opacity = '0.6'
-              }}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&q=85"
-                alt="Women's Edit"
-                className="w-full h-full object-cover transition-transform duration-500"
-              />
-              <div
-                className="overlay absolute inset-0 flex flex-col justify-end p-6 transition-all duration-300"
-                style={{
-                  backgroundImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 100%)',
-                  opacity: 0.6,
-                }}
-              >
-                <p className="text-luxury-white text-xs font-sans font-400 tracking-widest uppercase mb-1" style={{ letterSpacing: '0.15em' }}>EXPLORE →</p>
-                <h3 className="font-garamond-serif text-2xl font-300 text-luxury-white mb-2">WOMEN'S EDIT</h3>
-                <p className="text-luxury-white text-xs font-sans font-200">186 Pieces</p>
-              </div>
-            </motion.div>
-
-            {/* Card 3 */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="relative overflow-hidden group"
-              style={{ aspectRatio: '3/4', cursor: 'pointer' }}
-              onMouseEnter={(e) => {
-                e.currentTarget.querySelector('img').style.transform = 'scale(1.04)'
-                e.currentTarget.querySelector('.overlay').style.opacity = '1'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.querySelector('img').style.transform = 'scale(1)'
-                e.currentTarget.querySelector('.overlay').style.opacity = '0.6'
-              }}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=85"
-                alt="Accessories"
-                className="w-full h-full object-cover transition-transform duration-500"
-              />
-              <div
-                className="overlay absolute inset-0 flex flex-col justify-end p-6 transition-all duration-300"
-                style={{
-                  backgroundImage: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.6) 100%)',
-                  opacity: 0.6,
-                }}
-              >
-                <p className="text-luxury-white text-xs font-sans font-400 tracking-widest uppercase mb-1" style={{ letterSpacing: '0.15em' }}>EXPLORE →</p>
-                <h3 className="font-garamond-serif text-2xl font-300 text-luxury-white mb-2">ACCESSORIES</h3>
-                <p className="text-luxury-white text-xs font-sans font-200">67 Pieces</p>
-              </div>
-            </motion.div>
-          </div>
+      {/* NEW ARRIVALS */}
+      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#F5F0E8' }}>
+        <div className="flex justify-between items-baseline mb-12 pb-5" style={{ borderBottom: '1px solid #E8E0D0' }}>
+          <h2 className="font-light" style={{
+            fontFamily:'var(--font-heading)',
+            fontSize:'clamp(32px,4vw,50px)',
+            color: '#0A0A0A'
+          }}>New Arrivals</h2>
+          <Link to="/shop" className="gold-underline text-[11px] text-gold tracking-[0.15em]" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
+            VIEW ALL →
+          </Link>
         </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-          SECTION 4: NEW ARRIVALS
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32" style={{ backgroundColor: 'var(--color-cream)' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex items-center justify-between mb-16">
-            <h2 
-              className="font-garamond-serif"
-              style={{ fontSize: '48px', fontWeight: 300, color: 'var(--color-black)', lineHeight: 1.1 }}
-            >
-              New Arrivals
-            </h2>
-            <Link 
-              to="/shop" 
-              className="text-xs font-sans font-400 tracking-widest uppercase hover-underline transition-all"
-              style={{ color: 'var(--color-gold)', letterSpacing: '0.15em' }}
-            >
-              VIEW ALL →
-            </Link>
-          </div>
-          {loading ? (
-            <div className="flex justify-center py-16"><LoadingSpinner /></div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {featured.slice(0, 8).map(product => (
-                <ProductCard key={product._id} product={product} />
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-          SECTION 5: EDITORIAL BANNER
-          ══════════════════════════════════════════════════════════════ */}
-      <section
-        className="relative w-screen h-96 md:h-screen max-h-screen flex items-center justify-center overflow-hidden md:h-96 xl:h-screen"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1445205170230-053b83016050?w=1600&q=90')", backgroundSize: 'cover', backgroundPosition: 'center' }}
-      >
-        <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="relative z-10 text-center text-luxury-white"
-        >
-          <p className="text-xs font-sans font-400 tracking-widest uppercase mb-4" style={{ letterSpacing: '0.3em' }}>
-            LIMITED EDITION
-          </p>
-          <h2 
-            className="font-garamond-serif italic text-5xl md:text-6xl mb-6"
-            style={{ fontStyle: 'italic', lineHeight: 1.1 }}
-          >
-            The Winter Atelier
-          </h2>
-          <p className="text-sm font-sans font-200 max-w-md mx-auto mb-8">
-            A collection of 40 exclusive pieces, available for 30 days only
-          </p>
-          <button
-            className="px-10 py-3.5 text-xs font-sans font-400 tracking-widest uppercase transition-all duration-300"
-            style={{ backgroundColor: 'var(--color-white)', color: 'var(--color-black)' }}
-            onMouseEnter={(e) => { e.target.style.opacity = '0.9' }}
-            onMouseLeave={(e) => { e.target.style.opacity = '1' }}
-          >
-            SHOP THE EDIT
-          </button>
-        </motion.div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-          SECTION 6: BESTSELLERS
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32" style={{ backgroundColor: 'var(--color-cream)' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex items-center justify-between mb-16">
-            <h2 
-              className="font-garamond-serif"
-              style={{ fontSize: '48px', fontWeight: 300, color: 'var(--color-black)', lineHeight: 1.1 }}
-            >
-              Bestsellers
-            </h2>
-            <Link 
-              to="/shop" 
-              className="text-xs font-sans font-400 tracking-widest uppercase hover-underline transition-all"
-              style={{ color: 'var(--color-gold)', letterSpacing: '0.15em' }}
-            >
-              VIEW ALL →
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {bestsellers.slice(0, 4).map(product => (
+        {loading ? (
+          <div className="flex justify-center py-16"><LoadingSpinner /></div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-7">
+            {featured.slice(0, 8).map(product => (
               <ProductCard key={product._id} product={product} />
             ))}
           </div>
+        )}
+      </section>
+
+      {/* EDITORIAL BANNER */}
+      <section className="relative w-full overflow-hidden flex items-center justify-center" style={{ height:'500px' }}>
+        <img
+          src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=1600&q=90"
+          alt="Winter Atelier"
+          className="absolute inset-0 w-full h-full object-cover"/>
+        <div className="absolute inset-0" style={{backgroundColor:'rgba(0,0,0,0.5)'}}/>
+        <div className="relative text-center px-5">
+          <p className="text-gold-light text-[10px] tracking-[0.35em] uppercase mb-5" style={{ fontFamily:'var(--font-body)', color: '#D4AF6A' }}>LIMITED EDITION</p>
+          <h2 className="text-white font-light italic mb-5" style={{
+            fontFamily:'var(--font-heading)',
+            fontSize:'clamp(40px,6vw,68px)',
+            fontStyle: 'italic'
+          }}>The Winter Atelier</h2>
+          <p className="text-white text-[13px] font-extralight mb-10" style={{fontFamily:'var(--font-body)', opacity: 0.75}}>
+            A collection of 40 exclusive pieces, available for 30 days only
+          </p>
+          <button className="btn-white">SHOP THE EDIT</button>
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════════
-          SECTION 7: BRAND PHILOSOPHY
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32 flex items-center" style={{ backgroundColor: 'var(--color-charcoal)' }}>
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-5 gap-12 items-center">
-          {/* Text */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="md:col-span-2"
-          >
-            <p className="text-xs font-sans font-400 tracking-widest uppercase mb-6" style={{ color: 'var(--color-gold)', letterSpacing: '0.3em' }}>
-              OUR PHILOSOPHY
-            </p>
-            <h2 
-              className="font-garamond-serif text-white mb-8 leading-tight"
-              style={{ fontSize: '48px', fontWeight: 300, lineHeight: 1.1 }}
-            >
-              Crafted with<br />intention.<br />Worn with purpose.
-            </h2>
-            <p className="text-sm font-sans font-200 leading-relaxed mb-8" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.8 }}>
-              At Velour, we believe that true luxury lies not in excess, but in the perfection of the details. Every stitch, every fabric, every silhouette is chosen with purpose.
-            </p>
-            <div className="flex gap-12 mb-8">
-              <div>
-                <p className="font-garamond-serif text-2xl font-300 text-luxury-white">Est. 2024</p>
-              </div>
-              <div>
-                <p className="font-garamond-serif text-2xl font-300 text-luxury-white">Made in India</p>
-              </div>
-            </div>
-            <a href="#" className="text-xs font-sans font-400 tracking-widest uppercase hover-underline transition-all" style={{ color: 'var(--color-gold)', letterSpacing: '0.15em' }}>
-              OUR STORY →
-            </a>
-          </motion.div>
+      {/* BESTSELLERS */}
+      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#F5F0E8' }}>
+        <div className="flex justify-between items-baseline mb-12 pb-5" style={{ borderBottom: '1px solid #E8E0D0' }}>
+          <h2 className="font-light" style={{
+            fontFamily:'var(--font-heading)',
+            fontSize:'clamp(32px,4vw,50px)',
+            color: '#0A0A0A'
+          }}>Bestsellers</h2>
+          <Link to="/shop" className="gold-underline text-[11px] text-gold tracking-[0.15em]" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
+            VIEW ALL →
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-7">
+          {bestsellers.slice(0, 4).map(product => (
+            <ProductCard key={product._id} product={product} />
+          ))}
+        </div>
+      </section>
 
-          {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="md:col-span-3"
-            style={{ aspectRatio: '3/4' }}
-          >
-            <img
-              src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=85"
-              alt="Our Philosophy"
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
+      {/* BRAND PHILOSOPHY */}
+      <section className="grid" style={{ gridTemplateColumns:'1.4fr 1fr', backgroundColor: '#1C1C1C' }}>
+        <div className="py-28 px-20">
+          <p className="text-gold text-[10px] tracking-[0.3em] uppercase mb-7" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
+            OUR PHILOSOPHY
+          </p>
+          <h2 className="text-off-white font-light leading-tight mb-8" style={{
+            fontFamily:'var(--font-heading)',
+            fontSize:'clamp(36px,4vw,54px)',
+            color: '#FDFCFA'
+          }}>
+            Crafted with<br/>intention.<br/>Worn with purpose.
+          </h2>
+          <p className="text-white text-sm leading-[1.9] font-extralight max-w-md mb-12" style={{fontFamily:'var(--font-body)', color: 'rgba(255,255,255,0.55)', lineHeight: 1.9}}>
+            At Velour, we believe that true luxury lies not in excess, but in the perfection of the details. Every stitch, every fabric, every silhouette is chosen with purpose.
+          </p>
+          <div className="flex gap-12 border-t border-white border-opacity-10 pt-8 mb-12" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+            {[{num:'Est. 2024',label:'Founded'},{num:'India',label:'Made In'}]
+              .map(s => (
+              <div key={s.num}>
+                <p className="text-off-white text-2xl mb-1" style={{fontFamily:'var(--font-heading)', color: '#FDFCFA'}}>{ s.num}</p>
+                <p className="text-muted text-[10px] tracking-[0.2em] uppercase" style={{fontFamily:'var(--font-body)', color: '#6B6560'}}>{ s.label}</p>
+              </div>
+            ))}
+          </div>
+          <Link to="/about" className="gold-underline text-gold text-[12px] tracking-[0.2em]" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
+            OUR STORY →
+          </Link>
+        </div>
+        <div className="overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=85"
+            alt="Philosophy"
+            className="w-full h-full object-cover"/>
         </div>
       </section>
 
