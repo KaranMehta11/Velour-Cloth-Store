@@ -321,6 +321,23 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ANNOUNCEMENT STRIP */}
+      <div className="h-11 flex items-center overflow-hidden" style={{ backgroundColor: '#B8963E' }}>
+        <div className="marquee-track">
+          {[1,2].map(i => (
+            <span key={i} className="whitespace-nowrap pr-16" style={{
+              fontFamily:'var(--font-body)',
+              fontSize: '11px',
+              letterSpacing: '0.2em',
+              color: '#FDFCFA',
+              fontWeight: 'normal'
+            }}>
+              NEW ARRIVALS EVERY FRIDAY &nbsp;✦&nbsp; FREE SHIPPING ABOVE ₹4,999 &nbsp;✦&nbsp; SUSTAINABLE FABRICS &nbsp;✦&nbsp; EXCLUSIVE DROPS &nbsp;✦&nbsp; EASY 30-DAY RETURNS &nbsp;✦&nbsp; HANDCRAFTED IN INDIA &nbsp;✦&nbsp;
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* COLLECTIONS SECTION */}
       <section className="py-16 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#FDFCFA' }}>
         <div className="flex justify-between items-end mb-14 border-b border-border pb-5" style={{ borderColor: '#E8E0D0' }}>
