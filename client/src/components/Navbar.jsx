@@ -1,123 +1,161 @@
-import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  FiHeart,
-  FiShoppingBag,
-  FiMenu,
-  FiX,
-  FiUser,
-  FiLogOut,
-  FiPackage,
-  FiSearch,
-} from "react-icons/fi";
-import useAuthStore from "../store/useAuthStore";
-import useCartStore from "../store/useCartStore";
-import useWishlistStore from "../store/useWishlistStore";
-
-const leftNav = [
-  { label: "MEN", to: "/shop?category=Men" },
-  { label: "WOMEN", to: "/shop?category=Women" },
-  { label: "ACCESSORIES", to: "/shop?category=Accessories" },
-];
-
-const rightNav = [
-  { label: "SALE", to: "/shop?sort=price_asc" },
-  { label: "NEW IN", to: "/shop?sort=newest" },
-];
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FiSearch, FiHeart, FiShoppingBag, FiUser, FiMenu, FiX, FiLogOut } from 'react-icons/fi'
+import useAuthStore from '../store/useAuthStore'
+import useCartStore from '../store/useCartStore'
+import useWishlistStore from '../store/useWishlistStore'
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { user, logout } = useAuthStore();
-  const itemCount = useCartStore((s) => s.itemCount());
-  const wishlistCount = useWishlistStore((s) => s.items.length);
-  const setCartOpen = useCartStore((s) => s.setOpen);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const menuRef = useRef(null);
+  const [scrolled, setScrolled] = useState(false)
+  const [userDropdown, setUserDropdown] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { user, logout } = useAuthStore()
+  const cartCount = useCartStore(s => s.itemCount?.())
+  const wishlistCount = useWishlistStore(s => s.items?.length || 0)
+  const navigate = useNavigate()
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    const handleScroll = () => {
+      setScrolled(window.scrollY >= 50)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-  useEffect(() => {
-    setMobileOpen(false);
-    setUserMenuOpen(false);
-  }, [location]);
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+    setUserDropdown(false)
+  }
 
-  useEffect(() => {
-    const handleClick = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setUserMenuOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, []);
+  // LEFT SECTION - Category links
+  const categoryLinks = [
+    { label: 'MEN', path: '/shop?category=Men' },
+    { label: 'WOMEN', path: '/shop?category=Women' },
+    { label: 'ACCESSORIES', path: '/shop?category=Accessories' },
+  ]
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/");
-  };
+  // RIGHT SECTION - Text links
+  const textLinks = [
+    { label: 'SALE', path: '/shop?sale=true' },
+    { label: 'NEW IN', path: '/shop?sort=newest' },
+  ]
 
   return (
     <>
-      {/* TOP ANNOUNCEMENT BAR */}
-      <div
-        className="fixed top-0 left-0 right-0 z-50 h-9 flex items-center overflow-hidden"
-        style={{ backgroundColor: "#0A0A0A" }}
+      {/* TOP NAVBAR */}
+      <nav
+        style={{
+          position: 'fixed',
+          top: '36px',
+          left: 0,
+          right: 0,
+          height: '64px',
+          background: scrolled ? 'rgba(12,10,8,0.96)' : 'transparent',
+          backdropFilter: scrolled ? 'blur(20px)' : 'none',
+          borderBottom: scrolled ? '1px solid rgba(184,150,62,0.15)' : 'none',
+          zIndex: 9999,
+          transition: 'all 500ms ease',
+          display: 'flex',
+          alignItems: 'center',
+          paddingLeft: 'clamp(32px, 8vw, 56px)',
+          paddingRight: 'clamp(32px, 8vw, 56px)',
+        }}
+        className="navbar"
       >
-        <div className="marquee-track">
-          {[1, 2].map((i) => (
-            <span
-              key={i}
-              className="whitespace-nowrap pr-16"
+        {/* LEFT SECTION - Category links (hidden on mobile) */}
+        <div style={{
+          display: 'flex',
+          gap: '32px',
+          flex: 1,
+          alignItems: 'center'
+        }} className="navbar-left">
+          {categoryLinks.map((link) => (
+            <Link
+              key={link.label}
+              to={link.path}
               style={{
-                fontFamily: "var(--font-body)",
-                fontSize: "10px",
-                letterSpacing: "0.2em",
-                color: "#FDFCFA",
-                fontWeight: 300,
+                fontFamily: "'Jost', sans-serif",
+                fontSize: '11px',
+                fontWeight: 400,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.7)',
+                textDecoration: 'none',
+                transition: 'all 300ms ease',
+                paddingBottom: '2px',
+                borderBottom: '2px solid transparent'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.color = '#B8963E'
+                e.target.style.borderBottomColor = '#B8963E'
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.color = 'rgba(255,255,255,0.7)'
+                e.target.style.borderBottomColor = 'transparent'
               }}
             >
-              FREE SHIPPING ON ORDERS ABOVE ₹4,999 &nbsp;✦&nbsp; NEW COLLECTION NOW LIVE &nbsp;✦&nbsp; SUSTAINABLE FABRICS &nbsp;✦&nbsp; EASY 30-DAY RETURNS &nbsp;✦&nbsp; HANDCRAFTED IN INDIA &nbsp;✦&nbsp;
-            </span>
+              {link.label}
+            </Link>
           ))}
         </div>
-      </div>
 
-      {/* MAIN NAV */}
-      <nav
-        className="fixed z-50 w-full transition-all duration-400 h-20"
-        style={{
-          top: "36px",
-          backgroundColor: scrolled ? "rgba(240, 240, 240, 0.85)" : "rgba(0, 0, 0, 0.3)",
-          color: scrolled ? "#0A0A0A" : "white",
-          borderBottom: scrolled ? "1px solid rgba(184, 150, 62, 0.2)" : "none",
-          backdropFilter: "blur(10px)",
-        }}
-      >
-        <div
-          className="flex items-center justify-between h-full px-10"
-          style={{ maxWidth: "100%" }}
-        >
-          {/* LEFT LINKS */}
-          <div className="hidden md:flex items-center gap-8">
-            {leftNav.map((link) => (
+        {/* CENTER SECTION - Logo */}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          justifyContent: 'center'
+        }}>
+          <Link
+            to="/"
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: '22px',
+              fontStyle: 'italic',
+              letterSpacing: '0.4em',
+              color: '#FDFCFA',
+              textDecoration: 'none',
+              userSelect: 'none'
+            }}
+          >
+            VELOUR
+          </Link>
+        </div>
+
+        {/* RIGHT SECTION - Text links + icons (hidden on mobile) */}
+        <div style={{
+          display: 'flex',
+          gap: '32px',
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'flex-end'
+        }} className="navbar-right">
+          {/* Text links */}
+          <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+            {textLinks.map((link) => (
               <Link
                 key={link.label}
-                to={link.to}
-                className="gold-underline"
+                to={link.path}
                 style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: "11px",
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  color: scrolled ? "#0A0A0A" : "white",
+                  fontFamily: "'Jost', sans-serif",
+                  fontSize: '11px',
+                  fontWeight: 400,
+                  letterSpacing: '0.18em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,0.7)',
+                  textDecoration: 'none',
+                  transition: 'all 300ms ease',
+                  paddingBottom: '2px',
+                  borderBottom: '2px solid transparent'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#B8963E'
+                  e.target.style.borderBottomColor = '#B8963E'
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = 'rgba(255,255,255,0.7)'
+                  e.target.style.borderBottomColor = 'transparent'
                 }}
               >
                 {link.label}
@@ -125,298 +163,377 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* CENTER LOGO */}
-          <Link
-            to="/"
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontSize: "26px",
-              fontWeight: 300,
-              fontStyle: "italic",
-              letterSpacing: "0.35em",
-              color: scrolled ? "#0A0A0A" : "white",
-            }}
-          >
-            VELOUR
-          </Link>
+          {/* Divider line */}
+          <div style={{
+            width: '1px',
+            height: '16px',
+            backgroundColor: 'rgba(184,150,62,0.2)'
+          }} />
 
-          {/* RIGHT SECTION */}
-          <div className="hidden md:flex items-center gap-6">
-            {/* RIGHT LINKS */}
-            <div className="flex items-center gap-6">
-              {rightNav.map((link) => (
-                <Link
-                  key={link.label}
-                  to={link.to}
-                  className="gold-underline"
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: "11px",
-                    letterSpacing: "0.15em",
-                    textTransform: "uppercase",
-                    color: scrolled ? "#0A0A0A" : "white",
-                  }}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-
-            {/* SEARCH ICON */}
-            <button
-              style={{ color: scrolled ? "#0A0A0A" : "white" }}
-              className="transition-colors duration-300"
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#B8963E")}
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = scrolled ? "#0A0A0A" : "white")
-              }
+          {/* Icon buttons */}
+          <div style={{
+            display: 'flex',
+            gap: '20px',
+            alignItems: 'center'
+          }}>
+            {/* Search */}
+            <Link
+              to="/shop"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'rgba(255,255,255,0.7)',
+                transition: 'color 300ms ease',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => e.target.style.color = '#B8963E'}
+              onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.7)'}
             >
               <FiSearch size={18} />
-            </button>
+            </Link>
 
-            {/* WISHLIST */}
+            {/* Wishlist with badge */}
             <Link
-              to="/account?tab=wishlist"
-              className="relative transition-colors duration-300"
-              style={{ color: scrolled ? "#0A0A0A" : "white" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#B8963E")}
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = scrolled ? "#0A0A0A" : "white")
-              }
+              to="/account"
+              style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'rgba(255,255,255,0.7)',
+                transition: 'color 300ms ease',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => e.target.style.color = '#B8963E'}
+              onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.7)'}
             >
               <FiHeart size={18} />
               {wishlistCount > 0 && (
-                <span
-                  className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center"
-                  style={{
-                    backgroundColor: "#B8963E",
-                    color: "#FDFCFA",
-                    fontSize: "9px",
-                    fontWeight: 500,
-                  }}
-                >
+                <span style={{
+                  position: 'absolute',
+                  top: '-6px',
+                  right: '-6px',
+                  width: '16px',
+                  height: '16px',
+                  backgroundColor: '#B8963E',
+                  color: 'white',
+                  borderRadius: '50%',
+                  fontSize: '9px',
+                  fontFamily: "'Jost', sans-serif",
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
                   {wishlistCount}
                 </span>
               )}
             </Link>
 
-            {/* CART */}
-            <button
-              onClick={() => setCartOpen(true)}
-              className="relative transition-colors duration-300"
-              style={{ color: scrolled ? "#0A0A0A" : "white" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#B8963E")}
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = scrolled ? "#0A0A0A" : "white")
-              }
+            {/* Cart with badge */}
+            <Link
+              to="/cart"
+              style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'rgba(255,255,255,0.7)',
+                transition: 'color 300ms ease',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => e.target.style.color = '#B8963E'}
+              onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.7)'}
             >
               <FiShoppingBag size={18} />
-              {itemCount > 0 && (
-                <span
-                  className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full flex items-center justify-center"
-                  style={{
-                    backgroundColor: "#B8963E",
-                    color: "#FDFCFA",
-                    fontSize: "9px",
-                    fontWeight: 500,
-                  }}
-                >
-                  {itemCount}
+              {(cartCount || 0) > 0 && (
+                <span style={{
+                  position: 'absolute',
+                  top: '-6px',
+                  right: '-6px',
+                  width: '16px',
+                  height: '16px',
+                  backgroundColor: '#B8963E',
+                  color: 'white',
+                  borderRadius: '50%',
+                  fontSize: '9px',
+                  fontFamily: "'Jost', sans-serif",
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  {cartCount || 0}
                 </span>
               )}
-            </button>
+            </Link>
 
-            {/* USER MENU */}
-            {user ? (
-              <div className="relative" ref={menuRef}>
-                <button
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="transition-colors duration-300"
-                  style={{
-                    color: scrolled ? "#0A0A0A" : "white",
-                  }}
-                >
-                  <div
-                    className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-600"
+            {/* User icon with dropdown */}
+            <div style={{ position: 'relative', display: 'inline-block' }}>
+              <button
+                onClick={() => {
+                  if (user) {
+                    setUserDropdown(!userDropdown)
+                  } else {
+                    navigate('/login')
+                  }
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'rgba(255,255,255,0.7)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 0,
+                  transition: 'color 300ms ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#B8963E'}
+                onMouseLeave={(e) => {
+                  if (!userDropdown) {
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.7)'
+                  }
+                }}
+              >
+                <FiUser size={18} />
+              </button>
+
+              {/* User dropdown menu */}
+              <AnimatePresence>
+                {user && userDropdown && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
                     style={{
-                      backgroundColor: "#B8963E",
-                      color: "#FDFCFA",
+                      position: 'absolute',
+                      top: 'calc(100% + 12px)',
+                      right: 0,
+                      background: 'rgba(18,15,12,0.96)',
+                      border: '1px solid rgba(184,150,62,0.2)',
+                      borderRadius: '12px',
+                      backdropFilter: 'blur(16px)',
+                      minWidth: '180px',
+                      zIndex: 100000,
+                      overflow: 'hidden',
+                      boxShadow: '0 20px 60px rgba(0,0,0,0.4)'
                     }}
                   >
-                    {user.name[0].toUpperCase()}
-                  </div>
-                </button>
-                <AnimatePresence>
-                  {userMenuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 top-12 border z-50 py-2 w-48"
+                    <Link
+                      to="/account"
+                      onClick={() => setUserDropdown(false)}
                       style={{
-                        backgroundColor: "#FDFCFA",
-                        borderColor: "#E8E0D0",
+                        display: 'block',
+                        padding: '10px 16px',
+                        fontFamily: "'Jost', sans-serif",
+                        fontSize: '12px',
+                        color: 'rgba(255,255,255,0.6)',
+                        textDecoration: 'none',
+                        transition: 'all 200ms ease',
+                        borderBottom: '1px solid rgba(184,150,62,0.1)',
+                        textTransform: 'capitalize'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = '#B8963E'
+                        e.target.style.backgroundColor = 'rgba(184,150,62,0.12)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = 'rgba(255,255,255,0.6)'
+                        e.target.style.backgroundColor = 'transparent'
                       }}
                     >
-                      <Link
-                        to="/account"
-                        className="flex items-center gap-2 px-4 py-2 text-sm transition-colors"
-                        style={{ color: "#0A0A0A" }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#F5F0E8")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.backgroundColor = "transparent")
-                        }
-                      >
-                        <FiUser size={14} /> My Account
-                      </Link>
-                      <Link
-                        to="/account?tab=orders"
-                        className="flex items-center gap-2 px-4 py-2 text-sm transition-colors"
-                        style={{ color: "#0A0A0A" }}
-                        onMouseEnter={(e) =>
-                          (e.currentTarget.style.backgroundColor = "#F5F0E8")
-                        }
-                        onMouseLeave={(e) =>
-                          (e.currentTarget.style.backgroundColor = "transparent")
-                        }
-                      >
-                        <FiPackage size={14} /> Orders
-                      </Link>
-                      {user.role === "admin" && (
-                        <Link
-                          to="/admin"
-                          className="flex items-center gap-2 px-4 py-2 text-sm font-500 transition-colors"
-                          style={{ color: "#B8963E" }}
-                          onMouseEnter={(e) =>
-                            (e.currentTarget.style.backgroundColor = "#F5F0E8")
-                          }
-                          onMouseLeave={(e) =>
-                            (e.currentTarget.style.backgroundColor = "transparent")
-                          }
-                        >
-                          Admin Panel
-                        </Link>
-                      )}
-                      <hr style={{ borderColor: "#E8E0D0", margin: "0.25rem 0" }} />
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center gap-2 px-4 py-2 text-sm w-full text-left transition-colors"
-                        style={{ color: "#E63946" }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = "rgba(230, 57, 70, 0.1)";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = "transparent";
-                        }}
-                      >
-                        <FiLogOut size={14} /> Logout
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ) : (
-              <Link
-                to="/login"
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: "11px",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                  color: scrolled ? "#0A0A0A" : "white",
-                }}
-                className="gold-underline"
-              >
-                LOGIN
-              </Link>
-            )}
+                      My Account
+                    </Link>
+                    <Link
+                      to="/account?tab=orders"
+                      onClick={() => setUserDropdown(false)}
+                      style={{
+                        display: 'block',
+                        padding: '10px 16px',
+                        fontFamily: "'Jost', sans-serif",
+                        fontSize: '12px',
+                        color: 'rgba(255,255,255,0.6)',
+                        textDecoration: 'none',
+                        transition: 'all 200ms ease',
+                        borderBottom: '1px solid rgba(184,150,62,0.1)',
+                        textTransform: 'capitalize'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.color = '#B8963E'
+                        e.target.style.backgroundColor = 'rgba(184,150,62,0.12)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.color = 'rgba(255,255,255,0.6)'
+                        e.target.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      My Orders
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      style={{
+                        width: '100%',
+                        padding: '10px 16px',
+                        background: 'transparent',
+                        border: 'none',
+                        fontFamily: "'Jost', sans-serif",
+                        fontSize: '12px',
+                        color: 'rgba(255,255,255,0.6)',
+                        cursor: 'pointer',
+                        transition: 'all 200ms ease',
+                        textAlign: 'left',
+                        textTransform: 'capitalize'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.color = '#ff6b6b'
+                        e.currentTarget.style.backgroundColor = 'rgba(255,100,100,0.1)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.color = 'rgba(255,255,255,0.6)'
+                        e.currentTarget.style.backgroundColor = 'transparent'
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
-
-          {/* MOBILE MENU BUTTON */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden"
-            style={{ color: scrolled ? "#0A0A0A" : "white" }}
-          >
-            {mobileOpen ? (
-              <FiX size={24} />
-            ) : (
-              <FiMenu size={24} />
-            )}
-          </button>
         </div>
+
+        {/* MOBILE HAMBURGER (shown only on mobile) */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          style={{
+            display: 'none',
+            background: 'none',
+            border: 'none',
+            color: 'rgba(255,255,255,0.7)',
+            cursor: 'pointer',
+            marginLeft: '16px',
+            transition: 'color 300ms ease'
+          }}
+          className="mobile-menu-btn"
+          onMouseEnter={(e) => e.currentTarget.style.color = '#B8963E'}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
+        >
+          <FiMenu size={20} />
+        </button>
       </nav>
 
       {/* MOBILE MENU OVERLAY */}
       <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/40 z-40 md:hidden"
-              style={{ top: "36px" }}
-              onClick={() => setMobileOpen(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 md:hidden flex flex-col items-center justify-center gap-10"
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: -300 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -300 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              position: 'fixed',
+              top: '100px',
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: '#0A0A0A',
+              zIndex: 99998,
+              display: 'flex',
+              flexDirection: 'column',
+              padding: '40px 24px',
+              overflow: 'auto'
+            }}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setMobileMenuOpen(false)}
               style={{
-                backgroundColor: "#0A0A0A",
-                top: "36px",
+                position: 'absolute',
+                top: '16px',
+                right: '16px',
+                background: 'none',
+                border: 'none',
+                color: 'rgba(255,255,255,0.7)',
+                cursor: 'pointer',
+                fontSize: '24px'
               }}
             >
-              <button
-                onClick={() => setMobileOpen(false)}
-                className="absolute top-6 right-8"
-                style={{ color: "white" }}
-              >
-                <FiX size={24} />
-              </button>
-              {[...leftNav, ...rightNav].map((link) => (
+              <FiX size={24} />
+            </button>
+
+            {/* Mobile menu links */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', marginTop: '20px' }}>
+              {[
+                ...categoryLinks,
+                ...textLinks,
+                { label: 'My Account', path: '/account' },
+                { label: 'My Orders', path: '/account?tab=orders' },
+              ].map((link) => (
                 <Link
                   key={link.label}
-                  to={link.to}
-                  onClick={() => setMobileOpen(false)}
+                  to={link.path}
+                  onClick={() => setMobileMenuOpen(false)}
                   style={{
-                    fontFamily: "var(--font-heading)",
-                    fontSize: "clamp(32px, 5vw, 48px)",
-                    fontStyle: "italic",
-                    fontWeight: 300,
-                    color: "white",
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: '42px',
+                    fontStyle: 'italic',
+                    color: 'rgba(255,255,255,0.8)',
+                    textDecoration: 'none',
+                    transition: 'color 300ms ease'
                   }}
+                  onMouseEnter={(e) => e.target.style.color = '#B8963E'}
+                  onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.8)'}
                 >
                   {link.label}
                 </Link>
               ))}
-              {!user ? (
-                <Link
-                  to="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="btn-gold mt-10"
-                >
-                  LOGIN
-                </Link>
-              ) : (
+              {user && (
                 <button
-                  onClick={() => {
-                    handleLogout();
-                    setMobileOpen(false);
+                  onClick={handleLogout}
+                  style={{
+                    fontFamily: "'Cormorant Garamond', serif",
+                    fontSize: '42px',
+                    fontStyle: 'italic',
+                    color: 'rgba(255,100,100,0.8)',
+                    textDecoration: 'none',
+                    transition: 'color 300ms ease',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    textAlign: 'left',
+                    display: 'flex',
+                    gap: '12px',
+                    alignItems: 'center'
                   }}
-                  className="flex items-center gap-2 mt-10 text-red-500 font-500"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#ff6b6b'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'rgba(255,100,100,0.8)'
+                  }}
                 >
-                  <FiLogOut size={18} /> Logout
+                  <FiLogOut size={32} /> Logout
                 </button>
               )}
-            </motion.div>
-          </>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Mobile styles */}
+      <style>{`
+        @media (max-width: 768px) {
+          .navbar-left, .navbar-right {
+            display: none !important;
+          }
+          .mobile-menu-btn {
+            display: flex !important;
+          }
+        }
+      `}</style>
     </>
-  );
+  )
 }

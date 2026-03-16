@@ -5,7 +5,7 @@ import useAuthStore from './store/useAuthStore'
 import useCartStore from './store/useCartStore'
 import useWishlistStore from './store/useWishlistStore'
 import AnnouncementBar from './components/AnnouncementBar'
-import VerticalNav from './components/VerticalNav'
+import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import CartDrawer from './components/CartDrawer'
 import LoadingSpinner from './components/LoadingSpinner'
@@ -47,16 +47,14 @@ function App() {
   return (
     <>
       <AnnouncementBar />
-      <VerticalNav />
+      <Navbar />
       <CartDrawer />
       <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><LoadingSpinner /></div>}>
         <div style={{
-          paddingTop: '36px',
-          paddingLeft: 'max(80px, 5vw)',
+          paddingTop: '100px',
+          paddingLeft: 0,
           paddingBottom: isAdminRoute ? 0 : '0px'
-        }}
-        className="responsive-padding"
-        >
+        }}>
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<HomePage />} />
@@ -77,14 +75,6 @@ function App() {
           </AnimatePresence>
         </div>
       </Suspense>
-      <style>{`
-        @media (max-width: 768px) {
-          .responsive-padding {
-            padding-left: 0 !important;
-            padding-bottom: 80px !important;
-          }
-        }
-      `}</style>
       {showFooter && <Footer />}
     </>
   )
