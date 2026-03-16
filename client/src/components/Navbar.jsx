@@ -95,10 +95,10 @@ export default function Navbar() {
         className="fixed z-50 w-full transition-all duration-400 h-20"
         style={{
           top: "36px",
-          backgroundColor: scrolled ? "#F5F0E8" : "rgba(0, 0, 0, 0.3)",
+          backgroundColor: scrolled ? "rgba(240, 240, 240, 0.85)" : "rgba(0, 0, 0, 0.3)",
           color: scrolled ? "#0A0A0A" : "white",
-          borderBottom: scrolled ? "1px solid #E8E0D0" : "none",
-          backdropFilter: scrolled ? "blur(10px)" : "blur(8px)",
+          borderBottom: scrolled ? "1px solid rgba(184, 150, 62, 0.2)" : "none",
+          backdropFilter: "blur(10px)",
         }}
       >
         <div
