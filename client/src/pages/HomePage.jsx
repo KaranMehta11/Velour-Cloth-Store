@@ -178,14 +178,14 @@ export default function HomePage() {
           ].map(col => (
             <div key={col.title}
               className="relative overflow-hidden cursor-pointer group"
-              style={{height:col.h}}
+              style={{height: col.h}}
             >
               <img src={col.img} alt={col.title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
-              <div className="absolute inset-0 transition-all duration-350" style={{background:'linear-gradient(to bottom,rgba(0,0,0,0.55),transparent)}}/>
+              <div className="absolute inset-0 transition-all duration-350" style={{background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), transparent)'}}/>
               <div className="absolute bottom-8 left-7">
-                <p className="text-white text-xl font-light mb-1" style={{fontFamily:'var(--font-heading)'}}>{ col.title}</p>
-                <p className="text-white text-[10px] tracking-[0.2em] uppercase" style={{fontFamily:'var(--font-body)', opacity: 0.7}}>{ col.count}</p>
+                <p className="text-white text-xl font-light mb-1" style={{fontFamily:'var(--font-heading)'}}>{col.title}</p>
+                <p className="text-white text-[10px] tracking-[0.2em] uppercase" style={{fontFamily:'var(--font-body)', opacity: 0.7}}>{col.count}</p>
               </div>
               <p className="absolute bottom-8 right-7 text-gold-light text-[11px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-350" style={{ color: '#D4AF6A', fontFamily:'var(--font-body)' }}>
                 EXPLORE →
