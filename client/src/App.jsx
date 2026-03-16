@@ -4,11 +4,11 @@ import { AnimatePresence } from 'framer-motion'
 import useAuthStore from './store/useAuthStore'
 import useCartStore from './store/useCartStore'
 import useWishlistStore from './store/useWishlistStore'
-import Navbar from './components/Navbar'
+import AnnouncementBar from './components/AnnouncementBar'
+import VerticalNav from './components/VerticalNav'
 import Footer from './components/Footer'
 import CartDrawer from './components/CartDrawer'
 import LoadingSpinner from './components/LoadingSpinner'
-import LeftSidebar from './components/LeftSidebar'
 
 // Lazy-loaded pages
 const HomePage = lazy(() => import('./pages/HomePage'))
@@ -46,12 +46,19 @@ function App() {
 
   return (
     <>
-      {showNavbar && <Navbar />}
-      {showNavbar && <LeftSidebar />}
+      <AnnouncementBar />
+      <VerticalNav />
       <CartDrawer />
       <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><LoadingSpinner /></div>}>
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
+        <div style={{
+          paddingTop: '36px',
+          paddingLeft: 'max(80px, 5vw)',
+          paddingBottom: isAdminRoute ? 0 : '0px'
+        }}
+        className="responsive-padding"
+        >
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
             <Route path="/" element={<HomePage />} />
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/product/:id" element={<ProductPage />} />
@@ -66,9 +73,17 @@ function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
             </Route>
-          </Routes>
         </AnimatePresence>
+        </div>
       </Suspense>
+      <style>{`
+        @media (max-width: 768px) {
+          .responsive-padding {
+            padding-left: 0 !important;
+            padding-bottom: 80px !important;
+          }
+        }
+      `}</style>
       {showFooter && <Footer />}
     </>
   )

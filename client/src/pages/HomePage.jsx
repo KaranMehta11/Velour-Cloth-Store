@@ -185,7 +185,7 @@ export default function HomePage() {
             backgroundColor:'#2A2520'
           }}>
             <img
-              src="https://images.unsplash.com/photo-1594938298603-c8148c4b4dc5?w=400&q=80"
+              src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80"
               alt="product"
               style={{width:'100%', height:'100%', objectFit:'cover', opacity:0.85}}
             />
