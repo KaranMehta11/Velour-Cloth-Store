@@ -4,6 +4,11 @@ import { FiTrash2, FiShoppingBag } from 'react-icons/fi'
 import useCartStore from '../store/useCartStore'
 import useAuthStore from '../store/useAuthStore'
 
+const formatPrice = (price) => {
+  if (!price) return '₹0'
+  return '₹' + Math.round(price * 83).toLocaleString('en-IN')
+}
+
 export default function CartPage() {
   const { items, updateItem, removeItem, total } = useCartStore()
   const { user } = useAuthStore()
@@ -13,63 +18,135 @@ export default function CartPage() {
   const orderTotal = cartTotal + shipping + tax
 
   return (
-    <div className="bg-velour-bg min-h-screen pt-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="font-serif text-4xl mb-8">Shopping Cart</h1>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="pt-20 pb-20"
+      style={{ backgroundColor: 'var(--color-cream)' }}
+    >
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Header */}
+        <div className="mb-16">
+          <h1 className="font-garamond-serif text-5xl font-300 mb-2" style={{ color: 'var(--color-black)' }}>
+            YOUR CART
+          </h1>
+          <div className="h-px" style={{ backgroundColor: 'var(--color-border)' }} />
+        </div>
 
         {items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <FiShoppingBag size={56} className="text-gray-300 mb-4" />
-            <h2 className="font-serif text-2xl mb-2">Your cart is empty</h2>
-            <p className="text-velour-muted mb-8 max-w-sm">Looks like you haven't added anything to your cart yet. Explore our collections to find something you love.</p>
-            <Link to="/shop" className="btn-primary">Start Shopping</Link>
+          <div className="flex flex-col items-center justify-center py-32 text-center">
+            <FiShoppingBag size={80} strokeWidth={0.5} style={{ color: 'var(--color-border)', marginBottom: '32px' }} />
+            <h2 className="font-garamond-serif text-3xl font-300 mb-3" style={{ color: 'var(--color-black)' }}>
+              Your cart is empty
+            </h2>
+            <p className="text-sm font-sans font-200 mb-8 max-w-md" style={{ color: 'var(--color-muted)' }}>
+              Explore our luxury collections and discover pieces that speak to your refined taste.
+            </p>
+            <Link
+              to="/shop"
+              className="px-8 py-4 text-xs font-sans font-400 tracking-widest uppercase rounded-none transition-all duration-300"
+              style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-gold-light)'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-gold)'}
+            >
+              CONTINUE SHOPPING
+            </Link>
           </div>
         ) : (
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Items */}
-            <div className="lg:col-span-2 space-y-4">
-              {items.map(item => {
+          <div className="grid lg:grid-cols-3 gap-12">
+            {/* Cart Items Table */}
+            <div className="lg:col-span-2">
+              {/* Header */}
+              <div className="grid grid-cols-5 gap-4 mb-8 pb-4" style={{ borderBottom: '1px solid var(--color-border)' }}>
+                <span className="text-xs font-sans font-400 uppercase tracking-widest" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>PRODUCT</span>
+                <span className="text-xs font-sans font-400 uppercase tracking-widest" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>PRICE</span>
+                <span className="text-xs font-sans font-400 uppercase tracking-widest" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>QTY</span>
+                <span className="text-xs font-sans font-400 uppercase tracking-widest" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}>TOTAL</span>
+                <span className="text-xs font-sans font-400 uppercase tracking-widest" style={{ color: 'var(--color-black)', letterSpacing: '0.2em' }}></span>
+              </div>
+
+              {/* Items */}
+              {items.map((item, idx) => {
                 const product = item.product || {}
                 const price = product.discountPrice || product.price || item.price || 0
                 const imgUrl = product.images?.[0]?.url || 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400'
+                const itemTotal = formatPrice(price * item.qty)
+                const itemPrice = formatPrice(price)
+
                 return (
                   <motion.div
                     key={item._id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="flex gap-4 bg-white p-4"
+                    className="grid grid-cols-5 gap-4 py-6 items-center"
+                    style={{ borderBottom: idx !== items.length - 1 ? '1px solid var(--color-border)' : 'none' }}
                   >
-                    <Link to={`/product/${product._id}`}>
-                      <img src={imgUrl} alt={product.name} className="w-24 h-32 object-cover bg-gray-100 flex-shrink-0" />
+                    {/* Product */}
+                    <Link to={`/product/${product._id}`} className="flex gap-3 items-center col-span-1">
+                      <img
+                        src={imgUrl}
+                        alt={product.name}
+                        className="w-16 h-20 object-cover"
+                        style={{ backgroundColor: '#F0EBE3' }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-sans font-300 line-clamp-2 hover:text-gold transition-colors" style={{ color: 'var(--color-black)' }}>
+                          {product.name || item.name}
+                        </p>
+                        {item.size && (
+                          <p className="text-xs font-sans font-200 mt-1" style={{ color: 'var(--color-muted)' }}>
+                            Size: {item.size}
+                          </p>
+                        )}
+                        {item.color && (
+                          <p className="text-xs font-sans font-200" style={{ color: 'var(--color-muted)' }}>
+                            Color: {item.color}
+                          </p>
+                        )}
+                      </div>
                     </Link>
-                    <div className="flex-1 min-w-0">
-                      <Link to={`/product/${product._id}`} className="font-serif font-medium hover:text-velour-accent transition-colors line-clamp-2">
-                        {product.name || item.name}
-                      </Link>
-                      <div className="text-xs text-velour-muted mt-1 space-y-0.5">
-                        {item.size && <p>Size: {item.size}</p>}
-                        {item.color && <p>Color: {item.color}</p>}
-                      </div>
-                      <div className="flex items-center justify-between mt-4">
-                        <div className="flex items-center border border-gray-200">
-                          <button
-                            onClick={() => item.qty > 1 ? updateItem(item._id, item.qty - 1) : removeItem(item._id)}
-                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 text-sm"
-                          >-</button>
-                          <span className="w-10 text-center text-sm">{item.qty}</span>
-                          <button
-                            onClick={() => updateItem(item._id, item.qty + 1)}
-                            className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 text-sm"
-                          >+</button>
-                        </div>
-                        <span className="font-semibold">${(price * item.qty).toFixed(2)}</span>
-                      </div>
+
+                    {/* Unit Price */}
+                    <p className="text-sm font-sans font-300" style={{ color: 'var(--color-black)' }}>
+                      {itemPrice}
+                    </p>
+
+                    {/* Quantity Control */}
+                    <div className="flex items-center border rounded-none w-fit" style={{ borderColor: 'var(--color-border)' }}>
+                      <button
+                        onClick={() => item.qty > 1 ? updateItem(item._id, item.qty - 1) : removeItem(item._id)}
+                        className="w-8 h-8 flex items-center justify-center text-xs font-200"
+                        style={{ color: 'var(--color-black)', borderRight: '1px solid var(--color-border)' }}
+                      >
+                        −
+                      </button>
+                      <span className="w-10 text-center text-sm font-sans font-300" style={{ color: 'var(--color-black)' }}>
+                        {item.qty}
+                      </span>
+                      <button
+                        onClick={() => updateItem(item._id, item.qty + 1)}
+                        className="w-8 h-8 flex items-center justify-center text-xs font-200"
+                        style={{ color: 'var(--color-black)', borderLeft: '1px solid var(--color-border)' }}
+                      >
+                        +
+                      </button>
                     </div>
+
+                    {/* Total */}
+                    <p className="text-sm font-sans font-400" style={{ color: 'var(--color-black)' }}>
+                      {itemTotal}
+                    </p>
+
+                    {/* Delete */}
                     <button
                       onClick={() => removeItem(item._id)}
-                      className="text-gray-300 hover:text-red-400 transition-colors self-start"
+                      className="transition-all duration-300"
+                      style={{ color: 'var(--color-muted)' }}
+                      onMouseEnter={(e) => e.target.style.color = 'var(--color-gold)'}
+                      onMouseLeave={(e) => e.target.style.color = 'var(--color-muted)'}
                     >
-                      <FiTrash2 size={16} />
+                      <FiTrash2 size={16} strokeWidth={1.5} />
                     </button>
                   </motion.div>
                 )
@@ -78,51 +155,73 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <div>
-              <div className="bg-white p-6 sticky top-28">
-                <h2 className="font-serif text-xl mb-6">Order Summary</h2>
+              <div className="sticky top-28">
+                <h2 className="font-garamond-serif text-2xl font-300 mb-8" style={{ color: 'var(--color-black)' }}>
+                  ORDER SUMMARY
+                </h2>
 
-                <div className="space-y-3 text-sm mb-4">
-                  <div className="flex justify-between">
-                    <span className="text-velour-muted">Subtotal</span>
-                    <span>${cartTotal.toFixed(2)}</span>
+                <div className="space-y-4 mb-8">
+                  <div className="flex justify-between text-sm font-sans font-200" style={{ color: 'var(--color-muted)' }}>
+                    <span>SUBTOTAL</span>
+                    <span>{formatPrice(cartTotal)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-velour-muted">Shipping</span>
-                    <span>{shipping === 0 ? <span className="text-green-600">Free</span> : `$${shipping.toFixed(2)}`}</span>
+                  <div className="flex justify-between text-sm font-sans font-200" style={{ color: 'var(--color-muted)' }}>
+                    <span>SHIPPING</span>
+                    <span style={{ color: shipping === 0 ? 'var(--color-gold)' : 'var(--color-muted)' }}>
+                      {shipping === 0 ? 'FREE' : formatPrice(shipping)}
+                    </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-velour-muted">Tax (8%)</span>
-                    <span>${tax.toFixed(2)}</span>
+                  <div className="flex justify-between text-sm font-sans font-200" style={{ color: 'var(--color-muted)' }}>
+                    <span>TAX (8%)</span>
+                    <span>{formatPrice(tax)}</span>
                   </div>
                 </div>
 
-                <div className="flex justify-between font-semibold text-base border-t border-gray-100 pt-4 mb-6">
-                  <span>Total</span>
-                  <span>${orderTotal.toFixed(2)}</span>
+                <div className="flex justify-between pb-8 mb-8" style={{ borderBottom: '1px solid var(--color-border)' }}>
+                  <span className="font-sans font-400 text-sm" style={{ color: 'var(--color-black)' }}>TOTAL</span>
+                  <span className="font-sans font-400 text-lg" style={{ color: 'var(--color-gold)' }}>
+                    {formatPrice(orderTotal)}
+                  </span>
                 </div>
 
-                {/* Promo code */}
-                <div className="flex gap-2 mb-6">
+                {/* Promo Code */}
+                <div className="flex gap-3 mb-8">
                   <input
                     type="text"
-                    placeholder="Promo code"
-                    className="flex-1 border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:border-velour-text"
+                    placeholder="PROMO CODE"
+                    className="flex-1 bg-transparent py-3 px-0 text-sm font-sans font-300 focus:outline-none placeholder:text-gray-300 placeholder:text-xs"
+                    style={{
+                      borderBottom: '1px solid var(--color-border)',
+                      color: 'var(--color-black)',
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = 'var(--color-gold)'}
+                    onBlur={(e) => e.target.style.borderColor = 'var(--color-border)'}
                   />
-                  <button className="px-4 py-2 text-sm border border-gray-200 hover:bg-gray-50 transition-colors font-medium">
-                    Apply
+                  <button
+                    className="px-4 text-xs font-sans font-400 uppercase tracking-widest transition-all duration-300"
+                    style={{ color: 'var(--color-gold)' }}
+                    onMouseEnter={(e) => e.target.style.color = 'var(--color-gold-light)'}
+                    onMouseLeave={(e) => e.target.style.color = 'var(--color-gold)'}
+                  >
+                    APPLY
                   </button>
                 </div>
 
+                {/* Checkout Button */}
                 <Link
                   to={user ? '/checkout' : '/login'}
-                  className="block w-full bg-velour-accent text-white text-center py-4 font-medium hover:opacity-90 transition-opacity"
+                  className="block w-full py-4 text-center text-xs font-sans font-400 tracking-widest uppercase rounded-none transition-all duration-300 mb-4"
+                  style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-gold-light)'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-gold)'}
                 >
-                  {user ? 'Proceed to Checkout' : 'Login to Checkout'}
+                  {user ? 'PROCEED TO CHECKOUT' : 'LOGIN TO CHECKOUT'}
                 </Link>
 
+                {/* Free Shipping Info */}
                 {cartTotal < 100 && (
-                  <p className="text-xs text-velour-muted text-center mt-3">
-                    Add ${(100 - cartTotal).toFixed(2)} more for free shipping
+                  <p className="text-xs font-sans font-200 text-center" style={{ color: 'var(--color-muted)' }}>
+                    Add {formatPrice(100 - cartTotal)} for free shipping
                   </p>
                 )}
               </div>
@@ -130,6 +229,7 @@ export default function CartPage() {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }
+
