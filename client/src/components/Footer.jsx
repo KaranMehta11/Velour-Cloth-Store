@@ -14,23 +14,25 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-velour-dark text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+    <footer className="bg-luxury-black text-luxury-white" style={{ backgroundColor: 'var(--color-black)' }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16">
           {/* Col 1: Brand */}
           <div>
-            <span className="font-serif italic text-2xl font-semibold text-white mb-2 block">Velour</span>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Curated fashion for the modern individual. Timeless pieces, effortless style.
+            <span className="font-garamond-serif italic text-3xl font-300 text-luxury-white mb-4 block" style={{ letterSpacing: '0.2em', color: 'var(--color-white)' }}>
+              VELOUR
+            </span>
+            <p className="text-sm leading-relaxed mb-8 font-sans font-200" style={{ color: 'rgba(255, 252, 250, 0.6)' }}>
+              Curated luxury fashion for the modern individual. Timeless pieces, effortless style — crafted with intention, worn with purpose.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="text-gray-400 hover:text-velour-accent transition-colors duration-300">
-                <FiInstagram size={20} />
+            <div className="flex gap-6">
+              <a href="#" className="transition-colors duration-300 hover:text-luxury-gold" style={{ color: 'rgba(255, 252, 250, 0.7)' }}>
+                <FiInstagram size={18} strokeWidth={1.5} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-velour-accent transition-colors duration-300">
-                <FiTwitter size={20} />
+              <a href="#" className="transition-colors duration-300 hover:text-luxury-gold" style={{ color: 'rgba(255, 252, 250, 0.7)' }}>
+                <FiTwitter size={18} strokeWidth={1.5} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-velour-accent transition-colors duration-300">
+              <a href="#" className="transition-colors duration-300 hover:text-luxury-gold" style={{ color: 'rgba(255, 252, 250, 0.7)' }}>
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.994 7.002h-2.01c-.235 0-.497.31-.497.724v1.45h2.507l-.33 2.532h-2.177V18h-2.61v-6.292H11v-2.532h1.877V7.51c0-2.174 1.33-3.355 3.262-3.355.928 0 1.855.07 2.855.14v2.707z"/>
                 </svg>
@@ -40,11 +42,11 @@ export default function Footer() {
 
           {/* Col 2: Shop */}
           <div>
-            <h4 className="text-white font-semibold mb-4 text-sm tracking-widest uppercase">Shop</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
+            <h4 className="text-luxury-white font-sans font-400 mb-6 text-xs tracking-widest uppercase" style={{ color: 'var(--color-white)' }}>Shop</h4>
+            <ul className="space-y-3 text-xs font-sans font-200">
               {['Men', 'Women', 'Accessories', 'Sale', 'New Arrivals'].map(item => (
                 <li key={item}>
-                  <Link to={`/shop?category=${item}`} className="hover:text-velour-accent transition-colors duration-300">
+                  <Link to={`/shop?category=${item}`} className="transition-colors duration-300 hover:text-luxury-gold" style={{ color: 'rgba(255, 252, 250, 0.6)' }}>
                     {item}
                   </Link>
                 </li>
@@ -54,11 +56,11 @@ export default function Footer() {
 
           {/* Col 3: Help */}
           <div>
-            <h4 className="text-white font-semibold mb-4 text-sm tracking-widest uppercase">Help</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
+            <h4 className="text-luxury-white font-sans font-400 mb-6 text-xs tracking-widest uppercase" style={{ color: 'var(--color-white)' }}>Help</h4>
+            <ul className="space-y-3 text-xs font-sans font-200">
               {['FAQ', 'Shipping', 'Returns', 'Size Guide', 'Contact'].map(item => (
                 <li key={item}>
-                  <a href="#" className="hover:text-velour-accent transition-colors duration-300">{item}</a>
+                  <a href="#" className="transition-colors duration-300 hover:text-luxury-gold" style={{ color: 'rgba(255, 252, 250, 0.6)' }}>{item}</a>
                 </li>
               ))}
             </ul>
@@ -66,32 +68,49 @@ export default function Footer() {
 
           {/* Col 4: Newsletter */}
           <div>
-            <h4 className="text-white font-semibold mb-4 text-sm tracking-widest uppercase">Stay in the loop</h4>
-            <p className="text-gray-400 text-sm mb-4">Get first access to new drops, exclusive offers, and style inspiration.</p>
-            <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
+            <h4 className="text-luxury-white font-sans font-400 mb-2 text-xs tracking-widest uppercase" style={{ color: 'var(--color-gold)', letterSpacing: '0.2em' }}>
+              JOIN THE INNER CIRCLE
+            </h4>
+            <p className="text-xs font-sans font-200 mb-6" style={{ color: 'rgba(255, 252, 250, 0.6)' }}>
+              Exclusive drops, early access, and style notes — directly to you.
+            </p>
+            <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email address"
-                className="bg-white/10 border border-white/20 text-white placeholder-gray-500 px-4 py-2 text-sm w-full focus:outline-none focus:border-velour-accent transition-colors"
+                placeholder="Email address"
+                className="bg-transparent border-b text-luxury-white placeholder-gray-500 px-0 py-2 text-sm w-full focus:outline-none transition-colors font-200"
+                style={{ borderBottom: '1px solid var(--color-border)', color: 'var(--color-white)' }}
+                onFocus={(e) => e.target.style.borderBottom = '1px solid var(--color-gold)'}
+                onBlur={(e) => e.target.style.borderBottom = '1px solid var(--color-border)'}
               />
-              <button type="submit" className="bg-velour-accent text-white text-sm px-4 py-2 hover:opacity-90 transition-opacity font-medium">
-                Subscribe
+              <button 
+                type="submit" 
+                className="text-xs font-sans font-400 tracking-widest uppercase py-2.5 transition-all duration-300"
+                style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-gold-light)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-gold)'}
+              >
+                SUBSCRIBE
               </button>
             </form>
           </div>
         </div>
 
+        {/* Divider */}
+        <div className="border-t border-luxury-border my-12" style={{ borderColor: 'rgba(255, 252, 250, 0.1)' }} />
+
         {/* Bottom bar */}
-        <div className="border-t border-white/10 mt-12 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-          <p>© {new Date().getFullYear()} Velour. All rights reserved.</p>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-velour-accent transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-velour-accent transition-colors">Terms of Service</a>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-sans font-200" style={{ color: 'rgba(255, 252, 250, 0.5)' }}>
+          <p>© {new Date().getFullYear()} VELOUR. All rights reserved.</p>
+          <div className="flex gap-8">
+            <a href="#" className="transition-colors duration-300" style={{ color: 'rgba(255, 252, 250, 0.5)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-gold)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 252, 250, 0.5)'}>Privacy Policy</a>
+            <a href="#" className="transition-colors duration-300" style={{ color: 'rgba(255, 252, 250, 0.5)' }} onMouseEnter={(e) => e.target.style.color = 'var(--color-gold)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255, 252, 250, 0.5)'}>Terms of Service</a>
           </div>
         </div>
       </div>
     </footer>
   )
 }
+
