@@ -1,6 +1,14 @@
-export default function LoadingSpinner({ size = 'md', color = 'velour-accent' }) {
-  const sizes = { sm: 'w-5 h-5', md: 'w-10 h-10', lg: 'w-16 h-16' }
+export default function LoadingSpinner({ size = 'md', color = '#B8963E' }) {
+  const sizes = { sm: '20px', md: '40px', lg: '64px' }
+  const sizeValue = sizes[size] || sizes['md']
+  
   return (
-    <div className={`${sizes[size]} border-2 border-gray-200 border-t-velour-accent rounded-full animate-spin`} />
+    <div style={{
+      width: sizeValue, height: sizeValue,
+      border: '2px solid rgba(0,0,0,0.08)',
+      borderTopColor: color,
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite'
+    }} />
   )
 }

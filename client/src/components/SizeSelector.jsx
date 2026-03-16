@@ -1,25 +1,37 @@
 export default function SizeSelector({ sizes = [], selected, onSelect, outOfStock = [] }) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div style={{
+      display:'flex', flexWrap:'wrap', gap:'8px'
+    }}>
       {sizes.map(size => {
         const unavailable = outOfStock.includes(size)
+        const isSelected = selected === size
+        
         return (
           <button
             key={size}
             onClick={() => !unavailable && onSelect(size)}
             disabled={unavailable}
-            className={`px-4 py-2 text-sm font-sans font-400 border rounded-none transition-all duration-300 ${
-              unavailable
-                ? 'opacity-40 cursor-not-allowed'
-                : selected === size
-                  ? ''
-                  : 'hover:border-gold'
-            }`}
             style={{
-              fontFamily: 'var(--font-body)',
-              borderColor: selected === size ? 'var(--color-gold)' : unavailable ? 'var(--color-border)' : 'var(--color-border)',
-              backgroundColor: selected === size ? 'var(--color-gold)' : 'transparent',
-              color: selected === size ? 'var(--color-off-white)' : unavailable ? 'var(--color-muted)' : 'var(--color-black)',
+              padding:'10px 16px', fontSize:'12px', fontWeight:400,
+              fontFamily:"'Jost', sans-serif", letterSpacing:'0.1em',
+              border:'1px solid ' + (isSelected ? '#B8963E' : '#E8E0D0'),
+              backgroundColor:isSelected ? '#B8963E' : 'transparent',
+              color:isSelected ? '#FDFCFA' : unavailable ? '#C9B0A3' : '#0A0A0A',
+              cursor:unavailable ? 'not-allowed' : 'pointer',
+              opacity:unavailable ? 0.4 : 1,
+              transition:'all 300ms ease',
+              textTransform:'uppercase'
+            }}
+            onMouseEnter={e => {
+              if(!unavailable && !isSelected) {
+                e.currentTarget.style.borderColor = '#B8963E'
+              }
+            }}
+            onMouseLeave={e => {
+              if(!unavailable && !isSelected) {
+                e.currentTarget.style.borderColor = '#E8E0D0'
+              }
             }}
           >
             {size}
