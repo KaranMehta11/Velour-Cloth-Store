@@ -45,73 +45,55 @@ export default function ProductCard({ product }) {
   const originalPrice = product.discountPrice ? product.price : null
 
   return (
-    <Link to={`/product/${product._id}`} className="group block">
-      {/* Image container */}
+    <Link to={`/product/${product._id}`} className="cursor-pointer group">
+      {/* Image */}
       <div
-        className="relative overflow-hidden"
-        style={{ aspectRatio: '3 / 4', backgroundColor: '#F0EBE3' }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+        className="relative overflow-hidden bg-[#F0EBE3]"
+        style={{aspectRatio:'3/4'}}
       >
-        {/* Main image */}
-        <img
-          src={mainImage}
+        
+        <img src={product.images?.[0]?.url || product.image}
           alt={product.name}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-400 ${hovered ? 'opacity-0' : 'opacity-100'}`}
-        />
-        {/* Hover image */}
-        <img
-          src={hoverImage}
-          alt={product.name}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-400 ${hovered ? 'opacity-100' : 'opacity-0'}`}
-        />
+          className="w-full h-full object-cover absolute inset-0 transition-all duration-500 group-hover:scale-105 group-hover:opacity-0"
+          style={{opacity: product.images?.[1] ? undefined : 1}}/>
 
-        {/* Wishlist button - appears on hover */}
-        <motion.button
-          onClick={handleWishlist}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: hovered ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-          className="absolute top-4 right-4 z-10 w-10 h-10 bg-luxury-white flex items-center justify-center transition-all duration-300 hover:scale-110"
-          style={{ color: liked ? '#E63946' : 'var(--color-muted)' }}
-        >
-          <FiHeart size={18} fill={liked ? 'currentColor' : 'none'} strokeWidth={1.5} />
-        </motion.button>
+        {product.images?.[1] && (
+          <img src={product.images[1].url} alt={product.name}
+            className="w-full h-full object-cover absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"/>
+        )}
 
-        {/* Add to cart button slides up from bottom on hover */}
-        <motion.div
-          initial={{ y: '100%' }}
-          animate={{ y: hovered ? 0 : '100%' }}
-          transition={{ duration: 0.3 }}
-          className="absolute bottom-0 left-0 right-0 p-4"
+        {/* Wishlist */}
+        <button
+          onClick={e => { e.stopPropagation(); handleWishlist(e) }}
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-0"
+          style={{backgroundColor:'rgba(255,255,255,0.85)'}}
         >
-          <button
-            onClick={handleAddToCart}
-            className="w-full text-luxury-white text-xs font-400 tracking-widest uppercase py-3 transition-all duration-300"
-            style={{ backgroundColor: 'var(--color-gold)' }}
-            onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-gold-light)'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-gold)'}
-          >
-            ADD TO CART
-          </button>
-        </motion.div>
+          <FiHeart size={14}
+            style={{color: liked ? '#B8963E' : '#0A0A0A'}}
+            fill={liked ? 'currentColor' : 'none'}/>
+        </button>
+
+        {/* Add to cart */}
+        <button
+          onClick={e => { e.stopPropagation(); handleAddToCart(e) }}
+          className="btn-gold absolute bottom-0 left-0 right-0 w-full py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-350 text-[10px]"
+        >
+          ADD TO CART
+        </button>
       </div>
 
-      {/* Product info */}
-      <div className="pt-4 pb-2">
-        <p className="text-xs font-sans font-400 tracking-widest uppercase mb-2" style={{ color: 'var(--color-gold)', letterSpacing: '0.2em' }}>
-          {product.category}
-        </p>
-        <h3 className="font-garamond-serif text-lg font-400 line-clamp-2" style={{ color: 'var(--color-black)' }}>
-          {product.name}
-        </h3>
-        <div className="flex items-center gap-3 mt-3">
-          <span className="font-sans text-sm font-300" style={{ color: product.discountPrice ? 'var(--color-gold)' : 'var(--color-black)' }}>
-            {formatPrice(displayPrice)}
+      {/* Info */}
+      <div className="pt-4">
+        <p className="text-[10px] text-gold tracking-[0.2em] uppercase mb-1.5" style={{fontFamily:'var(--font-body)', color: '#B8963E'}}>{product.category}</p>
+        <p className="text-[17px] font-normal mb-1.5 text-black" style={{fontFamily:'var(--font-heading)'}}>{product.name}</p>
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-light">
+            ₹{(product.discountPrice || product.price)
+              ?.toLocaleString('en-IN')}
           </span>
-          {originalPrice && (
-            <span className="text-xs line-through" style={{ color: 'var(--color-muted)' }}>
-              {formatPrice(originalPrice)}
+          {product.discountPrice && (
+            <span className="text-xs text-muted line-through" style={{color: '#6B6560'}}>
+              ₹{product.price?.toLocaleString('en-IN')}
             </span>
           )}
         </div>
