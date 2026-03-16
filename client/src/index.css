@@ -40,6 +40,15 @@ a { text-decoration: none; color: inherit; }
 img { display: block; max-width: 100%; }
 button { cursor: pointer; font-family: 'Jost', sans-serif; }
 
+/* ── Hero background ── */
+.hero-bg {
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(184,150,62,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(184,150,62,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 80%, rgba(100,80,20,0.1) 0%, transparent 40%),
+    #0F0D0B;
+}
+
 /* ── Dotted grid texture overlay ── */
 .texture-overlay {
   position: relative;

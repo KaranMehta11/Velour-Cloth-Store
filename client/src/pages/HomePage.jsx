@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { FiChevronDown } from 'react-icons/fi'
 import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
 import LoadingSpinner from '../components/LoadingSpinner'
+import useScrollReveal from '../hooks/useScrollReveal'
 
 const testimonials = [
   {
@@ -29,6 +30,10 @@ export default function HomePage() {
   const [bestsellers, setBestsellers] = useState([])
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState('')
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const navigate = useNavigate()
+
+  useScrollReveal()
 
   useEffect(() => {
     document.title = 'Velour — Luxury Fashion for the Modern Individual'
@@ -44,110 +49,277 @@ export default function HomePage() {
       .finally(() => setLoading(false))
   }, [])
 
+  useEffect(() => {
+    const handleMouse = (e) => {
+      setMousePos({
+        x: (e.clientX / window.innerWidth - 0.5) * 20,
+        y: (e.clientY / window.innerHeight - 0.5) * 20
+      })
+    }
+    window.addEventListener('mousemove', handleMouse)
+    return () => window.removeEventListener('mousemove', handleMouse)
+  }, [])
+
   return (
     <main style={{ marginTop: '9rem' }}>
       {/* ══════════════════════════════════════════════════════════════
-          SECTION 1: HERO — TWO PANEL SPLIT
+          HERO SECTION — DARK BOLD WITH FLOATING CARDS
           ══════════════════════════════════════════════════════════════ */}
-      <section className="w-full h-screen flex">
-        {/* LEFT PANEL - 55% */}
-        <div
-          className="relative overflow-hidden"
-          style={{
-            width: '55%',
-            backgroundImage: "url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=1400&q=90')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
-          <div className="absolute inset-0" style={{
-            background: 'linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.45))'
-          }} />
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="absolute bottom-16 left-16 right-16"
-          >
-            <p className="text-white text-[10px] tracking-[0.35em] uppercase mb-5" style={{fontFamily:'var(--font-body)', opacity: 0.8}}>
-              SS 2024 COLLECTION
-            </p>
-            <h1 
-              className="text-white font-light leading-none mb-6"
-              style={{ fontFamily:'var(--font-heading)', fontSize:'clamp(48px,6vw,78px)' }}
-            >
-              The Art of<br />Refined<br />Dressing.
-            </h1>
-            <div className="mb-6" style={{ width: '40px', height: '1px', backgroundColor: 'rgba(255,255,255,0.5)' }} />
-            <p className="text-white text-[13px] font-extralight tracking-wide" style={{fontFamily:'var(--font-body)', opacity: 0.65}}>
-              Where heritage meets contemporary vision
-            </p>
-          </motion.div>
+      <section className="hero-bg texture-overlay relative w-full min-h-screen 
+                          flex items-center justify-center overflow-hidden">
+
+        {/* Background large faded VELOUR text */}
+        <div className="absolute inset-0 flex items-center justify-center 
+                        pointer-events-none z-[1]" style={{overflow:'hidden'}}>
+          <p style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(120px, 20vw, 280px)',
+            fontWeight: 600,
+            color: 'rgba(184,150,62,0.04)',
+            letterSpacing: '0.2em',
+            userSelect: 'none',
+            whiteSpace: 'nowrap'
+          }}>VELOUR</p>
         </div>
 
-        {/* RIGHT PANEL - 45% */}
-        <div className="hidden md:flex flex-col items-center justify-center px-16 text-center" style={{ width: '45%', backgroundColor: '#F5F0E8' }}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-sm"
-          >
-            <p 
-              className="text-lg leading-relaxed mb-12 italic"
-              style={{ fontFamily:'var(--font-italic)', color: '#6B6560', lineHeight: 1.75 }}
-            >
-              "Each piece in our collection is a conversation between tradition and modernity — crafted for those who appreciate the extraordinary."
-            </p>
+        {/* CENTER CONTENT */}
+        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+          
+          {/* Tag */}
+          <div className="inline-flex items-center gap-3 mb-8">
+            <div style={{width:'30px', height:'1px', backgroundColor:'#B8963E'}}/>
+            <span style={{
+              color: '#B8963E',
+              fontFamily: "'Jost', sans-serif",
+              fontSize: '11px',
+              fontWeight: 500,
+              letterSpacing: '0.35em',
+              textTransform: 'uppercase'
+            }}>NEW COLLECTION SS 2024</span>
+            <div style={{width:'30px', height:'1px', backgroundColor:'#B8963E'}}/>
+          </div>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col gap-3 mb-16 w-full">
-              <button
-                className="btn-gold w-full"
-                onClick={() => {}}
-              >
-                EXPLORE COLLECTION
-              </button>
-              <button
-                className="btn-outline w-full"
-              >
-                VIEW LOOKBOOK
-              </button>
-            </div>
+          {/* MASSIVE HEADING */}
+          <h1 style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontSize: 'clamp(64px, 11vw, 148px)',
+            fontWeight: 500,
+            color: '#FDFCFA',
+            lineHeight: 0.95,
+            letterSpacing: '-0.01em',
+            textTransform: 'uppercase',
+            marginBottom: '32px'
+          }}>
+            DRESS<br/>
+            <span style={{
+              fontStyle: 'italic',
+              fontWeight: 300,
+              color: '#B8963E'
+            }}>THE</span>
+            {' '}STORY.
+          </h1>
 
-            {/* Stats */}
-            <div className="flex gap-10 border-t border-border pt-10 w-full justify-center" style={{ borderColor: '#E8E0D0' }}>
-              {[
-                {num:'200+', label:'Curated Pieces'},
-                {num:'48hr', label:'Express Delivery'},
-                {num:'30 Days', label:'Free Returns'}
-              ].map(s => (
-                <div key={s.num} className="text-center">
-                  <p className="text-2xl mb-1" style={{fontFamily:'var(--font-heading)'}}>{ s.num}</p>
-                  <p className="text-[10px] uppercase tracking-[0.15em] text-muted" style={{fontFamily:'var(--font-body)', color: '#6B6560'}}>{s.label}</p>
-                </div>
-              ))}
+          {/* Subtext */}
+          <p style={{
+            fontFamily: "'Jost', sans-serif",
+            fontSize: '14px',
+            fontWeight: 200,
+            color: 'rgba(255,255,255,0.5)',
+            letterSpacing: '0.08em',
+            marginBottom: '48px',
+            maxWidth: '420px',
+            margin: '0 auto 48px'
+          }}>
+            Curated luxury fashion for the modern individual.
+            Timeless pieces, effortless style.
+          </p>
+
+          {/* Buttons */}
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <button className="btn-gold-pill"
+              onClick={() => navigate('/shop')}>
+              Shop Collection
+            </button>
+            <button className="btn-white-pill"
+              onClick={() => navigate('/shop?category=new')}>
+              View Lookbook
+            </button>
+          </div>
+
+          {/* Stats row */}
+          <div className="flex items-center justify-center gap-12 mt-16"
+               style={{borderTop:'1px solid rgba(255,255,255,0.08)', paddingTop:'32px'}}>
+            {[
+              {num:'200+', label:'Curated Pieces'},
+              {num:'₹2,499', label:'Starting From'},
+              {num:'48hr', label:'Express Delivery'}
+            ].map(s => (
+              <div key={s.num} className="text-center">
+                <p style={{
+                  fontFamily:"'Cormorant Garamond', serif",
+                  fontSize:'28px', color:'#FDFCFA', marginBottom:'4px'
+                }}>{s.num}</p>
+                <p style={{
+                  fontFamily:"'Jost', sans-serif",
+                  fontSize:'10px', color:'rgba(255,255,255,0.35)',
+                  letterSpacing:'0.2em', textTransform:'uppercase'
+                }}>{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* FLOATING CARD — Top Left (product card) */}
+        <div className="float-card float-anim absolute hidden lg:block"
+             style={{
+               '--rot': '-6deg',
+               top: '18%', left: '6%',
+               width: '180px', padding: '12px',
+               transform: `rotate(-6deg) translate(${mousePos.x * 0.3}px, ${mousePos.y * 0.3}px)`,
+               transition: 'transform 0.1s ease',
+               zIndex: 8
+             }}>
+          <div style={{
+            width:'100%', aspectRatio:'3/4',
+            borderRadius:'8px', overflow:'hidden', marginBottom:'10px',
+            backgroundColor:'#2A2520'
+          }}>
+            <img
+              src="https://images.unsplash.com/photo-1594938298603-c8148c4b4dc5?w=400&q=80"
+              alt="product"
+              style={{width:'100%', height:'100%', objectFit:'cover', opacity:0.85}}
+            />
+          </div>
+          <p style={{
+            color:'rgba(255,255,255,0.9)', fontSize:'12px',
+            fontFamily:"'Cormorant Garamond', serif"
+          }}>Silk Evening Gown</p>
+          <p style={{
+            color:'#B8963E', fontSize:'11px',
+            fontFamily:"'Jost', sans-serif", fontWeight:300
+          }}>₹12,499</p>
+        </div>
+
+        {/* FLOATING CARD — Top Right (product card) */}
+        <div className="float-card float-anim-delay absolute hidden lg:block"
+             style={{
+               '--rot': '5deg',
+               top: '12%', right: '5%',
+               width: '160px', padding: '12px',
+               transform: `rotate(5deg) translate(${mousePos.x * -0.2}px, ${mousePos.y * 0.2}px)`,
+               transition: 'transform 0.1s ease',
+               zIndex: 8
+             }}>
+          <div style={{
+            width:'100%', aspectRatio:'3/4',
+            borderRadius:'8px', overflow:'hidden', marginBottom:'10px',
+            backgroundColor:'#2A2520'
+          }}>
+            <img
+              src="https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=400&q=80"
+              alt="product"
+              style={{width:'100%', height:'100%', objectFit:'cover', opacity:0.85}}
+            />
+          </div>
+          <p style={{
+            color:'rgba(255,255,255,0.9)', fontSize:'12px',
+            fontFamily:"'Cormorant Garamond', serif"
+          }}>Oxford Tailored Suit</p>
+          <p style={{
+            color:'#B8963E', fontSize:'11px',
+            fontFamily:"'Jost', sans-serif", fontWeight:300
+          }}>₹18,999</p>
+        </div>
+
+        {/* FLOATING CARD — Bottom Left (new arrival badge) */}
+        <div className="float-card float-anim-slow absolute hidden lg:block"
+             style={{
+               bottom: '20%', left: '8%',
+               padding: '16px 20px',
+               transform: `rotate(-3deg) translate(${mousePos.x * 0.4}px, ${mousePos.y * -0.3}px)`,
+               transition: 'transform 0.1s ease',
+               zIndex: 8, minWidth:'160px'
+             }}>
+          <div className="flex items-center gap-3">
+            <div style={{
+              width:'36px', height:'36px', borderRadius:'50%',
+              backgroundColor:'rgba(184,150,62,0.15)',
+              display:'flex', alignItems:'center', justifyContent:'center'
+            }}>
+              <span style={{fontSize:'16px'}}>✨</span>
             </div>
-          </motion.div>
+            <div>
+              <p style={{
+                color:'rgba(255,255,255,0.5)', fontSize:'9px',
+                fontFamily:"'Jost', sans-serif", letterSpacing:'0.2em',
+                textTransform:'uppercase'
+              }}>Just Dropped</p>
+              <p style={{
+                color:'#FDFCFA', fontSize:'13px',
+                fontFamily:"'Cormorant Garamond', serif"
+              }}>New Arrivals</p>
+            </div>
+          </div>
+        </div>
+
+        {/* FLOATING CARD — Bottom Right (free shipping) */}
+        <div className="float-card float-anim absolute hidden lg:block"
+             style={{
+               bottom: '22%', right: '7%',
+               padding: '14px 18px',
+               transform: `rotate(4deg) translate(${mousePos.x * -0.3}px, ${mousePos.y * -0.2}px)`,
+               transition: 'transform 0.1s ease',
+               zIndex: 8, minWidth:'170px'
+             }}>
+          <div className="flex items-center gap-3">
+            <div style={{
+              width:'32px', height:'32px', borderRadius:'50%',
+              backgroundColor:'rgba(184,150,62,0.15)',
+              display:'flex', alignItems:'center', justifyContent:'center'
+            }}>
+              <span style={{fontSize:'14px'}}>🚚</span>
+            </div>
+            <div>
+              <p style={{
+                color:'#FDFCFA', fontSize:'12px',
+                fontFamily:"'Jost', sans-serif", fontWeight:400
+              }}>Free Shipping</p>
+              <p style={{
+                color:'rgba(255,255,255,0.4)', fontSize:'10px',
+                fontFamily:"'Jost', sans-serif"
+              }}>On orders ₹4,999+</p>
+            </div>
+          </div>
+        </div>
+
+        {/* FLOATING decorative gold star shapes */}
+        <div className="absolute hidden lg:block float-anim-slow"
+             style={{top:'35%', right:'18%', fontSize:'24px', zIndex:7,
+                     transform:`translate(${mousePos.x * -0.1}px, ${mousePos.y * 0.1}px)`}}>
+          ✦
+        </div>
+        <div className="absolute hidden lg:block float-anim"
+             style={{bottom:'35%', left:'20%', fontSize:'16px', zIndex:7,
+                     color:'rgba(184,150,62,0.5)',
+                     transform:`translate(${mousePos.x * 0.15}px, ${mousePos.y * -0.1}px)`}}>
+          ✦
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10
+                        flex flex-col items-center gap-2">
+          <span style={{
+            color:'rgba(255,255,255,0.3)', fontSize:'9px',
+            fontFamily:"'Jost', sans-serif", letterSpacing:'0.3em',
+            textTransform:'uppercase'
+          }}>Scroll</span>
+          <div style={{
+            width:'1px', height:'40px',
+            background:'linear-gradient(to bottom, rgba(184,150,62,0.6), transparent)',
+            animation:'floatY 2s ease-in-out infinite'
+          }}/>
         </div>
       </section>
-
-      {/* ANNOUNCEMENT STRIP */}
-      <div className="h-11 flex items-center overflow-hidden" style={{ backgroundColor: '#B8963E' }}>
-        <div className="marquee-track">
-          {[1,2].map(i => (
-            <span key={i} className="whitespace-nowrap pr-16" style={{
-              fontFamily:'var(--font-body)',
-              fontSize: '11px',
-              letterSpacing: '0.2em',
-              color: '#FDFCFA',
-              fontWeight: 'normal'
-            }}>
-              NEW ARRIVALS EVERY FRIDAY &nbsp;✦&nbsp; FREE SHIPPING ABOVE ₹4,999 &nbsp;✦&nbsp; SUSTAINABLE FABRICS &nbsp;✦&nbsp; EXCLUSIVE DROPS &nbsp;✦&nbsp; EASY 30-DAY RETURNS &nbsp;✦&nbsp; HANDCRAFTED IN INDIA &nbsp;✦&nbsp;
-            </span>
-          ))}
-        </div>
-      </div>
 
       {/* COLLECTIONS SECTION */}
       <section className="py-16 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#FDFCFA' }}>
