@@ -29,7 +29,7 @@ export default function LoginPage() {
   useScrollReveal()
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2" style={{ backgroundColor: 'var(--color-cream)' }}>
+    <div className="min-h-screen grid md:grid-cols-2" style={{ backgroundColor: '#0F0D0B' }}>
       {/* Left Panel: Image + Quote */}
       <div className="hidden md:flex md:h-screen flex-col items-center justify-center relative overflow-hidden">
         <img
@@ -51,7 +51,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel: Form */}
-      <div className="flex h-screen items-center justify-center px-16" style={{ backgroundColor: 'var(--color-cream)' }}>
+      <div className="flex h-screen items-center justify-center px-16" style={{ backgroundColor: '#0F0D0B' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -59,18 +59,18 @@ export default function LoginPage() {
           className="w-full max-w-sm"
         >
           {/* Logo */}
-          <h1 className="text-center mb-12" style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontSize: '28px', color: 'var(--color-black)', letterSpacing: '0.35em' }}>VELOUR</h1>
+          <h1 className="text-center mb-12" style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontSize: '28px', color: '#FDFCFA', letterSpacing: '0.35em' }}>VELOUR</h1>
 
           {/* Header */}
           <div className="mb-12">
-            <p className="text-sm font-200 tracking-wide" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-muted)' }}>Sign in to your Velour account</p>
+            <p className="text-sm font-200 tracking-wide" style={{ fontFamily: 'var(--font-body)', color: 'rgba(255,255,255,0.35)' }}>Sign in to your Velour account</p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6 mb-12">
             {/* Email */}
             <div>
-              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'email' ? 'var(--color-gold)' : 'var(--color-muted)', letterSpacing: '0.15em' }}>
+              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'email' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.15em' }}>
                 EMAIL
               </label>
               <input
@@ -82,8 +82,8 @@ export default function LoginPage() {
                 required
                 className="w-full bg-transparent pb-3 pt-1 text-sm font-300 focus:outline-none transition-all" style={{
                   fontFamily: 'var(--font-body)',
-                  borderBottom: focusedField === 'email' ? '1px solid var(--color-gold)' : '1px solid var(--color-border)',
-                  color: 'var(--color-black)',
+                  borderBottom: focusedField === 'email' ? '1px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
+                  color: '#FDFCFA',
                 }}
                 placeholder="you@example.com"
               />
@@ -91,7 +91,7 @@ export default function LoginPage() {
 
             {/* Password */}
             <div>
-              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'password' ? 'var(--color-gold)' : 'var(--color-muted)', letterSpacing: '0.15em' }}>
+              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'password' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.15em' }}>
                 PASSWORD
               </label>
               <input
@@ -104,8 +104,8 @@ export default function LoginPage() {
                 className="w-full bg-transparent pb-3 pt-1 text-sm font-300 focus:outline-none transition-all"
                 style={{
                   fontFamily: 'var(--font-body)',
-                  borderBottom: focusedField === 'password' ? '1px solid var(--color-gold)' : '1px solid var(--color-border)',
-                  color: 'var(--color-black)',
+                  borderBottom: focusedField === 'password' ? '1px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
+                  color: '#FDFCFA',
                 }}
                 placeholder="••••••••"
               />
@@ -113,7 +113,7 @@ export default function LoginPage() {
 
             {/* Forgot Password Link */}
             <div className="text-right pt-2">
-              <Link to="#" className="text-11px font-300 tracking-wide transition-colors" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-gold)' }}>
+              <Link to="#" className="text-11px font-300 tracking-wide transition-colors" style={{ fontFamily: 'var(--font-body)', color: '#B8963E' }}>
                 FORGOT PASSWORD?
               </Link>
             </div>
@@ -122,10 +122,15 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-gold w-full mt-8"
+              className="w-full mt-8 py-3 text-11px font-400 tracking-widest uppercase rounded-none transition-all duration-300"
               style={{
+                fontFamily: 'var(--font-body)',
+                backgroundColor: '#B8963E',
+                color: '#0F0D0B',
                 opacity: loading ? 0.6 : 1,
               }}
+              onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = '#D4AF6A')}
+              onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = '#B8963E')}
             >
               {loading ? 'SIGNING IN...' : 'SIGN IN'}
             </button>
@@ -133,9 +138,9 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="relative mb-8 flex items-center">
-            <div className="flex-grow h-px" style={{ backgroundColor: 'var(--color-border)' }} />
-            <span className="px-3 text-11px font-200" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-muted)' }}>OR</span>
-            <div className="flex-grow h-px" style={{ backgroundColor: 'var(--color-border)' }} />
+            <div className="flex-grow h-px" style={{ backgroundColor: 'rgba(184,150,62,0.2)' }} />
+            <span className="px-3 text-11px font-200" style={{ fontFamily: 'var(--font-body)', color: 'rgba(255,255,255,0.35)' }}>OR</span>
+            <div className="flex-grow h-px" style={{ backgroundColor: 'rgba(184,150,62,0.2)' }} />
           </div>
 
           {/* Google Button */}
@@ -144,15 +149,15 @@ export default function LoginPage() {
             className="w-full py-4 rounded-none border border-2 font-400 text-11px tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-2"
             style={{
               fontFamily: 'var(--font-body)',
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-black)',
+              borderColor: 'rgba(184,150,62,0.2)',
+              color: '#FDFCFA',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'var(--color-gold)'
-              e.currentTarget.style.backgroundColor = 'var(--color-cream)'
+              e.currentTarget.style.borderColor = '#B8963E'
+              e.currentTarget.style.backgroundColor = 'rgba(184,150,62,0.08)'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'var(--color-border)'
+              e.currentTarget.style.borderColor = 'rgba(184,150,62,0.2)'
               e.currentTarget.style.backgroundColor = 'transparent'
             }}
           >
@@ -166,9 +171,9 @@ export default function LoginPage() {
           </button>
 
           {/* Register Link */}
-          <p className="text-sm text-center font-200 mt-10" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-muted)' }}>
+          <p className="text-sm text-center font-200 mt-10" style={{ fontFamily: 'var(--font-body)', color: 'rgba(255,255,255,0.35)' }}>
             Don't have an account?{' '}
-            <Link to="/register" className="font-400 transition-colors" style={{ color: 'var(--color-gold)' }}>
+            <Link to="/register" className="font-400 transition-colors" style={{ color: '#B8963E' }}>
               REGISTER
             </Link>
           </p>
