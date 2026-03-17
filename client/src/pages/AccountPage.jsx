@@ -205,31 +205,31 @@ export default function AccountPage() {
                         >
                           <div className="grid md:grid-cols-5 gap-6 items-center pb-6" style={{ borderBottom: '1px solid rgba(184,150,62,0.15)' }}>
                             <div>
-                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'var(--color-muted)', letterSpacing: '0.1em' }}>
+                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
                                 ORDER ID
                               </p>
-                              <p className="font-mono text-sm" style={{ color: 'var(--color-black)' }}>
+                              <p className="font-mono text-sm" style={{ color: '#FDFCFA' }}>
                                 #{order._id.slice(-8).toUpperCase()}
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'var(--color-muted)', letterSpacing: '0.1em' }}>
+                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
                                 DATE
                               </p>
-                              <p className="text-sm" style={{ color: 'var(--color-black)' }}>
+                              <p className="text-sm" style={{ color: '#FDFCFA' }}>
                                 {new Date(order.createdAt).toLocaleDateString()}
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'var(--color-muted)', letterSpacing: '0.1em' }}>
+                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
                                 TOTAL
                               </p>
-                              <p className="text-sm font-sans font-400" style={{ color: 'var(--color-black)' }}>
+                              <p className="text-sm font-sans font-400" style={{ color: '#B8963E' }}>
                                 {formatPrice(order.totalPrice)}
                               </p>
                             </div>
                             <div>
-                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'var(--color-muted)', letterSpacing: '0.1em' }}>
+                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
                                 STATUS
                               </p>
                               <Badge status={order.status} />
@@ -238,7 +238,7 @@ export default function AccountPage() {
                               <button
                                 onClick={() => setSelectedOrder(selectedOrder?._id === order._id ? null : order)}
                                 className="text-xs font-sans font-400 tracking-widest uppercase transition-all duration-300 hover-underline"
-                                style={{ color: 'var(--color-gold)' }}
+                                style={{ color: '#B8963E' }}
                               >
                                 {selectedOrder?._id === order._id ? 'CLOSE' : 'VIEW DETAILS'}
                               </button>
@@ -253,12 +253,12 @@ export default function AccountPage() {
                               transition={{ duration: 0.3 }}
                               className="mt-6"
                             >
-                              <h3 className="font-garamond-serif text-lg font-300 mb-6" style={{ color: 'var(--color-black)' }}>
+                              <h3 className="font-garamond-serif text-lg font-300 mb-6" style={{ color: '#FDFCFA' }}>
                                 Order Items
                               </h3>
                               <div className="space-y-4 mb-6">
                                 {selectedOrder.orderItems?.map((item, i) => (
-                                  <div key={i} className="flex gap-4 pb-4" style={{ borderBottom: i !== (selectedOrder.orderItems?.length - 1) ? '1px solid var(--color-border)' : 'none' }}>
+                                  <div key={i} className="flex gap-4 pb-4" style={{ borderBottom: i !== (selectedOrder.orderItems?.length - 1) ? '1px solid rgba(184,150,62,0.15)' : 'none' }}>
                                     <img
                                       src={item.image}
                                       alt={item.name}
@@ -266,15 +266,15 @@ export default function AccountPage() {
                                       style={{ backgroundColor: '#F0EBE3' }}
                                     />
                                     <div className="flex-1">
-                                      <p className="text-sm font-sans font-300" style={{ color: 'var(--color-black)' }}>
+                                      <p className="text-sm font-sans font-300" style={{ color: '#FDFCFA' }}>
                                         {item.name}
                                       </p>
-                                      <p className="text-xs font-sans font-200 mt-1" style={{ color: 'var(--color-muted)' }}>
+                                      <p className="text-xs font-sans font-200 mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
                                         Qty: {item.qty}{item.size ? ` · ${item.size}` : ''}
                                       </p>
                                     </div>
                                     <div className="text-right">
-                                      <p className="text-sm font-sans font-400" style={{ color: 'var(--color-black)' }}>
+                                      <p className="text-sm font-sans font-400" style={{ color: '#B8963E' }}>
                                         {formatPrice(item.price)}
                                       </p>
                                     </div>
@@ -283,11 +283,11 @@ export default function AccountPage() {
                               </div>
 
                               {/* Shipping Address */}
-                              <div className="pt-6" style={{ borderTop: '1px solid var(--color-border)' }}>
-                                <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'var(--color-muted)', letterSpacing: '0.1em' }}>
+                              <div className="pt-6" style={{ borderTop: '1px solid rgba(184,150,62,0.15)' }}>
+                                <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
                                   SHIPPING ADDRESS
                                 </p>
-                                <p className="text-sm font-sans font-300" style={{ color: 'var(--color-black)' }}>
+                                <p className="text-sm font-sans font-300" style={{ color: '#FDFCFA' }}>
                                   {selectedOrder.shippingAddress?.address}, {selectedOrder.shippingAddress?.city}
                                 </p>
                               </div>

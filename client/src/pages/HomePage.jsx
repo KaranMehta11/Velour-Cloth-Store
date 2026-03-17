@@ -508,7 +508,7 @@ export default function HomePage() {
                 transition={{ delay: i * 0.1 }}
               >
                 {/* Quote mark */}
-                <p className="font-garamond-serif text-6xl leading-none mb-4" style={{ color: 'var(--color-gold)', opacity: 0.3 }}>
+                <p className="font-garamond-serif text-6xl leading-none mb-4" style={{ color: '#B8963E', opacity: 0.3 }}>
                   "
                 </p>
                 {/* Quote */}
@@ -519,7 +519,7 @@ export default function HomePage() {
                   {t.quote}
                 </p>
                 {/* Line */}
-                <div className="w-8 h-px mb-6" style={{ backgroundColor: 'var(--color-gold)' }} />
+                <div className="w-8 h-px mb-6" style={{ backgroundColor: '#B8963E' }} />
                 {/* Name */}
                 <p className="text-xs font-sans font-400 tracking-widest uppercase mb-1" style={{ color: '#FDFCFA', letterSpacing: '0.2em' }}>
                   {t.name}
@@ -530,7 +530,7 @@ export default function HomePage() {
                 {/* Stars */}
                 <div className="flex gap-1">
                   {[...Array(t.rating)].map((_, j) => (
-                    <span key={j} style={{ color: 'var(--color-gold)' }}>★</span>
+                    <span key={j} style={{ color: '#B8963E' }}>★</span>
                   ))}
                 </div>
               </motion.div>
@@ -562,14 +562,14 @@ export default function HomePage() {
       {/* ══════════════════════════════════════════════════════════════
           SECTION 10: NEWSLETTER
           ══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32 flex items-center justify-center" style={{ backgroundColor: 'var(--color-black)' }}>
+      <section className="py-24 md:py-32 flex items-center justify-center" style={{ backgroundColor: '#1C1C1C' }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="max-w-2xl mx-auto px-6 text-center"
         >
-          <p className="text-xs font-sans font-400 tracking-widest uppercase mb-4" style={{ color: 'var(--color-gold)', letterSpacing: '0.3em' }}>
+          <p className="text-xs font-sans font-400 tracking-widest uppercase mb-4" style={{ color: '#B8963E', letterSpacing: '0.3em' }}>
             JOIN THE INNER CIRCLE
           </p>
           <h2 
@@ -590,16 +590,16 @@ export default function HomePage() {
               onChange={e => setEmail(e.target.value)}
               placeholder="Email address"
               className="flex-1 bg-transparent border-b text-luxury-white placeholder-gray-500 px-0 py-3 text-sm focus:outline-none transition-colors font-200"
-              style={{ borderBottom: '1px solid var(--color-border)', color: 'var(--color-white)' }}
-              onFocus={(e) => e.target.style.borderBottom = '1px solid var(--color-gold)'}
-              onBlur={(e) => e.target.style.borderBottom = '1px solid var(--color-border)'}
+              style={{ borderBottom: '1px solid rgba(184,150,62,0.2)', color: '#FDFCFA' }}
+              onFocus={(e) => e.target.style.borderBottom = '1px solid #B8963E'}
+              onBlur={(e) => e.target.style.borderBottom = '1px solid rgba(184,150,62,0.2)'}
             />
             <button 
               type="submit" 
               className="px-6 py-3 text-xs font-sans font-400 tracking-widest uppercase transition-all duration-300 whitespace-nowrap"
-              style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-gold-light)'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-gold)'}
+              style={{ backgroundColor: '#B8963E', color: '#0F0D0B' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#D4AF6A'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#B8963E'}
             >
               SUBSCRIBE
             </button>

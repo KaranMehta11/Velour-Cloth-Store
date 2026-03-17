@@ -260,11 +260,11 @@ export default function ShopPage() {
               exit={{ y: '100%' }}
               transition={{ type: 'tween' }}
               className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl p-8 max-h-[85vh] overflow-y-auto"
-              style={{ backgroundColor: 'var(--color-cream)' }}
+              style={{ backgroundColor: '#0F0D0B' }}
             >
               <div className="flex justify-between items-center mb-8">
-                <h2 className="font-garamond-serif text-2xl font-300" style={{ color: 'var(--color-black)' }}>Filters</h2>
-                <button onClick={() => setMobileFilter(false)} style={{ color: 'var(--color-black)' }}>
+                <h2 className="font-garamond-serif text-2xl font-300" style={{ color: '#FDFCFA' }}>Filters</h2>
+                <button onClick={() => setMobileFilter(false)} style={{ color: '#FDFCFA' }}>
                   <FiX size={24} strokeWidth={1.5} />
                 </button>
               </div>
