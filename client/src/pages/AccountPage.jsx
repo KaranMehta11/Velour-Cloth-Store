@@ -263,7 +263,7 @@ export default function AccountPage() {
                                       src={item.image}
                                       alt={item.name}
                                       className="w-16 h-20 object-cover"
-                                      style={{ backgroundColor: '#F0EBE3' }}
+                                      style={{ backgroundColor: '#1A1612' }}
                                     />
                                     <div className="flex-1">
                                       <p className="text-sm font-sans font-300" style={{ color: '#FDFCFA' }}>
