@@ -72,7 +72,7 @@ export default function ShopPage() {
     <div className="space-y-10">
       {/* Category */}
       <div>
-        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-gold)', borderColor: 'var(--color-border)', letterSpacing: '0.25em' }}>Category</h3>
+        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: '#B8963E', borderColor: 'rgba(184,150,62,0.15)', letterSpacing: '0.25em' }}>Category</h3>
         <div className="space-y-3">
           {CATEGORIES.map(cat => (
             <label key={cat} className="flex items-center gap-3 cursor-pointer group">
@@ -81,9 +81,9 @@ export default function ShopPage() {
                 name="category"
                 checked={category === cat}
                 onChange={() => setParam('category', cat === 'All' ? '' : cat)}
-                style={{ accentColor: 'var(--color-gold)' }}
+                style={{ accentColor: '#B8963E' }}
               />
-              <span className={`text-sm font-sans font-200 transition-colors ${category === cat ? 'font-400' : ''}`} style={{ color: category === cat ? 'var(--color-black)' : 'var(--color-muted)' }}>
+              <span className={`text-sm font-sans font-200 transition-colors ${category === cat ? 'font-400' : ''}`} style={{ color: category === cat ? '#B8963E' : 'rgba(255,255,255,0.5)' }}>
                 {cat}
               </span>
             </label>
@@ -93,7 +93,7 @@ export default function ShopPage() {
 
       {/* Size */}
       <div>
-        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-gold)', borderColor: 'var(--color-border)', letterSpacing: '0.25em' }}>Size</h3>
+        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: '#B8963E', borderColor: 'rgba(184,150,62,0.15)', letterSpacing: '0.25em' }}>Size</h3>
         <div className="flex flex-wrap gap-3">
           {SIZES.map(s => (
             <button
@@ -102,9 +102,9 @@ export default function ShopPage() {
               className={`px-4 py-2 text-11px font-400 rounded-none border transition-all duration-200 tracking-widest uppercase`}
               style={{
                 fontFamily: 'var(--font-body)',
-                borderColor: size === s ? 'var(--color-gold)' : 'var(--color-border)',
-                backgroundColor: size === s ? 'rgba(184, 150, 62, 0.05)' : 'transparent',
-                color: size === s ? 'var(--color-gold)' : 'var(--color-black)',
+                borderColor: size === s ? '#B8963E' : 'rgba(255,255,255,0.15)',
+                backgroundColor: size === s ? 'rgba(184, 150, 62, 0.08)' : 'transparent',
+                color: size === s ? '#B8963E' : 'rgba(255,255,255,0.5)',
               }}
             >
               {s}
@@ -115,7 +115,7 @@ export default function ShopPage() {
 
       {/* Price range */}
       <div>
-        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-gold)', borderColor: 'var(--color-border)', letterSpacing: '0.25em' }}>Price Range</h3>
+        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: '#B8963E', borderColor: 'rgba(184,150,62,0.15)', letterSpacing: '0.25em' }}>Price Range</h3>
         <div className="flex gap-3 items-center">
           <input
             type="number"
@@ -125,9 +125,9 @@ export default function ShopPage() {
             onChange={e => setParam('minPrice', e.target.value)}
             className="w-24 border px-3 py-2 text-sm rounded-none font-sans font-200"
             placeholder="Min"
-            style={{ borderColor: 'var(--color-border)', backgroundColor: 'transparent', color: 'var(--color-black)' }}
+            style={{ borderColor: 'rgba(184,150,62,0.2)', backgroundColor: 'transparent', color: 'rgba(255,255,255,0.7)' }}
           />
-          <span style={{ color: 'var(--color-muted)' }} className="text-sm font-200">–</span>
+          <span style={{ color: 'rgba(255,255,255,0.35)' }} className="text-sm font-200">–</span>
           <input
             type="number"
             min="0"
@@ -136,7 +136,7 @@ export default function ShopPage() {
             onChange={e => setParam('maxPrice', e.target.value)}
             className="w-24 border px-3 py-2 text-sm rounded-none font-sans font-200"
             placeholder="Max"
-            style={{ borderColor: 'var(--color-border)', backgroundColor: 'transparent', color: 'var(--color-black)' }}
+            style={{ borderColor: 'rgba(184,150,62,0.2)', backgroundColor: 'transparent', color: 'rgba(255,255,255,0.7)' }}
           />
         </div>
       </div>
@@ -144,9 +144,9 @@ export default function ShopPage() {
       <button
         onClick={clearFilters}
         className="w-full py-3 text-11px font-400 tracking-widest uppercase transition-all duration-300 rounded-none"
-        style={{ fontFamily: 'var(--font-body)', backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
-        onMouseEnter={(e) => e.target.style.backgroundColor = 'var(--color-gold-light)'}
-        onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-gold)'}
+        style={{ fontFamily: 'var(--font-body)', backgroundColor: '#B8963E', color: '#0F0D0B' }}
+        onMouseEnter={(e) => e.target.style.backgroundColor = '#D4AF6A'}
+        onMouseLeave={(e) => e.target.style.backgroundColor = '#B8963E'}
       >
         CLEAR FILTERS
       </button>
@@ -154,13 +154,13 @@ export default function ShopPage() {
   )
 
   return (
-    <div className="pt-20" style={{ backgroundColor: 'var(--color-cream)' }}>
+    <div className="pt-20" style={{ backgroundColor: '#0F0D0B' }}>
       {/* PAGE HEADER BANNER */}
-      <div className="h-48 flex flex-col items-center justify-center mb-16" style={{ backgroundColor: 'var(--color-cream)' }}>
-        <p className="text-xs font-sans font-400 tracking-widest uppercase mb-4" style={{ color: 'var(--color-gold)', letterSpacing: '0.3em' }}>
+      <div className="h-48 flex flex-col items-center justify-center mb-16" style={{ backgroundColor: '#141210' }}>
+        <p className="text-xs font-sans font-400 tracking-widest uppercase mb-4" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.3em' }}>
           <span>HOME</span> / <span>SHOP</span>
         </p>
-        <h1 className="font-garamond-serif" style={{ fontSize: '64px', fontWeight: 300, color: 'var(--color-black)', textAlign: 'center' }}>
+        <h1 className="font-garamond-serif" style={{ fontSize: '64px', fontWeight: 300, color: '#FDFCFA', textAlign: 'center' }}>
           THE COLLECTION
         </h1>
       </div>
@@ -178,7 +178,7 @@ export default function ShopPage() {
           <div className="flex-1 min-w-0">
             {/* Top bar */}
             <div className="flex items-center justify-between mb-12 gap-4 flex-wrap">
-              <p className="text-xs font-sans font-200" style={{ color: 'var(--color-muted)' }}>
+              <p className="text-xs font-sans font-200" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 {loading ? 'Loading...' : `${count} product${count !== 1 ? 's' : ''} found`}
               </p>
               <div className="flex items-center gap-6">
@@ -186,9 +186,9 @@ export default function ShopPage() {
                 <button
                   onClick={() => setMobileFilter(true)}
                   className="lg:hidden flex items-center gap-2 text-xs font-sans font-400 tracking-widest uppercase transition-colors"
-                  style={{ color: 'var(--color-gold)' }}
-                  onMouseEnter={(e) => e.target.style.color = 'var(--color-black)'}
-                  onMouseLeave={(e) => e.target.style.color = 'var(--color-gold)'}
+                  style={{ color: '#B8963E' }}
+                  onMouseEnter={(e) => e.target.style.color = '#D4AF6A'}
+                  onMouseLeave={(e) => e.target.style.color = '#B8963E'}
                 >
                   <FiFilter size={16} strokeWidth={1.5} /> FILTER
                 </button>
@@ -196,9 +196,9 @@ export default function ShopPage() {
                   value={sort}
                   onChange={e => setParam('sort', e.target.value)}
                   className="border text-xs font-sans font-200 rounded-none px-4 py-2 bg-transparent focus:outline-none"
-                  style={{ borderColor: 'var(--color-border)', color: 'var(--color-black)' }}
-                  onFocus={(e) => e.target.style.borderColor = 'var(--color-gold)'}
-                  onBlur={(e) => e.target.style.borderColor = 'var(--color-border)'}
+                  style={{ borderColor: 'rgba(184,150,62,0.2)', color: 'rgba(255,255,255,0.7)' }}
+                  onFocus={(e) => e.target.style.borderColor = '#B8963E'}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(184,150,62,0.2)'}
                 >
                   {SORTS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
@@ -227,9 +227,9 @@ export default function ShopPage() {
                         onClick={() => setParam('page', String(p))}
                         className={`w-10 h-10 text-xs font-sans font-400 flex items-center justify-center rounded-none transition-all duration-300 border`}
                         style={{
-                          borderColor: page === p ? 'var(--color-gold)' : 'var(--color-border)',
-                          backgroundColor: page === p ? 'var(--color-gold)' : 'transparent',
-                          color: page === p ? 'var(--color-white)' : 'var(--color-black)',
+                          borderColor: page === p ? '#B8963E' : 'rgba(184,150,62,0.2)',
+                          backgroundColor: page === p ? '#B8963E' : 'transparent',
+                          color: page === p ? '#0F0D0B' : 'rgba(255,255,255,0.7)',
                         }}
                       >
                         {p}
