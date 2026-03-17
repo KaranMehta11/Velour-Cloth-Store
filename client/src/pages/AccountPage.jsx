@@ -71,10 +71,10 @@ export default function AccountPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: 'var(--color-cream)' }}>
+      <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: '#0F0D0B' }}>
         <div className="text-center">
-          <h2 className="font-garamond-serif text-2xl font-300 mb-4" style={{ color: 'var(--color-black)' }}>Please Log In</h2>
-          <a href="/login" className="text-xs font-sans font-400 tracking-widest uppercase hover-underline" style={{ color: 'var(--color-gold)' }}>
+          <h2 className="font-garamond-serif text-2xl font-300 mb-4" style={{ color: '#FDFCFA' }}>Please Log In</h2>
+          <a href="/login" className="text-xs font-sans font-400 tracking-widest uppercase hover-underline" style={{ color: '#B8963E' }}>
             GO TO LOGIN
           </a>
         </div>
@@ -88,15 +88,15 @@ export default function AccountPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className="pt-20 pb-20"
-      style={{ backgroundColor: 'var(--color-cream)' }}
+      style={{ backgroundColor: '#0F0D0B' }}
     >
       <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
         <div className="mb-16">
-          <h1 className="font-garamond-serif text-5xl font-300" style={{ color: 'var(--color-black)' }}>
+          <h1 className="font-garamond-serif text-5xl font-300" style={{ color: '#FDFCFA' }}>
             MY ACCOUNT
           </h1>
-          <div className="h-px mt-4" style={{ backgroundColor: 'var(--color-border)' }} />
+          <div className="h-px mt-4" style={{ backgroundColor: 'rgba(184,150,62,0.15)' }} />
         </div>
 
         <div className="grid md:grid-cols-4 gap-12">
@@ -106,26 +106,26 @@ export default function AccountPage() {
             <div
               className="p-8 mb-8 text-center rounded-none"
               style={{
-                backgroundColor: 'var(--color-white)',
-                border: '1px solid var(--color-border)',
+                backgroundColor: '#141210',
+                border: '1px solid rgba(184,150,62,0.15)',
               }}
             >
               <div
                 className="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-garamond-serif font-300 mx-auto mb-6"
-                style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-white)' }}
+                style={{ backgroundColor: '#B8963E', color: '#0F0D0B' }}
               >
                 {user.name[0].toUpperCase()}
               </div>
-              <h2 className="font-garamond-serif text-2xl font-300 mb-1" style={{ color: 'var(--color-black)' }}>
+              <h2 className="font-garamond-serif text-2xl font-300 mb-1" style={{ color: '#FDFCFA' }}>
                 {user.name}
               </h2>
-              <p className="text-xs font-sans font-200" style={{ color: 'var(--color-muted)' }}>
+              <p className="text-xs font-sans font-200" style={{ color: 'rgba(255,255,255,0.35)' }}>
                 {user.email}
               </p>
               {user.role === 'admin' && (
                 <span
                   className="inline-block mt-4 text-xs font-sans font-400 tracking-widest uppercase px-3 py-1 rounded-none"
-                  style={{ backgroundColor: 'var(--color-gold)', color: 'var(--color-white)', letterSpacing: '0.1em' }}
+                  style={{ backgroundColor: '#B8963E', color: '#0F0D0B', letterSpacing: '0.1em' }}
                 >
                   Administrator
                 </span>
@@ -140,14 +140,14 @@ export default function AccountPage() {
                   onClick={() => setTab(t.id)}
                   className="w-full text-left px-0 py-4 text-xs font-sans font-400 tracking-widest uppercase transition-all duration-300 border-b"
                   style={{
-                    borderColor: tab === t.id ? 'var(--color-gold)' : 'var(--color-border)',
-                    color: tab === t.id ? 'var(--color-gold)' : 'var(--color-muted)',
+                    borderColor: tab === t.id ? '#B8963E' : 'rgba(184,150,62,0.15)',
+                    color: tab === t.id ? '#B8963E' : 'rgba(255,255,255,0.35)',
                   }}
                   onMouseEnter={(e) => {
-                    if (tab !== t.id) e.target.style.color = 'var(--color-black)'
+                    if (tab !== t.id) e.target.style.color = '#FDFCFA'
                   }}
                   onMouseLeave={(e) => {
-                    if (tab !== t.id) e.target.style.color = 'var(--color-muted)'
+                    if (tab !== t.id) e.target.style.color = 'rgba(255,255,255,0.35)'
                   }}
                 >
                   {t.label}
@@ -161,7 +161,7 @@ export default function AccountPage() {
             {/* ORDERS TAB */}
             {tab === 'orders' && (
               <div>
-                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: 'var(--color-black)' }}>
+                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: '#FDFCFA' }}>
                   MY ORDERS
                 </h2>
 
@@ -173,17 +173,17 @@ export default function AccountPage() {
                   <div
                     className="p-16 text-center rounded-none"
                     style={{
-                      backgroundColor: 'var(--color-white)',
-                      border: '1px solid var(--color-border)',
+                      backgroundColor: '#141210',
+                      border: '1px solid rgba(184,150,62,0.15)',
                     }}
                   >
-                    <p className="text-sm font-sans font-200 mb-4" style={{ color: 'var(--color-muted)' }}>
+                    <p className="text-sm font-sans font-200 mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
                       You haven't placed any orders yet.
                     </p>
                     <a
                       href="/shop"
                       className="text-xs font-sans font-400 tracking-widest uppercase hover-underline"
-                      style={{ color: 'var(--color-gold)' }}
+                      style={{ color: '#B8963E' }}
                     >
                       START SHOPPING
                     </a>
@@ -199,11 +199,11 @@ export default function AccountPage() {
                           transition={{ delay: idx * 0.05 }}
                           className="p-6 rounded-none"
                           style={{
-                            backgroundColor: 'var(--color-white)',
-                            border: '1px solid var(--color-border)',
+                            backgroundColor: '#141210',
+                            border: '1px solid rgba(184,150,62,0.15)',
                           }}
                         >
-                          <div className="grid md:grid-cols-5 gap-6 items-center pb-6" style={{ borderBottom: '1px solid var(--color-border)' }}>
+                          <div className="grid md:grid-cols-5 gap-6 items-center pb-6" style={{ borderBottom: '1px solid rgba(184,150,62,0.15)' }}>
                             <div>
                               <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'var(--color-muted)', letterSpacing: '0.1em' }}>
                                 ORDER ID
@@ -304,7 +304,7 @@ export default function AccountPage() {
             {/* WISHLIST TAB */}
             {tab === 'wishlist' && (
               <div>
-                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: 'var(--color-black)' }}>
+                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: '#FDFCFA' }}>
                   MY WISHLIST
                 </h2>
 
@@ -312,17 +312,17 @@ export default function AccountPage() {
                   <div
                     className="p-16 text-center rounded-none"
                     style={{
-                      backgroundColor: 'var(--color-white)',
-                      border: '1px solid var(--color-border)',
+                      backgroundColor: '#141210',
+                      border: '1px solid rgba(184,150,62,0.15)',
                     }}
                   >
-                    <p className="text-sm font-sans font-200 mb-4" style={{ color: 'var(--color-muted)' }}>
+                    <p className="text-sm font-sans font-200 mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
                       Your wishlist is currently empty.
                     </p>
                     <a
                       href="/shop"
                       className="text-xs font-sans font-400 tracking-widest uppercase hover-underline"
-                      style={{ color: 'var(--color-gold)' }}
+                      style={{ color: '#B8963E' }}
                     >
                       EXPLORE COLLECTIONS
                     </a>
@@ -341,18 +341,18 @@ export default function AccountPage() {
             {/* PROFILE TAB */}
             {tab === 'profile' && (
               <div>
-                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: 'var(--color-black)' }}>
+                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: '#FDFCFA' }}>
                   PROFILE SETTINGS
                 </h2>
 
-                <form onSubmit={handleSaveProfile} className="max-w-md" style={{ backgroundColor: 'var(--color-white)', border: '1px solid var(--color-border)' }}>
+                <form onSubmit={handleSaveProfile} className="max-w-md" style={{ backgroundColor: '#141210', border: '1px solid rgba(184,150,62,0.15)' }}>
                   <div className="p-8 space-y-8">
                     {/* Name Field */}
                     <div>
                       <label
                         className="text-xs font-sans font-400 uppercase tracking-widest block mb-4 transition-all"
                         style={{
-                          color: focusedField === 'name' ? 'var(--color-gold)' : 'var(--color-muted)',
+                          color: focusedField === 'name' ? '#B8963E' : 'rgba(255,255,255,0.35)',
                           letterSpacing: '0.2em',
                         }}
                       >
@@ -366,8 +366,8 @@ export default function AccountPage() {
                         onBlur={() => setFocusedField(null)}
                         className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
                         style={{
-                          borderBottom: focusedField === 'name' ? '2px solid var(--color-gold)' : '1px solid var(--color-border)',
-                          color: 'var(--color-black)',
+                          borderBottom: focusedField === 'name' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
+                          color: '#FDFCFA',
                         }}
                       />
                     </div>
@@ -377,7 +377,7 @@ export default function AccountPage() {
                       <label
                         className="text-xs font-sans font-400 uppercase tracking-widest block mb-4 transition-all"
                         style={{
-                          color: focusedField === 'email' ? 'var(--color-gold)' : 'var(--color-muted)',
+                          color: focusedField === 'email' ? '#B8963E' : 'rgba(255,255,255,0.35)',
                           letterSpacing: '0.2em',
                         }}
                       >
@@ -391,8 +391,8 @@ export default function AccountPage() {
                         onBlur={() => setFocusedField(null)}
                         className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
                         style={{
-                          borderBottom: focusedField === 'email' ? '2px solid var(--color-gold)' : '1px solid var(--color-border)',
-                          color: 'var(--color-black)',
+                          borderBottom: focusedField === 'email' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
+                          color: '#FDFCFA',
                         }}
                       />
                     </div>
@@ -402,7 +402,7 @@ export default function AccountPage() {
                       <label
                         className="text-xs font-sans font-400 uppercase tracking-widest block mb-4 transition-all"
                         style={{
-                          color: focusedField === 'password' ? 'var(--color-gold)' : 'var(--color-muted)',
+                          color: focusedField === 'password' ? '#B8963E' : 'rgba(255,255,255,0.35)',
                           letterSpacing: '0.2em',
                         }}
                       >
@@ -413,10 +413,11 @@ export default function AccountPage() {
                         onFocus={() => setFocusedField('password')}
                         onBlur={() => setFocusedField(null)}
                         placeholder="Leave blank to keep current"
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all placeholder:text-gray-300 placeholder:text-xs"
+                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all placeholder:text-xs"
                         style={{
-                          borderBottom: focusedField === 'password' ? '2px solid var(--color-gold)' : '1px solid var(--color-border)',
-                          color: 'var(--color-black)',
+                          borderBottom: focusedField === 'password' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
+                          color: '#FDFCFA',
+                          placeholderColor: 'rgba(255,255,255,0.2)',
                         }}
                       />
                     </div>
@@ -427,11 +428,11 @@ export default function AccountPage() {
                       disabled={savingProfile}
                       className="w-full py-4 text-xs font-sans font-400 tracking-widest uppercase rounded-none transition-all duration-300"
                       style={{
-                        backgroundColor: savingProfile ? 'var(--color-muted)' : 'var(--color-gold)',
-                        color: 'var(--color-white)',
+                        backgroundColor: savingProfile ? 'rgba(184,150,62,0.4)' : '#B8963E',
+                        color: '#0F0D0B',
                       }}
-                      onMouseEnter={(e) => !savingProfile && (e.target.style.backgroundColor = 'var(--color-gold-light)')}
-                      onMouseLeave={(e) => !savingProfile && (e.target.style.backgroundColor = 'var(--color-gold)')}
+                      onMouseEnter={(e) => !savingProfile && (e.target.style.backgroundColor = '#D4AF6A')}
+                      onMouseLeave={(e) => !savingProfile && (e.target.style.backgroundColor = '#B8963E')}
                     >
                       {savingProfile ? 'SAVING...' : 'SAVE CHANGES'}
                     </button>
