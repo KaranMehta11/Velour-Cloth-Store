@@ -11,7 +11,7 @@ export default function ColorSelector({ colors = [], selected, onSelect }) {
           style={{
             width:'32px', height:'32px', borderRadius:'50%',
             backgroundColor:color.hex,
-            border:'2px solid ' + (selected === color.name ? '#B8963E' : '#E8E0D0'),
+            border:'2px solid ' + (selected === color.name ? '#B8963E' : 'rgba(184,150,62,0.2)'),
             transition:'all 300ms ease', cursor:'pointer',
             transform:selected === color.name ? 'scale(1.2)' : 'scale(1)',
             outline:'none'
@@ -28,7 +28,7 @@ export default function ColorSelector({ colors = [], selected, onSelect }) {
         <span style={{
           fontFamily:"'Jost', sans-serif",
           fontSize:'12px', fontWeight:300,
-          color:'#6B6560'
+          color:'rgba(255,255,255,0.5)'
         }}>
           {selected}
         </span>
