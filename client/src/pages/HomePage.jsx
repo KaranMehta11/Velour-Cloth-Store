@@ -1,621 +1,382 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { FiChevronDown } from 'react-icons/fi'
+import { useNavigate } from 'react-router-dom'
+import { FiArrowRight, FiArrowUpRight, FiTruck, FiRefreshCw, FiPackage, FiStar, FiUser } from 'react-icons/fi'
 import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 import useScrollReveal from '../hooks/useScrollReveal'
 
-const testimonials = [
-  {
-    name: 'Sophia R.',
-    quote: 'The quality is beyond anything I have found at this price point. My Velour blazer gets compliments every time I wear it.',
-    rating: 5,
-  },
-  {
-    name: 'James T.',
-    quote: 'Finally, a brand that gets what modern minimalism looks like. Every piece is perfectly weighted and incredibly versatile.',
-    rating: 5,
-  },
-  {
-    name: 'Amara K.',
-    quote: 'I ordered the silk midi dress for a work event and I have never felt more elegant. Velour is my new go-to.',
-    rating: 5,
-  },
-]
-
 export default function HomePage() {
-  const [featured, setFeatured] = useState([])
-  const [bestsellers, setBestsellers] = useState([])
+  const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [email, setEmail] = useState('')
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const navigate = useNavigate()
 
   useScrollReveal()
 
   useEffect(() => {
     document.title = 'Velour — Luxury Fashion for the Modern Individual'
-    Promise.all([
-      api.get('/products?limit=8'),
-      api.get('/products?limit=4'),
-    ])
-      .then(([featured, bestsellers]) => {
-        setFeatured(featured.data.products || [])
-        setBestsellers(bestsellers.data.products || [])
-      })
+    api.get('/products?limit=8')
+      .then(res => setProducts(res.data.products || []))
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 
-  useEffect(() => {
-    const handleMouse = (e) => {
-      setMousePos({
-        x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20
-      })
-    }
-    window.addEventListener('mousemove', handleMouse)
-    return () => window.removeEventListener('mousemove', handleMouse)
-  }, [])
-
   return (
-    <main style={{ marginTop: '0' }}>
-      {/* ══════════════════════════════════════════════════════════════
-          HERO SECTION — DARK BOLD WITH FLOATING CARDS
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="hero-bg texture-overlay relative w-full min-h-screen 
-                          flex items-center justify-center overflow-hidden">
+    <main style={{ marginTop: 0 }}>
 
-        {/* Background large faded VELOUR text */}
-        <div className="absolute inset-0 flex items-center justify-center 
-                        pointer-events-none z-[1]" style={{overflow:'hidden'}}>
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(120px, 20vw, 280px)',
-            fontWeight: 600,
-            color: 'rgba(184,150,62,0.04)',
-            letterSpacing: '0.2em',
-            userSelect: 'none',
-            whiteSpace: 'nowrap'
-          }}>VELOUR</p>
+      {/* ══════════════════════ HERO ══════════════════════ */}
+      <section style={{
+        minHeight: '100vh',
+        backgroundColor: '#ECEEF0',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+
+        {/* SCROLLING BG TEXT ROW 1 */}
+        <div style={{ position: 'absolute', top: '15%', left: 0, right: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+          <div className="bg-scroll-left">
+            {[1, 2].map(i => (
+              <span key={i} className="bg-text" style={{ paddingRight: '60px' }}>
+                FRESH FITS FOR YOUR WORKOUT &nbsp;&nbsp;
+              </span>
+            ))}
+          </div>
         </div>
 
-        {/* CENTER CONTENT */}
-        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-          
-          {/* Tag */}
-          <div className="inline-flex items-center gap-3 mb-8">
-            <div style={{width:'30px', height:'1px', backgroundColor:'#B8963E'}}/>
-            <span style={{
-              color: '#B8963E',
-              fontFamily: "'Jost', sans-serif",
-              fontSize: '11px',
-              fontWeight: 500,
-              letterSpacing: '0.35em',
-              textTransform: 'uppercase'
-            }}>NEW COLLECTION SS 2024</span>
-            <div style={{width:'30px', height:'1px', backgroundColor:'#B8963E'}}/>
+        {/* SCROLLING BG TEXT ROW 2 */}
+        <div style={{ position: 'absolute', bottom: '15%', left: 0, right: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+          <div className="bg-scroll-right">
+            {[1, 2].map(i => (
+              <span key={i} className="bg-text" style={{ paddingRight: '60px' }}>
+                NEXT LEVEL WORKOUT STYLE &nbsp;&nbsp;
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* MAIN CONTENT */}
+        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', padding: '40px 24px', maxWidth: '900px', margin: '0 auto' }}>
+
+          {/* Announcement pill */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '32px',
+            background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(12px)',
+            borderRadius: '9999px', padding: '8px 20px',
+            border: '1px solid rgba(0,0,0,0.06)'
+          }}>
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#B8963E' }} />
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', color: '#0A0A0A' }}>
+              FREE SHIPPING ABOVE ₹4,999 · NEW COLLECTION NOW LIVE
+            </span>
           </div>
 
           {/* MASSIVE HEADING */}
           <h1 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: 'clamp(64px, 11vw, 148px)',
-            fontWeight: 500,
-            color: '#FDFCFA',
-            lineHeight: 0.95,
-            letterSpacing: '-0.01em',
+            fontFamily: "'Barlow', sans-serif",
+            fontSize: 'clamp(52px, 10vw, 120px)',
+            fontWeight: 900,
             textTransform: 'uppercase',
+            color: '#0A0A0A',
+            lineHeight: 0.95,
+            letterSpacing: '-0.03em',
             marginBottom: '32px'
           }}>
-            DRESS<br/>
-            <span style={{
-              fontStyle: 'italic',
-              fontWeight: 300,
-              color: '#B8963E'
-            }}>THE</span>
-            {' '}STORY.
+            DRESS THE<br />
+            STORY<span style={{ color: '#B8963E', fontStyle: 'italic' }}>.</span>
           </h1>
 
-          {/* Subtext */}
           <p style={{
-            fontFamily: "'Jost', sans-serif",
-            fontSize: '14px',
-            fontWeight: 200,
-            color: 'rgba(255,255,255,0.5)',
-            letterSpacing: '0.08em',
-            marginBottom: '48px',
-            maxWidth: '420px',
-            margin: '0 auto 48px'
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '15px', fontWeight: 400,
+            color: 'rgba(0,0,0,0.5)',
+            maxWidth: '400px', margin: '0 auto 40px',
+            lineHeight: 1.6
           }}>
             Curated luxury fashion for the modern individual.
             Timeless pieces, effortless style.
           </p>
 
-          {/* Buttons */}
-          <div className="flex items-center justify-center gap-4 flex-wrap">
-            <button className="btn-gold-pill"
-              onClick={() => navigate('/shop')}>
-              Shop Collection
-            </button>
-            <button className="btn-white-pill"
-              onClick={() => navigate('/shop?category=new')}>
-              View Lookbook
-            </button>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button className="btn-black" onClick={() => navigate('/shop')}>SHOP NOW</button>
+            <button className="btn-white" onClick={() => navigate('/shop')}>EXPLORE ALL</button>
           </div>
 
-          {/* Stats row */}
-          <div className="flex items-center justify-center gap-12 mt-16"
-               style={{borderTop:'1px solid rgba(255,255,255,0.08)', paddingTop:'32px'}}>
-            {[
-              {num:'200+', label:'Curated Pieces'},
-              {num:'₹2,499', label:'Starting From'},
-              {num:'48hr', label:'Express Delivery'}
-            ].map(s => (
-              <div key={s.num} className="text-center">
-                <p style={{
-                  fontFamily:"'Cormorant Garamond', serif",
-                  fontSize:'28px', color:'#FDFCFA', marginBottom:'4px'
-                }}>{s.num}</p>
-                <p style={{
-                  fontFamily:"'Jost', sans-serif",
-                  fontSize:'10px', color:'rgba(255,255,255,0.35)',
-                  letterSpacing:'0.2em', textTransform:'uppercase'
-                }}>{s.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* FLOATING CARD — Top Left (product card) */}
-        <div className="float-card float-anim absolute hidden lg:block"
-             style={{
-               '--rot': '-6deg',
-               top: '18%', left: '6%',
-               width: '180px', padding: '12px',
-               transform: `rotate(-6deg) translate(${mousePos.x * 0.3}px, ${mousePos.y * 0.3}px)`,
-               transition: 'transform 0.1s ease',
-               zIndex: 8
-             }}>
-          <div style={{
-            width:'100%', aspectRatio:'3/4',
-            borderRadius:'8px', overflow:'hidden', marginBottom:'10px',
-            backgroundColor:'#2A2520'
-          }}>
-            <img
-              src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80"
-              alt="product"
-              style={{width:'100%', height:'100%', objectFit:'cover', opacity:0.85}}
-            />
-          </div>
-          <p style={{
-            color:'rgba(255,255,255,0.9)', fontSize:'12px',
-            fontFamily:"'Cormorant Garamond', serif"
-          }}>Silk Evening Gown</p>
-          <p style={{
-            color:'#B8963E', fontSize:'11px',
-            fontFamily:"'Jost', sans-serif", fontWeight:300
-          }}>₹12,499</p>
-        </div>
-
-        {/* FLOATING CARD — Top Right (product card) */}
-        <div className="float-card float-anim-delay absolute hidden lg:block"
-             style={{
-               '--rot': '5deg',
-               top: '12%', right: '5%',
-               width: '160px', padding: '12px',
-               transform: `rotate(5deg) translate(${mousePos.x * -0.2}px, ${mousePos.y * 0.2}px)`,
-               transition: 'transform 0.1s ease',
-               zIndex: 8
-             }}>
-          <div style={{
-            width:'100%', aspectRatio:'3/4',
-            borderRadius:'8px', overflow:'hidden', marginBottom:'10px',
-            backgroundColor:'#2A2520'
-          }}>
-            <img
-              src="https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=400&q=80"
-              alt="product"
-              style={{width:'100%', height:'100%', objectFit:'cover', opacity:0.85}}
-            />
-          </div>
-          <p style={{
-            color:'rgba(255,255,255,0.9)', fontSize:'12px',
-            fontFamily:"'Cormorant Garamond', serif"
-          }}>Oxford Tailored Suit</p>
-          <p style={{
-            color:'#B8963E', fontSize:'11px',
-            fontFamily:"'Jost', sans-serif", fontWeight:300
-          }}>₹18,999</p>
-        </div>
-
-        {/* FLOATING CARD — Bottom Left (new arrival badge) */}
-        <div className="float-card float-anim-slow absolute hidden lg:block"
-             style={{
-               bottom: '20%', left: '8%',
-               padding: '16px 20px',
-               transform: `rotate(-3deg) translate(${mousePos.x * 0.4}px, ${mousePos.y * -0.3}px)`,
-               transition: 'transform 0.1s ease',
-               zIndex: 8, minWidth:'160px'
-             }}>
-          <div className="flex items-center gap-3">
-            <div style={{
-              width:'36px', height:'36px', borderRadius:'50%',
-              backgroundColor:'rgba(184,150,62,0.15)',
-              display:'flex', alignItems:'center', justifyContent:'center'
-            }}>
-              <span style={{fontSize:'16px'}}>✨</span>
+          {/* Social proof */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '40px' }}>
+            <div style={{ display: 'flex' }}>
+              {['https://i.pravatar.cc/32?img=1', 'https://i.pravatar.cc/32?img=2', 'https://i.pravatar.cc/32?img=3'].map((src, i) => (
+                <img key={i} src={src} alt="customer"
+                  style={{ width: '28px', height: '28px', borderRadius: '50%', border: '2px solid #ECEEF0', marginLeft: i > 0 ? '-8px' : '0', objectFit: 'cover' }} />
+              ))}
             </div>
-            <div>
-              <p style={{
-                color:'rgba(255,255,255,0.5)', fontSize:'9px',
-                fontFamily:"'Jost', sans-serif", letterSpacing:'0.2em',
-                textTransform:'uppercase'
-              }}>Just Dropped</p>
-              <p style={{
-                color:'#FDFCFA', fontSize:'13px',
-                fontFamily:"'Cormorant Garamond', serif"
-              }}>New Arrivals</p>
-            </div>
-          </div>
-        </div>
-
-        {/* FLOATING CARD — Bottom Right (free shipping) */}
-        <div className="float-card float-anim absolute hidden lg:block"
-             style={{
-               bottom: '22%', right: '7%',
-               padding: '14px 18px',
-               transform: `rotate(4deg) translate(${mousePos.x * -0.3}px, ${mousePos.y * -0.2}px)`,
-               transition: 'transform 0.1s ease',
-               zIndex: 8, minWidth:'170px'
-             }}>
-          <div className="flex items-center gap-3">
-            <div style={{
-              width:'32px', height:'32px', borderRadius:'50%',
-              backgroundColor:'rgba(184,150,62,0.15)',
-              display:'flex', alignItems:'center', justifyContent:'center'
-            }}>
-              <span style={{fontSize:'14px'}}>🚚</span>
-            </div>
-            <div>
-              <p style={{
-                color:'#FDFCFA', fontSize:'12px',
-                fontFamily:"'Jost', sans-serif", fontWeight:400
-              }}>Free Shipping</p>
-              <p style={{
-                color:'rgba(255,255,255,0.4)', fontSize:'10px',
-                fontFamily:"'Jost', sans-serif"
-              }}>On orders ₹4,999+</p>
-            </div>
-          </div>
-        </div>
-
-        {/* FLOATING decorative gold star shapes */}
-        <div className="absolute hidden lg:block float-anim-slow"
-             style={{top:'35%', right:'18%', fontSize:'24px', zIndex:7,
-                     transform:`translate(${mousePos.x * -0.1}px, ${mousePos.y * 0.1}px)`}}>
-          ✦
-        </div>
-        <div className="absolute hidden lg:block float-anim"
-             style={{bottom:'35%', left:'20%', fontSize:'16px', zIndex:7,
-                     color:'rgba(184,150,62,0.5)',
-                     transform:`translate(${mousePos.x * 0.15}px, ${mousePos.y * -0.1}px)`}}>
-          ✦
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10
-                        flex flex-col items-center gap-2">
-          <span style={{
-            color:'rgba(255,255,255,0.3)', fontSize:'9px',
-            fontFamily:"'Jost', sans-serif", letterSpacing:'0.3em',
-            textTransform:'uppercase'
-          }}>Scroll</span>
-          <div style={{
-            width:'1px', height:'40px',
-            background:'linear-gradient(to bottom, rgba(184,150,62,0.6), transparent)',
-            animation:'floatY 2s ease-in-out infinite'
-          }}/>
-        </div>
-      </section>
-
-      {/* ANNOUNCEMENT STRIP */}
-      <div className="h-11 flex items-center overflow-hidden" style={{ backgroundColor: '#B8963E' }}>
-        <div className="marquee-track">
-          {[1,2].map(i => (
-            <span key={i} className="whitespace-nowrap pr-16" style={{
-              fontFamily:'var(--font-body)',
-              fontSize: '11px',
-              letterSpacing: '0.2em',
-              color: '#FDFCFA',
-              fontWeight: 'normal'
-            }}>
-              NEW ARRIVALS EVERY FRIDAY &nbsp;✦&nbsp; FREE SHIPPING ABOVE ₹4,999 &nbsp;✦&nbsp; SUSTAINABLE FABRICS &nbsp;✦&nbsp; EXCLUSIVE DROPS &nbsp;✦&nbsp; EASY 30-DAY RETURNS &nbsp;✦&nbsp; HANDCRAFTED IN INDIA &nbsp;✦&nbsp;
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(0,0,0,0.5)', fontWeight: 500 }}>
+              2,400+ happy customers
             </span>
-          ))}
-        </div>
-      </div>
-
-      {/* COLLECTIONS SECTION */}
-      <section className="py-16 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#0F0D0B' }}>
-        <div className="flex justify-between items-end mb-14 border-b border-border pb-5" style={{ borderColor: 'rgba(184,150,62,0.2)' }}>
-          <div>
-            <p className="text-[10px] text-gold tracking-[0.3em] uppercase mb-4" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>SHOP BY CATEGORY</p>
-            <h2 className="font-light" style={{
-              fontFamily:'var(--font-heading)',
-              fontSize:'clamp(36px,4vw,54px)',
-              color: '#FDFCFA'
-            }}>
-              Curated for the<br/>Discerning Eye.
-            </h2>
           </div>
-          <Link to="/shop" className="gold-underline text-gold text-[12px] tracking-[0.15em]" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
-            View All Collections →
-          </Link>
         </div>
 
-        <div className="grid gap-5 items-end" style={{gridTemplateColumns:'1fr 1.2fr 1fr'}}>
-          {[
-            { title:"MEN'S EDIT", count:'124 Pieces', h:'520px',
-              img:'https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=800&q=85' },
-            { title:"WOMEN'S EDIT", count:'186 Pieces', h:'640px',
-              img:'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&q=85' },
-            { title:'ACCESSORIES', count:'67 Pieces', h:'520px',
-              img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=85' }
-          ].map(col => (
-            <div key={col.title}
-              className="relative overflow-hidden cursor-pointer group"
-              style={{height: col.h}}
-            >
-              <img src={col.img} alt={col.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
-              <div className="absolute inset-0 transition-all duration-350" style={{background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), transparent)'}}/>
-              <div className="absolute top-8 left-7">
-                <p className="text-white text-lg font-light mb-1" style={{fontFamily:'var(--font-heading)', fontSize: '20px'}}>{col.title}</p>
-                <p className="text-white text-[10px] tracking-[0.2em] uppercase" style={{fontFamily:'var(--font-body)', opacity: 0.6}}>{col.count}</p>
+        {/* FLOATING HERO CARD — LEFT */}
+        <div style={{ position: 'absolute', left: '5%', top: '50%', transform: 'translateY(-50%)', width: 'clamp(180px, 18vw, 260px)', zIndex: 3 }}
+          className="card-float hidden lg:block">
+          <div className="dark-card" style={{ padding: 0 }}>
+            <div style={{ width: '100%', aspectRatio: '3/4', position: 'relative', overflow: 'hidden' }}>
+              <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&q=85" alt="collection"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8) 100%)' }} />
+              <div style={{ position: 'absolute', top: '12px', left: '12px', right: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', fontWeight: 700, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>VELOUR</span>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '9px', color: 'rgba(255,255,255,0.5)' }}>SS 2024</span>
               </div>
-              <p className="absolute bottom-8 right-7 text-gold-light text-[11px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-350 px-3 py-2 rounded" style={{ 
-                color: '#D4AF6A', 
-                fontFamily:'var(--font-body)',
-                background: 'rgba(20, 18, 16, 0.85)',
-                backdropFilter: 'blur(12px)',
-                border: '1px solid rgba(184, 150, 62, 0.2)'
-              }}>
-                EXPLORE →
-              </p>
+              <div style={{ position: 'absolute', bottom: '12px', left: '12px', right: '12px' }}>
+                <p style={{ fontFamily: "'Barlow', sans-serif", fontSize: '16px', fontWeight: 800, color: 'white', textTransform: 'uppercase', lineHeight: 1.1, marginBottom: '4px' }}>SILK<br />EVENING<br />GOWN</p>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(255,255,255,0.6)' }}>₹12,499</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* FLOATING HERO CARD — RIGHT */}
+        <div style={{ position: 'absolute', right: '5%', top: '50%', transform: 'translateY(-50%)', width: 'clamp(160px, 16vw, 240px)', zIndex: 3, animationDelay: '2s' }}
+          className="card-float hidden lg:block">
+          <div className="dark-card">
+            <div style={{ width: '100%', aspectRatio: '3/4', position: 'relative', overflow: 'hidden' }}>
+              <img src="https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=600&q=85" alt="men collection"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8) 100%)' }} />
+              <div style={{ position: 'absolute', bottom: '12px', left: '12px', right: '12px' }}>
+                <p style={{ fontFamily: "'Barlow', sans-serif", fontSize: '14px', fontWeight: 800, color: 'white', textTransform: 'uppercase', lineHeight: 1.1, marginBottom: '4px' }}>OXFORD<br />SUIT</p>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(255,255,255,0.6)' }}>₹18,999</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* STATS ROW */}
+        <div style={{ position: 'relative', zIndex: 2, display: 'flex', gap: '0', width: '100%', maxWidth: '700px', borderTop: '1px solid rgba(0,0,0,0.08)', marginTop: '48px' }}>
+          {[{ num: '200+', label: 'Curated Pieces' }, { num: '48hr', label: 'Express Delivery' }, { num: '30', label: 'Day Returns' }].map((s, i) => (
+            <div key={i} style={{ flex: 1, textAlign: 'center', padding: '24px 16px', borderRight: i < 2 ? '1px solid rgba(0,0,0,0.08)' : 'none' }}>
+              <p style={{ fontFamily: "'Barlow', sans-serif", fontSize: '28px', fontWeight: 900, color: '#0A0A0A', letterSpacing: '-0.02em', marginBottom: '4px' }}>{s.num}</p>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 500, color: 'rgba(0,0,0,0.4)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{s.label}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* NEW ARRIVALS */}
-      <section className="hero-bg texture-overlay relative py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#141210' }}>
-        <div className="flex justify-between items-baseline mb-12 pb-5 relative z-10" style={{ borderBottom: '1px solid rgba(184,150,62,0.2)' }}>
-          <h2 className="font-light" style={{
-            fontFamily:'var(--font-heading)',
-            fontSize:'clamp(32px,4vw,50px)',
-            color: '#FDFCFA'
-          }}>New<span style={{fontStyle:'italic', color:'#B8963E'}}> Arrivals</span></h2>
-          <Link to="/shop" className="gold-underline text-[11px] text-gold tracking-[0.15em]" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
-            VIEW ALL →
-          </Link>
-        </div>
-        {loading ? (
-          <div className="flex justify-center py-16"><LoadingSpinner /></div>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-7 relative z-10">
-            {featured.slice(0, 8).map(product => (
-              <ProductCard key={product._id} product={product} />
+      {/* ══════════════════════ NEW ARRIVALS ══════════════════════ */}
+      <section style={{ backgroundColor: '#ECEEF0', padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, transform: 'translateY(-50%)', overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+          <div className="bg-scroll-left">
+            {[1, 2].map(i => (
+              <span key={i} className="bg-text" style={{ paddingRight: '80px' }}>NEW ARRIVALS &nbsp;&nbsp;</span>
             ))}
           </div>
-        )}
+        </div>
+
+        <div style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div className="reveal" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '48px' }}>
+            <div>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, color: 'rgba(0,0,0,0.4)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: '8px' }}>NEW ARRIVAL</p>
+              <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: 'clamp(32px,5vw,56px)', fontWeight: 900, color: '#0A0A0A', textTransform: 'uppercase', lineHeight: 0.95 }}>
+                FRESH FITS<br />FOR YOUR<span style={{ color: '#B8963E' }}> STYLE</span>
+              </h2>
+            </div>
+            <a href="/shop" style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, color: 'rgba(0,0,0,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '8px', textDecoration: 'none' }}>
+              ALL BRANDS <FiArrowUpRight size={14} />
+            </a>
+          </div>
+
+          {loading ? (
+            <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}><LoadingSpinner /></div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
+              {products.map((p, i) => (
+                <div key={p._id} className="reveal" style={{ transitionDelay: `${i * 0.07}s` }}>
+                  <ProductCard product={p} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="reveal" style={{ textAlign: 'center', marginTop: '48px' }}>
+            <button className="btn-black" onClick={() => navigate('/shop')} style={{ gap: '8px' }}>
+              SEE ALL PRODUCTS <FiArrowRight size={14} />
+            </button>
+          </div>
+        </div>
       </section>
 
-      {/* EDITORIAL BANNER */}
-      <section className="relative w-full overflow-hidden flex items-center justify-center" style={{ height:'500px' }}>
-        <img
-          src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=1600&q=90"
-          alt="Winter Atelier"
-          className="absolute inset-0 w-full h-full object-cover"/>
-        <div className="absolute inset-0" style={{backgroundColor:'rgba(0,0,0,0.5)'}}/>
-        <div className="relative text-center px-5">
-          <p className="text-gold-light text-[10px] tracking-[0.35em] uppercase mb-5" style={{ fontFamily:'var(--font-body)', color: '#D4AF6A' }}>LIMITED EDITION</p>
-          <h2 className="text-white font-light italic mb-5" style={{
-            fontFamily:'var(--font-heading)',
-            fontSize:'clamp(40px,6vw,68px)',
-            fontStyle: 'italic'
-          }}>The Winter Atelier</h2>
-          <p className="text-white text-[13px] font-extralight mb-10" style={{fontFamily:'var(--font-body)', opacity: 0.75}}>
-            A collection of 40 exclusive pieces, available for 30 days only
+      {/* ══════════════════════ COLLECTIONS ══════════════════════ */}
+      <section style={{ backgroundColor: '#E4E6E8', padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div className="reveal" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '40px' }}>
+            <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: 'clamp(28px,4vw,48px)', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A' }}>
+              SHOP BY<br /><span style={{ color: '#B8963E' }}>CATEGORY</span>
+            </h2>
+            <a href="/shop" style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, color: 'rgba(0,0,0,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase', textDecoration: 'none' }}>VIEW ALL →</a>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.3fr 1fr', gap: '16px', alignItems: 'end' }}>
+            {[
+              { title: "MEN'S", count: '124', h: '460px', img: 'https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=800&q=85', path: '/shop?category=Men', delay: '0s' },
+              { title: "WOMEN'S", count: '186', h: '560px', img: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=800&q=85', path: '/shop?category=Women', delay: '0.12s' },
+              { title: 'ACCESS.', count: '67', h: '460px', img: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=85', path: '/shop?category=Accessories', delay: '0.24s' }
+            ].map(col => (
+              <div key={col.title}
+                className="dark-card hover-lift reveal group"
+                style={{ height: col.h, transitionDelay: col.delay, cursor: 'pointer' }}
+                onClick={() => navigate(col.path)}>
+                <img src={col.img} alt={col.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 700ms ease', position: 'absolute', inset: 0 }}
+                  className="group-hover:[transform:scale(1.05)]" />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(0,0,0,0.7),transparent 60%)' }} />
+                <div style={{ position: 'absolute', top: '14px', left: '14px' }}>
+                  <span className="pill-tag">{col.count} Pieces</span>
+                </div>
+                <div style={{ position: 'absolute', bottom: '20px', left: '18px', right: '18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <p style={{ fontFamily: "'Barlow', sans-serif", fontSize: '22px', fontWeight: 900, color: 'white', textTransform: 'uppercase' }}>{col.title}</p>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                    <FiArrowRight size={14} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════ EDITORIAL BANNER ══════════════════════ */}
+      <section className="reveal" style={{ position: 'relative', width: '100%', height: '460px', overflow: 'hidden' }}>
+        <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=1600&q=90" alt="editorial"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg,rgba(0,0,0,0.65),rgba(0,0,0,0.3))' }} />
+        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, transform: 'translateY(-50%)', overflow: 'hidden', pointerEvents: 'none' }}>
+          <span className="bg-text" style={{ color: 'rgba(255,255,255,0.04)', fontSize: 'clamp(60px,12vw,160px)' }}>
+            LIMITED EDITION COLLECTION
+          </span>
+        </div>
+        <div style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 24px' }}>
+          <span className="pill-tag" style={{ marginBottom: '20px', color: '#B8963E' }}>LIMITED EDITION</span>
+          <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: 'clamp(36px,6vw,72px)', fontWeight: 900, color: 'white', textTransform: 'uppercase', lineHeight: 0.95, marginBottom: '20px', letterSpacing: '-0.02em' }}>
+            THE WINTER<br /><span style={{ fontStyle: 'italic', fontWeight: 700 }}>ATELIER</span>
+          </h2>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '14px', color: 'rgba(255,255,255,0.6)', fontWeight: 400, marginBottom: '36px' }}>
+            40 exclusive pieces · Available for 30 days only
           </p>
           <button className="btn-white">SHOP THE EDIT</button>
         </div>
       </section>
 
-      {/* BESTSELLERS */}
-      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#0F0D0B' }}>
-        <div className="flex justify-between items-baseline mb-12 pb-5" style={{ borderBottom: '1px solid rgba(184,150,62,0.2)' }}>
-          <h2 className="font-light" style={{
-            fontFamily:'var(--font-heading)',
-            fontSize:'clamp(32px,4vw,50px)',
-            color: '#FDFCFA'
-          }}>Bestsellers</h2>
-          <Link to="/shop" className="gold-underline text-[11px] text-gold tracking-[0.15em]" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
-            VIEW ALL →
-          </Link>
+      {/* ══════════════════════ STATS / WHY VELOUR ══════════════════════ */}
+      <section style={{ backgroundColor: '#0A0A0A', padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '50%', left: 0, transform: 'translateY(-50%)', overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+          <span className="bg-text" style={{ color: 'rgba(255,255,255,0.025)', fontSize: 'clamp(80px,18vw,220px)', whiteSpace: 'nowrap' }}>
+            VELOUR VELOUR VELOUR
+          </span>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-7">
-          {bestsellers.slice(0, 4).map(product => (
-            <ProductCard key={product._id} product={product} />
+        <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1px', backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '20px', overflow: 'hidden' }}>
+            {[
+              { icon: <FiTruck size={22} />, num: '200+', label: 'Curated Pieces' },
+              { icon: <FiRefreshCw size={22} />, num: '30', label: 'Day Easy Returns' },
+              { icon: <FiPackage size={22} />, num: '48hr', label: 'Express Delivery' },
+              { icon: <FiStar size={22} />, num: '4.9', label: 'Average Rating' }
+            ].map((s, i) => (
+              <div key={i} style={{ padding: '40px 32px', textAlign: 'center', backgroundColor: 'rgba(255,255,255,0.02)', transition: 'background 300ms ease' }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.02)'}
+              >
+                <div style={{ color: '#B8963E', marginBottom: '16px', display: 'flex', justifyContent: 'center' }}>{s.icon}</div>
+                <p style={{ fontFamily: "'Barlow', sans-serif", fontSize: '42px', fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.03em', marginBottom: '6px' }}>{s.num}</p>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 500, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════ TESTIMONIALS ══════════════════════ */}
+      <section style={{ backgroundColor: '#ECEEF0', padding: '80px 24px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div className="reveal" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '48px' }}>
+            <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: 'clamp(28px,4vw,48px)', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A' }}>
+              WHAT THEY<br /><span style={{ color: '#B8963E' }}>SAY</span>
+            </h2>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(0,0,0,0.35)', fontWeight: 500 }}>2,400+ Reviews</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px,1fr))', gap: '16px' }}>
+            {[
+              { quote: "The quality is unmatched. Every piece feels like it was made specifically for me. Completely changed how I dress.", name: "Priya S.", city: "Mumbai", rating: 5 },
+              { quote: "Never felt so confident. The attention to detail is extraordinary. Worth every single rupee spent on Velour.", name: "Arjun M.", city: "Delhi", rating: 5 },
+              { quote: "Finally a brand that understands timeless style. My Velour pieces still look perfect after two years of wearing.", name: "Kavya N.", city: "Bangalore", rating: 5 }
+            ].map((t, i) => (
+              <div key={i} className="dark-card reveal hover-lift" style={{ padding: '28px', transitionDelay: `${i * 0.12}s` }}>
+                <div style={{ display: 'flex', gap: '2px', marginBottom: '20px' }}>
+                  {Array(t.rating).fill(0).map((_, j) => (
+                    <FiStar key={j} size={13} style={{ color: '#B8963E', fill: '#B8963E' }} />
+                  ))}
+                </div>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '14px', lineHeight: 1.7, color: 'rgba(255,255,255,0.75)', marginBottom: '24px' }}>"{t.quote}"</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '20px' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'rgba(184,150,62,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <FiUser size={14} style={{ color: '#B8963E' }} />
+                  </div>
+                  <div>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: 'white', marginBottom: '2px' }}>{t.name}</p>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>{t.city} · Verified Buyer</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════ PRESS BAR ══════════════════════ */}
+      <section style={{ backgroundColor: '#E4E6E8', padding: '48px 24px', textAlign: 'center' }}>
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, color: 'rgba(0,0,0,0.3)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '28px' }}>AS FEATURED IN</p>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '48px', flexWrap: 'wrap' }}>
+          {['Vogue', 'GQ', "Harper's Bazaar", 'Elle', 'Hypebeast'].map(b => (
+            <span key={b} style={{ fontFamily: "'Barlow', sans-serif", fontSize: '20px', fontWeight: 800, textTransform: 'uppercase', color: 'rgba(0,0,0,0.18)', cursor: 'default', letterSpacing: '-0.01em', transition: 'color 300ms ease' }}
+              onMouseEnter={e => e.target.style.color = '#0A0A0A'}
+              onMouseLeave={e => e.target.style.color = 'rgba(0,0,0,0.18)'}
+            >{b}</span>
           ))}
         </div>
       </section>
 
-      {/* BRAND PHILOSOPHY */}
-      <section className="grid" style={{ gridTemplateColumns:'1.4fr 1fr', backgroundColor: '#1C1C1C' }}>
-        <div className="py-28 px-20">
-          <p className="text-gold text-[10px] tracking-[0.3em] uppercase mb-7" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
-            OUR PHILOSOPHY
-          </p>
-          <h2 className="text-off-white font-light leading-tight mb-8" style={{
-            fontFamily:'var(--font-heading)',
-            fontSize:'clamp(36px,4vw,54px)',
-            color: '#FDFCFA'
-          }}>
-            Crafted with<br/>intention.<br/>Worn with purpose.
-          </h2>
-          <p className="text-white text-sm leading-[1.9] font-extralight max-w-md mb-12" style={{fontFamily:'var(--font-body)', color: 'rgba(255,255,255,0.55)', lineHeight: 1.9}}>
-            At Velour, we believe that true luxury lies not in excess, but in the perfection of the details. Every stitch, every fabric, every silhouette is chosen with purpose.
-          </p>
-          <div className="flex gap-12 border-t border-white border-opacity-10 pt-8 mb-12" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-            {[{num:'Est. 2024',label:'Founded'},{num:'India',label:'Made In'}]
-              .map(s => (
-              <div key={s.num}>
-                <p className="text-off-white text-2xl mb-1" style={{fontFamily:'var(--font-heading)', color: '#FDFCFA'}}>{ s.num}</p>
-                <p className="text-muted text-[10px] tracking-[0.2em] uppercase" style={{fontFamily:'var(--font-body)', color: '#6B6560'}}>{ s.label}</p>
-              </div>
-            ))}
-          </div>
-          <Link to="/about" className="gold-underline text-gold text-[12px] tracking-[0.2em]" style={{ color: '#B8963E', fontFamily:'var(--font-body)' }}>
-            OUR STORY →
-          </Link>
+      {/* ══════════════════════ NEWSLETTER ══════════════════════ */}
+      <section style={{ backgroundColor: '#0A0A0A', padding: '80px 24px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, transform: 'translateY(-50%)', overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
+          <span className="bg-text" style={{ color: 'rgba(255,255,255,0.02)', fontSize: 'clamp(60px,14vw,180px)' }}>INNER CIRCLE</span>
         </div>
-        <div className="overflow-hidden">
-          <img
-            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=85"
-            alt="Philosophy"
-            className="w-full h-full object-cover"/>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-          SECTION 8: TESTIMONIALS
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32" style={{ backgroundColor: '#1C1C1C' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="font-garamond-serif italic text-center mb-16"
-            style={{ fontSize: '48px', fontWeight: 300, color: '#FDFCFA', fontStyle: 'italic', lineHeight: 1.1 }}
-          >
-            Voices of Our Community
-          </motion.h2>
-          <div className="grid md:grid-cols-3 gap-12">
-            {testimonials.map((t, i) => (
-              <motion.div
-                key={t.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-              >
-                {/* Quote mark */}
-                <p className="font-garamond-serif text-6xl leading-none mb-4" style={{ color: '#B8963E', opacity: 0.3 }}>
-                  "
-                </p>
-                {/* Quote */}
-                <p 
-                  className="font-garamond-italic text-lg leading-relaxed mb-6"
-                  style={{ color: '#FDFCFA', fontStyle: 'italic', lineHeight: 1.7 }}
-                >
-                  {t.quote}
-                </p>
-                {/* Line */}
-                <div className="w-8 h-px mb-6" style={{ backgroundColor: '#B8963E' }} />
-                {/* Name */}
-                <p className="text-xs font-sans font-400 tracking-widest uppercase mb-1" style={{ color: '#FDFCFA', letterSpacing: '0.2em' }}>
-                  {t.name}
-                </p>
-                <p className="text-xs font-sans font-200 mb-3" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  Verified Buyer
-                </p>
-                {/* Stars */}
-                <div className="flex gap-1">
-                  {[...Array(t.rating)].map((_, j) => (
-                    <span key={j} style={{ color: '#B8963E' }}>★</span>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-          SECTION 9: FEATURED IN PRESS
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="py-20" style={{ backgroundColor: '#1C1C1C' }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <p className="text-xs font-sans font-200 tracking-widest uppercase text-center mb-10" style={{ color: 'rgba(255,255,255,0.3)', letterSpacing: '0.3em' }}>
-            AS FEATURED IN
-          </p>
-          <div className="flex items-center justify-center gap-8 md:gap-16 flex-wrap">
-            {['Vogue', 'GQ', "Harper's Bazaar", 'Elle', 'Hypebeast'].map(brand => (
-              <a key={brand} href="#" className="transition-colors duration-300 text-center" style={{ color: 'rgba(255,255,255,0.2)' }} onMouseEnter={(e) => e.target.style.color = '#B8963E'} onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.2)'}>
-                <span className="font-garamond-italic text-2xl font-300" style={{ fontStyle: 'italic', display: 'block' }}>
-                  {brand}
-                </span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════════════
-          SECTION 10: NEWSLETTER
-          ══════════════════════════════════════════════════════════════ */}
-      <section className="py-24 md:py-32 flex items-center justify-center" style={{ backgroundColor: '#1C1C1C' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-2xl mx-auto px-6 text-center"
-        >
-          <p className="text-xs font-sans font-400 tracking-widest uppercase mb-4" style={{ color: '#B8963E', letterSpacing: '0.3em' }}>
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '560px', margin: '0 auto' }}>
+          <span className="pill-tag reveal" style={{ marginBottom: '24px', display: 'inline-flex', background: 'rgba(184,150,62,0.15)', color: '#B8963E', border: '1px solid rgba(184,150,62,0.2)' }}>
             JOIN THE INNER CIRCLE
-          </p>
-          <h2 
-            className="font-garamond-serif italic text-white mb-4"
-            style={{ fontSize: '52px', fontWeight: 300, fontStyle: 'italic', lineHeight: 1.1 }}
-          >
-            Be the First to Know.
+          </span>
+          <h2 className="reveal" style={{ fontFamily: "'Barlow', sans-serif", fontSize: 'clamp(36px,6vw,64px)', fontWeight: 900, color: 'white', textTransform: 'uppercase', lineHeight: 0.95, marginBottom: '16px', transitionDelay: '0.1s' }}>
+            BE THE FIRST<br />TO KNOW.
           </h2>
-          <p className="text-sm font-sans font-200 mb-8" style={{ color: 'rgba(255,255,255,0.6)' }}>
-            Exclusive drops, early access, and style notes — directly to you.
+          <p className="reveal" style={{ fontFamily: "'Inter', sans-serif", fontSize: '14px', color: 'rgba(255,255,255,0.4)', marginBottom: '40px', lineHeight: 1.6, transitionDelay: '0.2s' }}>
+            Exclusive drops, early access and style notes — directly to you.
           </p>
-          
-          {/* Newsletter Form */}
-          <form onSubmit={(e) => { e.preventDefault(); alert('Thank you for subscribing!'); setEmail('') }} className="flex flex-col sm:flex-row gap-0 max-w-md mx-auto mb-4">
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="Email address"
-              className="flex-1 bg-transparent border-b text-luxury-white placeholder-gray-500 px-0 py-3 text-sm focus:outline-none transition-colors font-200"
-              style={{ borderBottom: '1px solid rgba(184,150,62,0.2)', color: '#FDFCFA' }}
-              onFocus={(e) => e.target.style.borderBottom = '1px solid #B8963E'}
-              onBlur={(e) => e.target.style.borderBottom = '1px solid rgba(184,150,62,0.2)'}
-            />
-            <button 
-              type="submit" 
-              className="px-6 py-3 text-xs font-sans font-400 tracking-widest uppercase transition-all duration-300 whitespace-nowrap"
-              style={{ backgroundColor: '#B8963E', color: '#0F0D0B' }}
-              onMouseEnter={(e) => e.target.style.backgroundColor = '#D4AF6A'}
-              onMouseLeave={(e) => e.target.style.backgroundColor = '#B8963E'}
-            >
+          <div className="reveal" style={{ display: 'flex', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '9999px', overflow: 'hidden', padding: '4px', transitionDelay: '0.3s' }}>
+            <input type="email" placeholder="Your email address"
+              value={email} onChange={e => setEmail(e.target.value)}
+              style={{ flex: 1, padding: '12px 20px', backgroundColor: 'transparent', border: 'none', color: 'white', fontFamily: "'Inter', sans-serif", fontSize: '13px', outline: 'none' }} />
+            <button className="btn-gold" onClick={() => { if (email) { alert('Thank you for subscribing!'); setEmail('') } }}
+              style={{ borderRadius: '9999px', padding: '12px 24px', fontSize: '12px' }}>
               SUBSCRIBE
             </button>
-          </form>
-          <p className="text-xs font-sans font-200" style={{ color: 'rgba(255,255,255,0.4)' }}>
-            We respect your privacy. Unsubscribe anytime.
-          </p>
-        </motion.div>
+          </div>
+          <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(255,255,255,0.2)', marginTop: '16px', letterSpacing: '0.05em' }}>No spam, unsubscribe anytime.</p>
+        </div>
       </section>
+
     </main>
   )
 }
-
