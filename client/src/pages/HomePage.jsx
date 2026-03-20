@@ -61,7 +61,7 @@ export default function HomePage() {
   }, [])
 
   return (
-    <main style={{ marginTop: '9rem' }}>
+    <main style={{ marginTop: '0' }}>
       {/* ══════════════════════════════════════════════════════════════
           HERO SECTION — DARK BOLD WITH FLOATING CARDS
           ══════════════════════════════════════════════════════════════ */}
@@ -372,11 +372,17 @@ export default function HomePage() {
               <img src={col.img} alt={col.title}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"/>
               <div className="absolute inset-0 transition-all duration-350" style={{background: 'linear-gradient(to bottom, rgba(0,0,0,0.55), transparent)'}}/>
-              <div className="absolute bottom-8 left-7">
-                <p className="text-white text-xl font-light mb-1" style={{fontFamily:'var(--font-heading)'}}>{col.title}</p>
-                <p className="text-white text-[10px] tracking-[0.2em] uppercase" style={{fontFamily:'var(--font-body)', opacity: 0.7}}>{col.count}</p>
+              <div className="absolute top-8 left-7">
+                <p className="text-white text-lg font-light mb-1" style={{fontFamily:'var(--font-heading)', fontSize: '20px'}}>{col.title}</p>
+                <p className="text-white text-[10px] tracking-[0.2em] uppercase" style={{fontFamily:'var(--font-body)', opacity: 0.6}}>{col.count}</p>
               </div>
-              <p className="absolute bottom-8 right-7 text-gold-light text-[11px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-350" style={{ color: '#D4AF6A', fontFamily:'var(--font-body)' }}>
+              <p className="absolute bottom-8 right-7 text-gold-light text-[11px] tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity duration-350 px-3 py-2 rounded" style={{ 
+                color: '#D4AF6A', 
+                fontFamily:'var(--font-body)',
+                background: 'rgba(20, 18, 16, 0.85)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(184, 150, 62, 0.2)'
+              }}>
                 EXPLORE →
               </p>
             </div>
@@ -385,8 +391,8 @@ export default function HomePage() {
       </section>
 
       {/* NEW ARRIVALS */}
-      <section className="py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#141210' }}>
-        <div className="flex justify-between items-baseline mb-12 pb-5" style={{ borderBottom: '1px solid rgba(184,150,62,0.2)' }}>
+      <section className="hero-bg texture-overlay relative py-24 px-10 mx-auto" style={{ maxWidth: '1400px', backgroundColor: '#141210' }}>
+        <div className="flex justify-between items-baseline mb-12 pb-5 relative z-10" style={{ borderBottom: '1px solid rgba(184,150,62,0.2)' }}>
           <h2 className="font-light" style={{
             fontFamily:'var(--font-heading)',
             fontSize:'clamp(32px,4vw,50px)',
@@ -399,7 +405,7 @@ export default function HomePage() {
         {loading ? (
           <div className="flex justify-center py-16"><LoadingSpinner /></div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-7">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-7 relative z-10">
             {featured.slice(0, 8).map(product => (
               <ProductCard key={product._id} product={product} />
             ))}

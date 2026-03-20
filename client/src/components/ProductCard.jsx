@@ -75,7 +75,13 @@ export default function ProductCard({ product }) {
         {/* Add to cart */}
         <button
           onClick={e => { e.stopPropagation(); handleAddToCart(e) }}
-          className="btn-gold absolute bottom-0 left-0 right-0 w-full py-4 translate-y-full group-hover:translate-y-0 transition-transform duration-350 text-[10px]"
+          className="absolute bottom-4 left-4 right-4 py-2 px-3 text-[9px] font-medium tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-none"
+          style={{
+            backgroundColor: '#B8963E',
+            color: '#0F0D0B',
+            border: 'none',
+            fontFamily: 'var(--font-body)'
+          }}
         >
           ADD TO CART
         </button>
