@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
 import { FiFilter, FiX } from 'react-icons/fi'
 import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
@@ -69,171 +68,131 @@ export default function ShopPage() {
   const clearFilters = () => setSearchParams({ sort: 'newest' })
 
   const Filters = () => (
-    <div className="space-y-10">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
       {/* Category */}
       <div>
-        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: '#B8963E', borderColor: 'rgba(184,150,62,0.15)', letterSpacing: '0.25em' }}>Category</h3>
-        <div className="space-y-3">
+        <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#0A0A0A', marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>Category</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {CATEGORIES.map(cat => (
-            <label key={cat} className="flex items-center gap-3 cursor-pointer group">
-              <input
-                type="radio"
-                name="category"
-                checked={category === cat}
-                onChange={() => setParam('category', cat === 'All' ? '' : cat)}
-                style={{ accentColor: '#B8963E' }}
-              />
-              <span className={`text-sm font-sans font-200 transition-colors ${category === cat ? 'font-400' : ''}`} style={{ color: category === cat ? '#B8963E' : 'rgba(255,255,255,0.5)' }}>
-                {cat}
-              </span>
-            </label>
+            <button key={cat}
+              onClick={() => setParam('category', cat === 'All' ? '' : cat)}
+              style={{
+                textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer',
+                fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: category === cat ? 600 : 400,
+                color: category === cat ? '#0A0A0A' : 'rgba(0,0,0,0.45)',
+                padding: '4px 0', transition: 'color 200ms ease',
+              }}
+              onMouseEnter={e => e.target.style.color = '#0A0A0A'}
+              onMouseLeave={e => e.target.style.color = category === cat ? '#0A0A0A' : 'rgba(0,0,0,0.45)'}
+            >
+              {cat}
+            </button>
           ))}
         </div>
       </div>
 
       {/* Size */}
       <div>
-        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: '#B8963E', borderColor: 'rgba(184,150,62,0.15)', letterSpacing: '0.25em' }}>Size</h3>
-        <div className="flex flex-wrap gap-3">
+        <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#0A0A0A', marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>Size</h3>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
           {SIZES.map(s => (
-            <button
-              key={s}
+            <button key={s}
               onClick={() => setParam('size', size === s ? '' : s)}
-              className={`px-4 py-2 text-11px font-400 rounded-none border transition-all duration-200 tracking-widest uppercase`}
               style={{
-                fontFamily: 'var(--font-body)',
-                borderColor: size === s ? '#B8963E' : 'rgba(255,255,255,0.15)',
-                backgroundColor: size === s ? 'rgba(184, 150, 62, 0.08)' : 'transparent',
-                color: size === s ? '#B8963E' : 'rgba(255,255,255,0.5)',
+                padding: '8px 14px', borderRadius: '9999px', border: 'none', cursor: 'pointer',
+                fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600,
+                backgroundColor: size === s ? '#0A0A0A' : '#FFFFFF',
+                color: size === s ? 'white' : '#0A0A0A',
+                transition: 'all 200ms ease',
               }}
-            >
-              {s}
-            </button>
+            >{s}</button>
           ))}
         </div>
       </div>
 
       {/* Price range */}
       <div>
-        <h3 className="text-10px font-medium tracking-0.25em uppercase pb-2 border-b mb-4" style={{ fontFamily: 'var(--font-body)', color: '#B8963E', borderColor: 'rgba(184,150,62,0.15)', letterSpacing: '0.25em' }}>Price Range</h3>
-        <div className="flex gap-3 items-center">
-          <input
-            type="number"
-            min="0"
-            max="500"
-            value={minPrice}
+        <h3 style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#0A0A0A', marginBottom: '12px', paddingBottom: '8px', borderBottom: '1px solid rgba(0,0,0,0.08)' }}>Price Range</h3>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <input type="number" min="0" max="50000" value={minPrice}
             onChange={e => setParam('minPrice', e.target.value)}
-            className="w-24 border px-3 py-2 text-sm rounded-none font-sans font-200"
-            placeholder="Min"
-            style={{ borderColor: 'rgba(184,150,62,0.2)', backgroundColor: 'transparent', color: 'rgba(255,255,255,0.7)' }}
-          />
-          <span style={{ color: 'rgba(255,255,255,0.35)' }} className="text-sm font-200">–</span>
-          <input
-            type="number"
-            min="0"
-            max="1000"
-            value={maxPrice}
+            style={{ width: '80px', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '8px', padding: '8px 10px', fontSize: '12px', fontFamily: "'Inter', sans-serif", backgroundColor: 'white', color: '#0A0A0A', outline: 'none' }}
+            placeholder="Min" />
+          <span style={{ color: 'rgba(0,0,0,0.3)', fontSize: '12px' }}>–</span>
+          <input type="number" min="0" max="100000" value={maxPrice}
             onChange={e => setParam('maxPrice', e.target.value)}
-            className="w-24 border px-3 py-2 text-sm rounded-none font-sans font-200"
-            placeholder="Max"
-            style={{ borderColor: 'rgba(184,150,62,0.2)', backgroundColor: 'transparent', color: 'rgba(255,255,255,0.7)' }}
-          />
+            style={{ width: '80px', border: '1px solid rgba(0,0,0,0.15)', borderRadius: '8px', padding: '8px 10px', fontSize: '12px', fontFamily: "'Inter', sans-serif", backgroundColor: 'white', color: '#0A0A0A', outline: 'none' }}
+            placeholder="Max" />
         </div>
       </div>
 
-      <button
-        onClick={clearFilters}
-        className="w-full py-3 text-11px font-400 tracking-widest uppercase transition-all duration-300 rounded-none"
-        style={{ fontFamily: 'var(--font-body)', backgroundColor: '#B8963E', color: '#0F0D0B' }}
-        onMouseEnter={(e) => e.target.style.backgroundColor = '#D4AF6A'}
-        onMouseLeave={(e) => e.target.style.backgroundColor = '#B8963E'}
-      >
+      <button onClick={clearFilters} className="btn-black" style={{ width: '100%', borderRadius: '9999px' }}>
         CLEAR FILTERS
       </button>
     </div>
   )
 
   return (
-    <div className="pt-20" style={{ backgroundColor: '#0F0D0B' }}>
-      {/* PAGE HEADER BANNER */}
-      <div className="h-48 flex flex-col items-center justify-center mb-16" style={{ backgroundColor: '#141210' }}>
-        <p className="text-xs font-sans font-400 tracking-widest uppercase mb-4" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.3em' }}>
-          <span>HOME</span> / <span>SHOP</span>
+    <div style={{ backgroundColor: '#ECEEF0', minHeight: '100vh' }}>
+      {/* PAGE HEADER */}
+      <div style={{ backgroundColor: '#E4E6E8', padding: '48px 24px', textAlign: 'center' }}>
+        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, color: 'rgba(0,0,0,0.35)', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: '12px' }}>
+          HOME / SHOP
         </p>
-        <h1 className="font-garamond-serif" style={{ fontSize: '64px', fontWeight: 300, color: '#FDFCFA', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: "'Barlow', sans-serif", fontSize: 'clamp(40px,7vw,80px)', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', lineHeight: 0.95, letterSpacing: '-0.02em' }}>
           THE COLLECTION
         </h1>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="flex gap-12">
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '48px 24px 96px' }}>
+        <div style={{ display: 'flex', gap: '48px' }}>
           {/* Desktop Sidebar */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-32">
+          <aside className="hidden lg:block" style={{ width: '220px', flexShrink: 0 }}>
+            <div style={{ position: 'sticky', top: '88px' }}>
               <Filters />
             </div>
           </aside>
 
           {/* Main content */}
-          <div className="flex-1 min-w-0">
+          <div style={{ flex: 1, minWidth: 0 }}>
             {/* Top bar */}
-            <div className="flex items-center justify-between mb-12 gap-4 flex-wrap">
-              <p className="text-xs font-sans font-200" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px', gap: '16px', flexWrap: 'wrap' }}>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(0,0,0,0.45)', fontWeight: 400 }}>
                 {loading ? 'Loading...' : `${count} product${count !== 1 ? 's' : ''} found`}
               </p>
-              <div className="flex items-center gap-6">
-                {/* Mobile filter button */}
-                <button
-                  onClick={() => setMobileFilter(true)}
-                  className="lg:hidden flex items-center gap-2 text-xs font-sans font-400 tracking-widest uppercase transition-colors"
-                  style={{ color: '#B8963E' }}
-                  onMouseEnter={(e) => e.target.style.color = '#D4AF6A'}
-                  onMouseLeave={(e) => e.target.style.color = '#B8963E'}
-                >
-                  <FiFilter size={16} strokeWidth={1.5} /> FILTER
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <button onClick={() => setMobileFilter(true)} className="lg:hidden"
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px', fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, color: '#0A0A0A', background: 'none', border: 'none', cursor: 'pointer' }}>
+                  <FiFilter size={14} /> FILTER
                 </button>
-                <select
-                  value={sort}
-                  onChange={e => setParam('sort', e.target.value)}
-                  className="border text-xs font-sans font-200 rounded-none px-4 py-2 bg-transparent focus:outline-none"
-                  style={{ borderColor: 'rgba(184,150,62,0.2)', color: 'rgba(255,255,255,0.7)' }}
-                  onFocus={(e) => e.target.style.borderColor = '#B8963E'}
-                  onBlur={(e) => e.target.style.borderColor = 'rgba(184,150,62,0.2)'}
-                >
+                <select value={sort} onChange={e => setParam('sort', e.target.value)}
+                  style={{ border: '1px solid rgba(0,0,0,0.12)', borderRadius: '9999px', padding: '8px 16px', fontSize: '12px', fontFamily: "'Inter', sans-serif", fontWeight: 600, backgroundColor: 'white', color: '#0A0A0A', cursor: 'pointer', outline: 'none' }}>
                   {SORTS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
                 </select>
               </div>
             </div>
 
-            {/* Products Grid */}
             {loading ? (
-              <div className="flex justify-center py-24"><LoadingSpinner size="lg" /></div>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '96px 0' }}><LoadingSpinner /></div>
             ) : products.length === 0 ? (
               <EmptyState title="No products found" desc="Try adjusting your filters" linkTo="/shop" linkLabel="Clear Filters" />
             ) : (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-7">
-                  {products.map(product => (
-                    <ProductCard key={product._id} product={product} />
-                  ))}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
+                  {products.map(product => <ProductCard key={product._id} product={product} />)}
                 </div>
-
-                {/* Pagination */}
                 {pages > 1 && (
-                  <div className="flex justify-center gap-3 mt-16">
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '48px' }}>
                     {Array.from({ length: pages }, (_, i) => i + 1).map(p => (
-                      <button
-                        key={p}
-                        onClick={() => setParam('page', String(p))}
-                        className={`w-10 h-10 text-xs font-sans font-400 flex items-center justify-center rounded-none transition-all duration-300 border`}
+                      <button key={p} onClick={() => setParam('page', String(p))}
                         style={{
-                          borderColor: page === p ? '#B8963E' : 'rgba(184,150,62,0.2)',
-                          backgroundColor: page === p ? '#B8963E' : 'transparent',
-                          color: page === p ? '#0F0D0B' : 'rgba(255,255,255,0.7)',
+                          width: '40px', height: '40px', borderRadius: '50%', border: 'none', cursor: 'pointer',
+                          fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600,
+                          backgroundColor: page === p ? '#0A0A0A' : 'white',
+                          color: page === p ? 'white' : '#0A0A0A',
+                          transition: 'all 200ms ease',
                         }}
-                      >
-                        {p}
-                      </button>
+                      >{p}</button>
                     ))}
                   </div>
                 )}
@@ -244,38 +203,18 @@ export default function ShopPage() {
       </div>
 
       {/* Mobile filter drawer */}
-      <AnimatePresence>
-        {mobileFilter && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/40 z-40 lg:hidden"
-              onClick={() => setMobileFilter(false)}
-            />
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'tween' }}
-              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl p-8 max-h-[85vh] overflow-y-auto"
-              style={{ backgroundColor: '#0F0D0B' }}
-            >
-              <div className="flex justify-between items-center mb-8">
-                <h2 className="font-garamond-serif text-2xl font-300" style={{ color: '#FDFCFA' }}>Filters</h2>
-                <button onClick={() => setMobileFilter(false)} style={{ color: '#FDFCFA' }}>
-                  <FiX size={24} strokeWidth={1.5} />
-                </button>
-              </div>
-              <Filters />
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {mobileFilter && (
+        <>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.3)', zIndex: 40 }} onClick={() => setMobileFilter(false)} />
+          <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50, borderRadius: '24px 24px 0 0', padding: '32px 24px', maxHeight: '85vh', overflowY: 'auto', backgroundColor: 'white' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+              <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '24px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A' }}>Filters</h2>
+              <button onClick={() => setMobileFilter(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#0A0A0A' }}><FiX size={24} /></button>
+            </div>
+            <Filters />
+          </div>
+        </>
+      )}
     </div>
   )
 }
-
-
-

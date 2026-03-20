@@ -1,37 +1,30 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import api from '../api/axios'
 import useCartStore from '../store/useCartStore'
-import useAuthStore from '../store/useAuthStore'
 import useScrollReveal from '../hooks/useScrollReveal'
 import toast from 'react-hot-toast'
 import LoadingSpinner from '../components/LoadingSpinner'
 
-const steps = ['CART', 'SHIPPING', 'PAYMENT', 'CONFIRM']
+const STEPS = ['SHIPPING', 'PAYMENT', 'CONFIRM']
 
 const formatPrice = (price) => {
   if (!price) return '₹0'
-  return '₹' + Math.round(price * 83).toLocaleString('en-IN')
+  return '₹' + Math.round(price).toLocaleString('en-IN')
 }
 
 export default function CheckoutPage() {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(0)
   const [focusedField, setFocusedField] = useState(null)
-  const [shipping, setShipping] = useState({
-    fullName: '', email: '', phone: '', address: '', address2: '',
-    city: '', state: '', postal: '', country: 'IN',
-  })
+  const [shipping, setShipping] = useState({ fullName: '', email: '', phone: '', address: '', address2: '', city: '', state: '', postal: '', country: 'IN' })
   const [loading, setLoading] = useState(false)
   const { items, total: getTotal, clearCart } = useCartStore()
-  const { user } = useAuthStore()
   const navigate = useNavigate()
-
   useScrollReveal()
 
   const cartTotal = getTotal()
-  const shippingCost = cartTotal >= 100 ? 0 : 10
-  const tax = cartTotal * 0.08
+  const shippingCost = cartTotal >= 4999 ? 0 : 299
+  const tax = cartTotal * 0.18
   const orderTotal = cartTotal + shippingCost + tax
 
   const handlePlaceOrder = async () => {
@@ -42,26 +35,15 @@ export default function CheckoutPage() {
         qty: item.qty,
         image: item.product?.images?.[0]?.url || '',
         price: item.product?.discountPrice || item.product?.price || 0,
-        size: item.size,
-        color: item.color,
+        size: item.size, color: item.color,
         product: item.product?._id,
       }))
-
       const res = await api.post('/orders', {
         orderItems,
-        shippingAddress: {
-          address: shipping.address + (shipping.address2 ? `, ${shipping.address2}` : ''),
-          city: shipping.city,
-          postalCode: shipping.postal,
-          country: shipping.country,
-        },
+        shippingAddress: { address: shipping.address + (shipping.address2 ? `, ${shipping.address2}` : ''), city: shipping.city, postalCode: shipping.postal, country: shipping.country },
         paymentMethod: 'stripe',
-        itemsPrice: cartTotal,
-        shippingPrice: shippingCost,
-        taxPrice: tax,
-        totalPrice: orderTotal,
+        itemsPrice: cartTotal, shippingPrice: shippingCost, taxPrice: tax, totalPrice: orderTotal,
       })
-
       await clearCart()
       navigate(`/order-success?orderId=${res.data.order._id}`)
     } catch (err) {
@@ -73,457 +55,151 @@ export default function CheckoutPage() {
 
   const setField = (key) => (e) => setShipping(s => ({ ...s, [key]: e.target.value }))
 
+  const inputStyle = (field) => ({
+    width: '100%', padding: '12px 14px', backgroundColor: 'white',
+    border: `1px solid ${focusedField === field ? '#0A0A0A' : 'rgba(0,0,0,0.12)'}`,
+    borderRadius: '12px', fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#0A0A0A', outline: 'none', transition: 'border-color 200ms ease',
+  })
+
+  const FieldGroup = ({ field, label, type = 'text', placeholder }) => (
+    <div>
+      <label style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#0A0A0A', display: 'block', marginBottom: '6px' }}>{label}</label>
+      <input type={type} value={shipping[field]} onChange={setField(field)}
+        onFocus={() => setFocusedField(field)} onBlur={() => setFocusedField(null)}
+        style={inputStyle(field)} placeholder={placeholder} />
+    </div>
+  )
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="pt-20 pb-20"
-      style={{ backgroundColor: '#0F0D0B' }}
-    >
-      <div className="max-w-6xl mx-auto px-6">
+    <div style={{ backgroundColor: '#ECEEF0', minHeight: '100vh', paddingBottom: '80px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '48px 24px' }}>
+
+        <h1 style={{ fontFamily: "'Barlow', sans-serif", fontSize: 'clamp(32px,6vw,56px)', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', letterSpacing: '-0.02em', marginBottom: '32px' }}>CHECKOUT</h1>
+
         {/* Progress Steps */}
-        <div className="flex items-center justify-center gap-2 mb-20">
-          {steps.map((s, i) => (
-            <div key={s} className="flex items-center">
-              <div className="flex items-center gap-2 px-3" style={{ color: i <= step ? '#B8963E' : 'rgba(255,255,255,0.35)' }}>
-                <span
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-sans font-400 transition-all"
-                  style={{
-                    backgroundColor: i < step ? '#B8963E' : i === step ? '#B8963E' : 'rgba(184,150,62,0.2)',
-                    color: i < step || i === step ? '#0F0D0B' : 'rgba(255,255,255,0.35)',
-                  }}
-                >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '40px' }}>
+          {STEPS.map((s, i) => (
+            <div key={s} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 700, backgroundColor: i <= step ? '#0A0A0A' : 'white', color: i <= step ? 'white' : 'rgba(0,0,0,0.35)', border: '1px solid rgba(0,0,0,0.1)', transition: 'all 300ms ease' }}>
                   {i < step ? '✓' : i + 1}
-                </span>
-                <span className="text-xs font-sans font-300 hidden sm:inline" style={{ color: '#FDFCFA' }}>{s}</span>
+                </div>
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: i <= step ? '#0A0A0A' : 'rgba(0,0,0,0.35)' }}>{s}</span>
               </div>
-              {i < steps.length - 1 && (
-                <div
-                  className="w-12 h-px mx-1"
-                  style={{ backgroundColor: i < step ? '#B8963E' : 'rgba(184,150,62,0.2)' }}
-                />
+              {i < STEPS.length - 1 && (
+                <div style={{ width: '32px', height: '1px', backgroundColor: i < step ? '#0A0A0A' : 'rgba(0,0,0,0.15)', transition: 'background 300ms ease' }} />
               )}
             </div>
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-12">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '40px' }}>
           {/* Form */}
-          <div className="lg:col-span-2">
-            {step === 1 && (
-              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
-                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: '#FDFCFA' }}>
-                  SHIPPING INFORMATION
-                </h2>
-
-                <div className="space-y-8">
-                  {/* Full Name */}
+          <div>
+            {step === 0 && (
+              <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '32px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '24px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', marginBottom: '24px' }}>Shipping Information</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <FieldGroup field="fullName" label="Full Name" placeholder="Jane Smith" />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <FieldGroup field="email" label="Email" type="email" placeholder="you@example.com" />
+                    <FieldGroup field="phone" label="Phone" placeholder="+91 9876543210" />
+                  </div>
+                  <FieldGroup field="address" label="Address" placeholder="123 MG Road" />
+                  <FieldGroup field="address2" label="Apartment, Suite (Optional)" placeholder="Apt 4B" />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+                    <FieldGroup field="city" label="City" placeholder="Bangalore" />
+                    <FieldGroup field="state" label="State" placeholder="KA" />
+                    <FieldGroup field="postal" label="Postal Code" placeholder="560001" />
+                  </div>
                   <div>
-                    <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'fullName' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                      Full Name
-                    </label>
-                    <input
-                      className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                      style={{
-                        borderBottom: focusedField === 'fullName' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                        color: '#FDFCFA',
-                      }}
-                      onFocus={() => setFocusedField('fullName')}
-                      onBlur={() => setFocusedField(null)}
-                      value={shipping.fullName}
-                      onChange={setField('fullName')}
-                      placeholder="Jane Smith"
-                      required
-                    />
-                  </div>
-
-                  {/* Email & Phone */}
-                  <div className="grid md:grid-cols-2 gap-8">
-                    <div>
-                      <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'email' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                        style={{
-                          borderBottom: focusedField === 'email' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                          color: '#FDFCFA',
-                        }}
-                        onFocus={() => setFocusedField('email')}
-                        onBlur={() => setFocusedField(null)}
-                        value={shipping.email}
-                        onChange={setField('email')}
-                        placeholder="you@example.com"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'phone' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                        Phone
-                      </label>
-                      <input
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                        style={{
-                          borderBottom: focusedField === 'phone' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                          color: '#FDFCFA',
-                        }}
-                        onFocus={() => setFocusedField('phone')}
-                        onBlur={() => setFocusedField(null)}
-                        value={shipping.phone}
-                        onChange={setField('phone')}
-                        placeholder="+91 9876543210"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Address */}
-                  <div>
-                    <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'address' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                      Address
-                    </label>
-                    <input
-                      className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                      style={{
-                        borderBottom: focusedField === 'address' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                        color: '#FDFCFA',
-                      }}
-                      onFocus={() => setFocusedField('address')}
-                      onBlur={() => setFocusedField(null)}
-                      value={shipping.address}
-                      onChange={setField('address')}
-                      placeholder="123 MG Road"
-                      required
-                    />
-                  </div>
-
-                  {/* Address 2 */}
-                  <div>
-                    <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'address2' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                      Apartment, Suite, etc. (Optional)
-                    </label>
-                    <input
-                      className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                      style={{
-                        borderBottom: focusedField === 'address2' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                        color: '#FDFCFA',
-                      }}
-                      onFocus={() => setFocusedField('address2')}
-                      onBlur={() => setFocusedField(null)}
-                      value={shipping.address2}
-                      onChange={setField('address2')}
-                      placeholder="Apt 4B"
-                    />
-                  </div>
-
-                  {/* City, State, Postal */}
-                  <div className="grid md:grid-cols-3 gap-8">
-                    <div>
-                      <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'city' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                        City
-                      </label>
-                      <input
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                        style={{
-                          borderBottom: focusedField === 'city' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                          color: '#FDFCFA',
-                        }}
-                        onFocus={() => setFocusedField('city')}
-                        onBlur={() => setFocusedField(null)}
-                        value={shipping.city}
-                        onChange={setField('city')}
-                        placeholder="Bangalore"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'state' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                        State
-                      </label>
-                      <input
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                        style={{
-                          borderBottom: focusedField === 'state' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                          color: '#FDFCFA',
-                        }}
-                        onFocus={() => setFocusedField('state')}
-                        onBlur={() => setFocusedField(null)}
-                        value={shipping.state}
-                        onChange={setField('state')}
-                        placeholder="KA"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'postal' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                        Postal Code
-                      </label>
-                      <input
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                        style={{
-                          borderBottom: focusedField === 'postal' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                          color: '#FDFCFA',
-                        }}
-                        onFocus={() => setFocusedField('postal')}
-                        onBlur={() => setFocusedField(null)}
-                        value={shipping.postal}
-                        onChange={setField('postal')}
-                        placeholder="560001"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Country */}
-                  <div>
-                    <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'country' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                      Country
-                    </label>
-                    <select
-                      className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                      style={{
-                        borderBottom: focusedField === 'country' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                        color: '#FDFCFA',
-                      }}
-                      onFocus={() => setFocusedField('country')}
-                      onBlur={() => setFocusedField(null)}
-                      value={shipping.country}
-                      onChange={setField('country')}
-                    >
+                    <label style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#0A0A0A', display: 'block', marginBottom: '6px' }}>COUNTRY</label>
+                    <select value={shipping.country} onChange={setField('country')} style={inputStyle('country')}>
                       <option value="IN">India</option>
                       <option value="US">United States</option>
                       <option value="GB">United Kingdom</option>
                       <option value="AU">Australia</option>
                     </select>
                   </div>
+                  <button className="btn-black" style={{ width: '100%', marginTop: '8px' }}
+                    onClick={() => { if (!shipping.fullName || !shipping.address || !shipping.city || !shipping.postal) { toast.error('Please fill all required fields'); return } setStep(1) }}>
+                    CONTINUE TO PAYMENT
+                  </button>
                 </div>
-
-                {/* Next Button */}
-                <button
-                  onClick={() => {
-                    if (!shipping.fullName || !shipping.address || !shipping.city || !shipping.postal) {
-                      toast.error('Please fill in all required fields')
-                      return
-                    }
-                    setStep(2)
-                  }}
-                  className="w-full py-4 mt-12 text-xs font-sans font-400 tracking-widest uppercase rounded-none transition-all duration-300"
-                  style={{ backgroundColor: '#B8963E', color: '#0F0D0B' }}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#D4AF6A'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#B8963E'}
-                >
-                  CONTINUE TO PAYMENT
-                </button>
-              </motion.div>
+              </div>
             )}
 
-            {step === 2 && (
-              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
-                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: '#FDFCFA' }}>
-                  PAYMENT METHOD
-                </h2>
+            {step === 1 && (
+              <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '32px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '24px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', marginBottom: '24px' }}>Payment Method</h2>
 
-                <div
-                  className="p-8 mb-12"
-                  style={{
-                    backgroundColor: '#141210',
-                    border: '1px solid rgba(184,150,62,0.15)',
-                  }}
-                >
-                  <p className="text-sm font-sans font-200 mb-6" style={{ color: '#FDFCFA' }}>
-                    This is a demo store. Use test card details:
-                  </p>
-                  <div className="space-y-3 text-sm font-sans font-300">
-                    <p style={{ color: '#B8963E' }}>
-                      <span style={{ color: '#FDFCFA' }}>Card:</span> 4242 4242 4242 4242
+                <div style={{ backgroundColor: '#F0F2F4', borderRadius: '14px', padding: '16px', marginBottom: '24px', border: '1px solid rgba(0,0,0,0.08)' }}>
+                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: '#0A0A0A', marginBottom: '8px' }}>Demo store — use test card:</p>
+                  {[['Card', '4242 4242 4242 4242'], ['Expiry', 'Any future date'], ['CVV', 'Any 3 digits']].map(([k, v]) => (
+                    <p key={k} style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(0,0,0,0.55)', marginBottom: '4px' }}>
+                      <span style={{ fontWeight: 600, color: '#0A0A0A' }}>{k}:</span> {v}
                     </p>
-                    <p style={{ color: '#B8963E' }}>
-                      <span style={{ color: '#FDFCFA' }}>Expiry:</span> Any future date
-                    </p>
-                    <p style={{ color: '#B8963E' }}>
-                      <span style={{ color: '#FDFCFA' }}>CVV:</span> Any 3 digits
-                    </p>
-                  </div>
+                  ))}
                 </div>
 
-                <div className="space-y-8 mb-12">
-                  <div>
-                    <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'card' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                      Card Number
-                    </label>
-                    <input
-                      className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                      style={{
-                        borderBottom: focusedField === 'card' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                        color: '#FDFCFA',
-                      }}
-                      onFocus={() => setFocusedField('card')}
-                      onBlur={() => setFocusedField(null)}
-                      placeholder="4242 4242 4242 4242"
-                    />
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-8">
-                    <div>
-                      <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'expiry' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                        Expiry Date
-                      </label>
-                      <input
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                        style={{
-                          borderBottom: focusedField === 'expiry' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                          color: '#FDFCFA',
-                        }}
-                        onFocus={() => setFocusedField('expiry')}
-                        onBlur={() => setFocusedField(null)}
-                        placeholder="MM / YY"
-                      />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+                  {[['card', 'CARD NUMBER', '4242 4242 4242 4242'], ['expiry', 'EXPIRY', 'MM / YY'], ['cvv', 'CVV', '123'], ['namecard', 'NAME ON CARD', 'Jane Smith']].map(([f, l, p]) => (
+                    <div key={f}>
+                      <label style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#0A0A0A', display: 'block', marginBottom: '6px' }}>{l}</label>
+                      <input placeholder={p} onFocus={() => setFocusedField(f)} onBlur={() => setFocusedField(null)} style={inputStyle(f)} />
                     </div>
-                    <div>
-                      <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'cvv' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                        CVV
-                      </label>
-                      <input
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                        style={{
-                          borderBottom: focusedField === 'cvv' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                          color: '#FDFCFA',
-                        }}
-                        onFocus={() => setFocusedField('cvv')}
-                        onBlur={() => setFocusedField(null)}
-                        placeholder="123"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-sans font-400 uppercase tracking-widest block mb-4" style={{ color: focusedField === 'namecard' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.2em' }}>
-                      Name on Card
-                    </label>
-                    <input
-                      className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                      style={{
-                        borderBottom: focusedField === 'namecard' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                        color: '#FDFCFA',
-                      }}
-                      onFocus={() => setFocusedField('namecard')}
-                      onBlur={() => setFocusedField(null)}
-                      placeholder="Jane Smith"
-                    />
-                  </div>
+                  ))}
                 </div>
 
-                {/* Actions */}
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    onClick={() => setStep(1)}
-                    className="py-4 text-xs font-sans font-400 tracking-widest uppercase rounded-none transition-all duration-300 border"
-                    style={{
-                      borderColor: 'rgba(184,150,62,0.2)',
-                      color: '#FDFCFA',
-                    }}
-                    onMouseEnter={(e) => e.target.style.borderColor = '#B8963E'}
-                    onMouseLeave={(e) => e.target.style.borderColor = 'rgba(184,150,62,0.2)'}
-                  >
-                    BACK
-                  </button>
-                  <button
-                    onClick={handlePlaceOrder}
-                    disabled={loading}
-                    className="py-4 text-xs font-sans font-400 tracking-widest uppercase rounded-none transition-all duration-300 flex items-center justify-center gap-2"
-                    style={{
-                      backgroundColor: loading ? 'rgba(184,150,62,0.4)' : '#B8963E',
-                      color: '#0F0D0B',
-                    }}
-                    onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = '#D4AF6A')}
-                    onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = '#B8963E')}
-                  >
-                    {loading ? <><LoadingSpinner size="sm" /> PLACING...</> : `PLACE ORDER — ${formatPrice(orderTotal)}`}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <button className="btn-white" style={{ border: '1px solid rgba(0,0,0,0.12)' }} onClick={() => setStep(0)}>BACK</button>
+                  <button className="btn-black" onClick={handlePlaceOrder} disabled={loading} style={{ opacity: loading ? 0.6 : 1 }}>
+                    {loading ? <><LoadingSpinner /> PLACING...</> : `PLACE ORDER`}
                   </button>
                 </div>
-              </motion.div>
+              </div>
             )}
           </div>
 
-          {/* Order Summary Sidebar */}
-          <div className="lg:sticky lg:top-28 self-start">
-            <div
-              className="p-8"
-              style={{
-                backgroundColor: '#141210',
-                border: '1px solid rgba(184,150,62,0.15)',
-              }}
-            >
-              <h3 className="font-garamond-serif text-2xl font-300 mb-8" style={{ color: '#FDFCFA' }}>
-                ORDER SUMMARY
-              </h3>
-
-              {/* Items */}
-              <div className="space-y-4 mb-8 max-h-80 overflow-y-auto">
+          {/* Summary Sidebar */}
+          <div>
+            <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '24px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)', position: 'sticky', top: '88px' }}>
+              <h3 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '20px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', marginBottom: '20px' }}>Order Summary</h3>
+              <div style={{ maxHeight: '280px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
                 {items.map(item => {
                   const product = item.product || {}
                   const price = product.discountPrice || product.price || 0
                   return (
-                    <div key={item._id} className="flex gap-3">
-                      <div className="relative flex-shrink-0">
-                        <img
-                          src={product.images?.[0]?.url}
-                          alt={product.name}
-                          className="w-12 h-16 object-cover"
-                          style={{ backgroundColor: '#1A1612' }}
-                        />
-                        <span
-                          className="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-xs font-sans font-400"
-                          style={{ backgroundColor: '#B8963E', color: '#0F0D0B' }}
-                        >
-                          {item.qty}
-                        </span>
+                    <div key={item._id} style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <div style={{ position: 'relative', flexShrink: 0 }}>
+                        <img src={product.images?.[0]?.url} alt={product.name} style={{ width: '44px', height: '56px', objectFit: 'cover', borderRadius: '8px', backgroundColor: '#E4E6E8' }} />
+                        <span style={{ position: 'absolute', top: '-6px', right: '-6px', width: '18px', height: '18px', borderRadius: '50%', backgroundColor: '#0A0A0A', color: 'white', fontFamily: "'Inter', sans-serif", fontSize: '9px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{item.qty}</span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-sans font-300 line-clamp-2" style={{ color: '#FDFCFA' }}>
-                          {product.name}
-                        </p>
-                        {item.size && (
-                          <p className="text-xs font-sans font-200 mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                            {item.size} · {item.color}
-                          </p>
-                        )}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 500, color: '#0A0A0A', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{product.name}</p>
+                        {item.size && <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(0,0,0,0.4)' }}>{item.size}</p>}
                       </div>
-                      <span className="text-xs font-sans font-300 flex-shrink-0" style={{ color: '#FDFCFA' }}>
-                        {formatPrice(price * item.qty)}
-                      </span>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, color: '#0A0A0A', flexShrink: 0 }}>{formatPrice(price * item.qty)}</span>
                     </div>
                   )
                 })}
               </div>
-
-              {/* Summary totals */}
-              <div className="space-y-4 pb-8 mb-8" style={{ borderBottom: '1px solid rgba(184,150,62,0.15)' }}>
-                <div className="flex justify-between text-xs font-sans font-200" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                  <span>SUBTOTAL</span>
-                  <span>{formatPrice(cartTotal)}</span>
+              <div style={{ borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {[{ label: 'Subtotal', val: formatPrice(cartTotal) }, { label: 'Shipping', val: shippingCost === 0 ? 'FREE' : formatPrice(shippingCost), gold: shippingCost === 0 }, { label: 'GST (18%)', val: formatPrice(tax) }].map(row => (
+                  <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(0,0,0,0.45)' }}>{row.label}</span>
+                    <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 500, color: row.gold ? '#B8963E' : '#0A0A0A' }}>{row.val}</span>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid rgba(0,0,0,0.08)', marginTop: '4px' }}>
+                  <span style={{ fontFamily: "'Barlow', sans-serif", fontSize: '16px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A' }}>TOTAL</span>
+                  <span style={{ fontFamily: "'Barlow', sans-serif", fontSize: '18px', fontWeight: 900, color: '#0A0A0A' }}>{formatPrice(orderTotal)}</span>
                 </div>
-                <div className="flex justify-between text-xs font-sans font-200" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                  <span>SHIPPING</span>
-                  <span style={{ color: shippingCost === 0 ? '#B8963E' : 'rgba(255,255,255,0.35)' }}>
-                    {shippingCost === 0 ? 'FREE' : formatPrice(shippingCost)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs font-sans font-200" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                  <span>TAX (8%)</span>
-                  <span>{formatPrice(tax)}</span>
-                </div>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="text-xs font-sans font-400" style={{ color: 'rgba(255,255,255,0.5)' }}>TOTAL</span>
-                <span className="text-lg font-sans font-400" style={{ color: '#B8963E' }}>
-                  {formatPrice(orderTotal)}
-                </span>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

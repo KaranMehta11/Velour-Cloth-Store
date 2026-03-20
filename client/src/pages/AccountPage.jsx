@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { useSearchParams, Link } from 'react-router-dom'
 import api from '../api/axios'
 import useAuthStore from '../store/useAuthStore'
 import useWishlistStore from '../store/useWishlistStore'
@@ -13,12 +12,12 @@ import toast from 'react-hot-toast'
 const TABS = [
   { id: 'orders', label: 'MY ORDERS' },
   { id: 'wishlist', label: 'WISHLIST' },
-  { id: 'profile', label: 'PROFILE SETTINGS' },
+  { id: 'profile', label: 'PROFILE' },
 ]
 
 const formatPrice = (price) => {
   if (!price) return '₹0'
-  return '₹' + Math.round(price * 83).toLocaleString('en-IN')
+  return '₹' + Math.round(price).toLocaleString('en-IN')
 }
 
 export default function AccountPage() {
@@ -32,14 +31,12 @@ export default function AccountPage() {
   const [profileForm, setProfileForm] = useState({ name: '', email: '' })
   const [savingProfile, setSavingProfile] = useState(false)
 
-  const { user, hydrate } = useAuthStore()
+  const { user } = useAuthStore()
   const { items: wishlist, fetchWishlist } = useWishlistStore()
 
   useEffect(() => {
     document.title = 'My Account — Velour'
-    if (user) {
-      setProfileForm({ name: user.name, email: user.email })
-    }
+    if (user) setProfileForm({ name: user.name, email: user.email })
   }, [user])
 
   useScrollReveal()
@@ -47,109 +44,55 @@ export default function AccountPage() {
   useEffect(() => {
     if (tab === 'orders') {
       setOrdersLoading(true)
-      api.get('/orders/my-orders')
-        .then(res => setOrders(res.data.orders || []))
-        .catch(() => {})
-        .finally(() => setOrdersLoading(false))
+      api.get('/orders/my-orders').then(res => setOrders(res.data.orders || [])).catch(() => {}).finally(() => setOrdersLoading(false))
     }
-    if (tab === 'wishlist') {
-      fetchWishlist()
-    }
+    if (tab === 'wishlist') fetchWishlist()
   }, [tab])
 
   const handleSaveProfile = async (e) => {
     e.preventDefault()
     setSavingProfile(true)
-    try {
-      toast.success('Profile updated successfully!')
-    } catch (err) {
-      toast.error('Failed to update profile')
-    } finally {
-      setSavingProfile(false)
-    }
+    try { toast.success('Profile updated successfully!') } catch { toast.error('Failed to update profile') } finally { setSavingProfile(false) }
   }
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center pt-20" style={{ backgroundColor: '#0F0D0B' }}>
-        <div className="text-center">
-          <h2 className="font-garamond-serif text-2xl font-300 mb-4" style={{ color: '#FDFCFA' }}>Please Log In</h2>
-          <a href="/login" className="text-xs font-sans font-400 tracking-widest uppercase hover-underline" style={{ color: '#B8963E' }}>
-            GO TO LOGIN
-          </a>
-        </div>
+  if (!user) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ECEEF0' }}>
+      <div style={{ textAlign: 'center' }}>
+        <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '28px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', marginBottom: '12px' }}>Please Sign In</h2>
+        <Link to="/login" className="btn-black">GO TO LOGIN</Link>
       </div>
-    )
-  }
+    </div>
+  )
+
+  const inputStyle = (field) => ({
+    width: '100%', padding: '12px 14px', backgroundColor: 'white',
+    border: `1px solid ${focusedField === field ? '#0A0A0A' : 'rgba(0,0,0,0.12)'}`,
+    borderRadius: '12px', fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#0A0A0A', outline: 'none',
+  })
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="pt-20 pb-20"
-      style={{ backgroundColor: '#0F0D0B' }}
-    >
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Header */}
-        <div className="mb-16">
-          <h1 className="font-garamond-serif text-5xl font-300" style={{ color: '#FDFCFA' }}>
-            MY ACCOUNT
-          </h1>
-          <div className="h-px mt-4" style={{ backgroundColor: 'rgba(184,150,62,0.15)' }} />
-        </div>
+    <div style={{ backgroundColor: '#ECEEF0', minHeight: '100vh', paddingBottom: '80px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '48px 24px' }}>
+        <h1 style={{ fontFamily: "'Barlow', sans-serif", fontSize: 'clamp(32px,6vw,64px)', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', letterSpacing: '-0.02em', marginBottom: '8px' }}>MY ACCOUNT</h1>
+        <div style={{ height: '1px', backgroundColor: 'rgba(0,0,0,0.08)', marginBottom: '40px' }} />
 
-        <div className="grid md:grid-cols-4 gap-12">
+        <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: '32px' }}>
           {/* Sidebar */}
-          <div className="md:col-span-1">
-            {/* Profile Card */}
-            <div
-              className="p-8 mb-8 text-center rounded-none"
-              style={{
-                backgroundColor: '#141210',
-                border: '1px solid rgba(184,150,62,0.15)',
-              }}
-            >
-              <div
-                className="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-garamond-serif font-300 mx-auto mb-6"
-                style={{ backgroundColor: '#B8963E', color: '#0F0D0B' }}
-              >
+          <div>
+            <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '24px', textAlign: 'center', marginBottom: '16px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+              <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#0A0A0A', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontFamily: "'Barlow', sans-serif", fontSize: '24px', fontWeight: 900, color: 'white' }}>
                 {user.name[0].toUpperCase()}
               </div>
-              <h2 className="font-garamond-serif text-2xl font-300 mb-1" style={{ color: '#FDFCFA' }}>
-                {user.name}
-              </h2>
-              <p className="text-xs font-sans font-200" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                {user.email}
-              </p>
+              <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '18px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', marginBottom: '4px' }}>{user.name}</h2>
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(0,0,0,0.4)' }}>{user.email}</p>
               {user.role === 'admin' && (
-                <span
-                  className="inline-block mt-4 text-xs font-sans font-400 tracking-widest uppercase px-3 py-1 rounded-none"
-                  style={{ backgroundColor: '#B8963E', color: '#0F0D0B', letterSpacing: '0.1em' }}
-                >
-                  Administrator
-                </span>
+                <span style={{ display: 'inline-block', marginTop: '10px', padding: '4px 12px', borderRadius: '9999px', backgroundColor: '#B8963E', color: 'white', fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 700 }}>ADMIN</span>
               )}
             </div>
-
-            {/* Tab Navigation */}
-            <nav className="space-y-1">
-              {TABS.map((t, idx) => (
-                <button
-                  key={t.id}
-                  onClick={() => setTab(t.id)}
-                  className="w-full text-left px-0 py-4 text-xs font-sans font-400 tracking-widest uppercase transition-all duration-300 border-b"
-                  style={{
-                    borderColor: tab === t.id ? '#B8963E' : 'rgba(184,150,62,0.15)',
-                    color: tab === t.id ? '#B8963E' : 'rgba(255,255,255,0.35)',
-                  }}
-                  onMouseEnter={(e) => {
-                    if (tab !== t.id) e.target.style.color = '#FDFCFA'
-                  }}
-                  onMouseLeave={(e) => {
-                    if (tab !== t.id) e.target.style.color = 'rgba(255,255,255,0.35)'
-                  }}
-                >
+            <nav style={{ backgroundColor: 'white', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+              {TABS.map(t => (
+                <button key={t.id} onClick={() => setTab(t.id)}
+                  style={{ display: 'block', width: '100%', textAlign: 'left', padding: '14px 20px', fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', cursor: 'pointer', border: 'none', transition: 'all 200ms ease', backgroundColor: tab === t.id ? '#0A0A0A' : 'transparent', color: tab === t.id ? 'white' : 'rgba(0,0,0,0.55)' }}>
                   {t.label}
                 </button>
               ))}
@@ -157,182 +100,76 @@ export default function AccountPage() {
           </div>
 
           {/* Content */}
-          <div className="md:col-span-3">
+          <div>
             {/* ORDERS TAB */}
             {tab === 'orders' && (
               <div>
-                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: '#FDFCFA' }}>
-                  MY ORDERS
-                </h2>
-
-                {ordersLoading ? (
-                  <div className="flex justify-center py-16">
-                    <LoadingSpinner size="lg" />
-                  </div>
-                ) : orders.length === 0 ? (
-                  <div
-                    className="p-16 text-center rounded-none"
-                    style={{
-                      backgroundColor: '#141210',
-                      border: '1px solid rgba(184,150,62,0.15)',
-                    }}
-                  >
-                    <p className="text-sm font-sans font-200 mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                      You haven't placed any orders yet.
-                    </p>
-                    <a
-                      href="/shop"
-                      className="text-xs font-sans font-400 tracking-widest uppercase hover-underline"
-                      style={{ color: '#B8963E' }}
-                    >
-                      START SHOPPING
-                    </a>
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <div className="grid gap-6">
-                      {orders.map((order, idx) => (
-                        <motion.div
-                          key={order._id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: idx * 0.05 }}
-                          className="p-6 rounded-none"
-                          style={{
-                            backgroundColor: '#141210',
-                            border: '1px solid rgba(184,150,62,0.15)',
-                          }}
-                        >
-                          <div className="grid md:grid-cols-5 gap-6 items-center pb-6" style={{ borderBottom: '1px solid rgba(184,150,62,0.15)' }}>
+                <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '28px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', marginBottom: '24px' }}>My Orders</h2>
+                {ordersLoading ? <div style={{ display: 'flex', justifyContent: 'center', padding: '64px 0' }}><LoadingSpinner /></div> :
+                  orders.length === 0 ? (
+                    <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '48px', textAlign: 'center' }}>
+                      <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(0,0,0,0.4)', marginBottom: '16px' }}>No orders yet.</p>
+                      <Link to="/shop" className="btn-black">START SHOPPING</Link>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      {orders.map(order => (
+                        <div key={order._id} style={{ backgroundColor: 'white', borderRadius: '16px', padding: '20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px', alignItems: 'center', paddingBottom: '16px', borderBottom: selectedOrder?._id === order._id ? '1px solid rgba(0,0,0,0.08)' : 'none' }}>
                             <div>
-                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
-                                ORDER ID
-                              </p>
-                              <p className="font-mono text-sm" style={{ color: '#FDFCFA' }}>
-                                #{order._id.slice(-8).toUpperCase()}
-                              </p>
+                              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(0,0,0,0.4)', marginBottom: '4px' }}>Order ID</p>
+                              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>#{order._id.slice(-8).toUpperCase()}</p>
                             </div>
                             <div>
-                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
-                                DATE
-                              </p>
-                              <p className="text-sm" style={{ color: '#FDFCFA' }}>
-                                {new Date(order.createdAt).toLocaleDateString()}
-                              </p>
+                              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(0,0,0,0.4)', marginBottom: '4px' }}>Date</p>
+                              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#0A0A0A' }}>{new Date(order.createdAt).toLocaleDateString()}</p>
                             </div>
                             <div>
-                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
-                                TOTAL
-                              </p>
-                              <p className="text-sm font-sans font-400" style={{ color: '#B8963E' }}>
-                                {formatPrice(order.totalPrice)}
-                              </p>
+                              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'rgba(0,0,0,0.4)', marginBottom: '4px' }}>Total</p>
+                              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>{formatPrice(order.totalPrice)}</p>
                             </div>
+                            <div><Badge status={order.status} /></div>
                             <div>
-                              <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
-                                STATUS
-                              </p>
-                              <Badge status={order.status} />
-                            </div>
-                            <div>
-                              <button
-                                onClick={() => setSelectedOrder(selectedOrder?._id === order._id ? null : order)}
-                                className="text-xs font-sans font-400 tracking-widest uppercase transition-all duration-300 hover-underline"
-                                style={{ color: '#B8963E' }}
-                              >
-                                {selectedOrder?._id === order._id ? 'CLOSE' : 'VIEW DETAILS'}
+                              <button onClick={() => setSelectedOrder(selectedOrder?._id === order._id ? null : order)}
+                                style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, color: '#B8963E', background: 'none', border: 'none', cursor: 'pointer' }}>
+                                {selectedOrder?._id === order._id ? 'CLOSE' : 'DETAILS'}
                               </button>
                             </div>
                           </div>
-
-                          {/* Order Details */}
                           {selectedOrder?._id === order._id && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              transition={{ duration: 0.3 }}
-                              className="mt-6"
-                            >
-                              <h3 className="font-garamond-serif text-lg font-300 mb-6" style={{ color: '#FDFCFA' }}>
-                                Order Items
-                              </h3>
-                              <div className="space-y-4 mb-6">
-                                {selectedOrder.orderItems?.map((item, i) => (
-                                  <div key={i} className="flex gap-4 pb-4" style={{ borderBottom: i !== (selectedOrder.orderItems?.length - 1) ? '1px solid rgba(184,150,62,0.15)' : 'none' }}>
-                                    <img
-                                      src={item.image}
-                                      alt={item.name}
-                                      className="w-16 h-20 object-cover"
-                                      style={{ backgroundColor: '#1A1612' }}
-                                    />
-                                    <div className="flex-1">
-                                      <p className="text-sm font-sans font-300" style={{ color: '#FDFCFA' }}>
-                                        {item.name}
-                                      </p>
-                                      <p className="text-xs font-sans font-200 mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                                        Qty: {item.qty}{item.size ? ` · ${item.size}` : ''}
-                                      </p>
-                                    </div>
-                                    <div className="text-right">
-                                      <p className="text-sm font-sans font-400" style={{ color: '#B8963E' }}>
-                                        {formatPrice(item.price)}
-                                      </p>
-                                    </div>
+                            <div style={{ paddingTop: '16px' }}>
+                              {selectedOrder.orderItems?.map((item, i) => (
+                                <div key={i} style={{ display: 'flex', gap: '12px', padding: '10px 0', borderBottom: i !== selectedOrder.orderItems.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none' }}>
+                                  <img src={item.image} alt={item.name} style={{ width: '48px', height: '60px', objectFit: 'cover', borderRadius: '8px', backgroundColor: '#E4E6E8' }} />
+                                  <div style={{ flex: 1 }}>
+                                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 500, color: '#0A0A0A' }}>{item.name}</p>
+                                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(0,0,0,0.4)' }}>Qty: {item.qty}{item.size ? ` · ${item.size}` : ''}</p>
                                   </div>
-                                ))}
-                              </div>
-
-                              {/* Shipping Address */}
-                              <div className="pt-6" style={{ borderTop: '1px solid rgba(184,150,62,0.15)' }}>
-                                <p className="text-xs font-sans font-400 uppercase tracking-widest mb-2" style={{ color: 'rgba(255,255,255,0.35)', letterSpacing: '0.1em' }}>
-                                  SHIPPING ADDRESS
-                                </p>
-                                <p className="text-sm font-sans font-300" style={{ color: '#FDFCFA' }}>
-                                  {selectedOrder.shippingAddress?.address}, {selectedOrder.shippingAddress?.city}
-                                </p>
-                              </div>
-                            </motion.div>
+                                  <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>{formatPrice(item.price)}</p>
+                                </div>
+                              ))}
+                            </div>
                           )}
-                        </motion.div>
+                        </div>
                       ))}
                     </div>
-                  </div>
-                )}
+                  )
+                }
               </div>
             )}
 
             {/* WISHLIST TAB */}
             {tab === 'wishlist' && (
               <div>
-                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: '#FDFCFA' }}>
-                  MY WISHLIST
-                </h2>
-
+                <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '28px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', marginBottom: '24px' }}>My Wishlist</h2>
                 {wishlist.length === 0 ? (
-                  <div
-                    className="p-16 text-center rounded-none"
-                    style={{
-                      backgroundColor: '#141210',
-                      border: '1px solid rgba(184,150,62,0.15)',
-                    }}
-                  >
-                    <p className="text-sm font-sans font-200 mb-4" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                      Your wishlist is currently empty.
-                    </p>
-                    <a
-                      href="/shop"
-                      className="text-xs font-sans font-400 tracking-widest uppercase hover-underline"
-                      style={{ color: '#B8963E' }}
-                    >
-                      EXPLORE COLLECTIONS
-                    </a>
+                  <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '48px', textAlign: 'center' }}>
+                    <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(0,0,0,0.4)', marginBottom: '16px' }}>Your wishlist is empty.</p>
+                    <Link to="/shop" className="btn-black">EXPLORE COLLECTIONS</Link>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    {wishlist.map(product => {
-                      if (!product._id) return null
-                      return <ProductCard key={product._id} product={product} />
-                    })}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
+                    {wishlist.map(product => product._id ? <ProductCard key={product._id} product={product} /> : null)}
                   </div>
                 )}
               </div>
@@ -341,112 +178,32 @@ export default function AccountPage() {
             {/* PROFILE TAB */}
             {tab === 'profile' && (
               <div>
-                <h2 className="font-garamond-serif text-3xl font-300 mb-12" style={{ color: '#FDFCFA' }}>
-                  PROFILE SETTINGS
-                </h2>
-
-                <form onSubmit={handleSaveProfile} className="max-w-md" style={{ backgroundColor: '#141210', border: '1px solid rgba(184,150,62,0.15)' }}>
-                  <div className="p-8 space-y-8">
-                    {/* Name Field */}
+                <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '28px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', marginBottom: '24px' }}>Profile Settings</h2>
+                <div style={{ backgroundColor: 'white', borderRadius: '20px', padding: '32px', maxWidth: '480px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                  <form onSubmit={handleSaveProfile} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {[['name', 'FULL NAME', 'text'], ['email', 'EMAIL', 'email']].map(([key, label, type]) => (
+                      <div key={key}>
+                        <label style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#0A0A0A', display: 'block', marginBottom: '6px' }}>{label}</label>
+                        <input type={type} value={profileForm[key]} onChange={e => setProfileForm(f => ({ ...f, [key]: e.target.value }))}
+                          onFocus={() => setFocusedField(key)} onBlur={() => setFocusedField(null)}
+                          style={inputStyle(key)} />
+                      </div>
+                    ))}
                     <div>
-                      <label
-                        className="text-xs font-sans font-400 uppercase tracking-widest block mb-4 transition-all"
-                        style={{
-                          color: focusedField === 'name' ? '#B8963E' : 'rgba(255,255,255,0.35)',
-                          letterSpacing: '0.2em',
-                        }}
-                      >
-                        Full Name
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.name}
-                        onChange={e => setProfileForm(f => ({ ...f, name: e.target.value }))}
-                        onFocus={() => setFocusedField('name')}
-                        onBlur={() => setFocusedField(null)}
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                        style={{
-                          borderBottom: focusedField === 'name' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                          color: '#FDFCFA',
-                        }}
-                      />
+                      <label style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#0A0A0A', display: 'block', marginBottom: '6px' }}>NEW PASSWORD</label>
+                      <input type="password" placeholder="Leave blank to keep current"
+                        onFocus={() => setFocusedField('password')} onBlur={() => setFocusedField(null)}
+                        style={inputStyle('password')} />
                     </div>
-
-                    {/* Email Field */}
-                    <div>
-                      <label
-                        className="text-xs font-sans font-400 uppercase tracking-widest block mb-4 transition-all"
-                        style={{
-                          color: focusedField === 'email' ? '#B8963E' : 'rgba(255,255,255,0.35)',
-                          letterSpacing: '0.2em',
-                        }}
-                      >
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        value={profileForm.email}
-                        onChange={e => setProfileForm(f => ({ ...f, email: e.target.value }))}
-                        onFocus={() => setFocusedField('email')}
-                        onBlur={() => setFocusedField(null)}
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all"
-                        style={{
-                          borderBottom: focusedField === 'email' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                          color: '#FDFCFA',
-                        }}
-                      />
-                    </div>
-
-                    {/* Password Field */}
-                    <div>
-                      <label
-                        className="text-xs font-sans font-400 uppercase tracking-widest block mb-4 transition-all"
-                        style={{
-                          color: focusedField === 'password' ? '#B8963E' : 'rgba(255,255,255,0.35)',
-                          letterSpacing: '0.2em',
-                        }}
-                      >
-                        New Password
-                      </label>
-                      <input
-                        type="password"
-                        onFocus={() => setFocusedField('password')}
-                        onBlur={() => setFocusedField(null)}
-                        placeholder="Leave blank to keep current"
-                        className="w-full bg-transparent py-3 text-sm font-sans font-300 focus:outline-none transition-all placeholder:text-xs"
-                        style={{
-                          borderBottom: focusedField === 'password' ? '2px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                          color: '#FDFCFA',
-                          placeholderColor: 'rgba(255,255,255,0.2)',
-                        }}
-                      />
-                    </div>
-
-                    {/* Save Button */}
-                    <button
-                      type="submit"
-                      disabled={savingProfile}
-                      className="w-full py-4 text-xs font-sans font-400 tracking-widest uppercase rounded-none transition-all duration-300"
-                      style={{
-                        backgroundColor: savingProfile ? 'rgba(184,150,62,0.4)' : '#B8963E',
-                        color: '#0F0D0B',
-                      }}
-                      onMouseEnter={(e) => !savingProfile && (e.target.style.backgroundColor = '#D4AF6A')}
-                      onMouseLeave={(e) => !savingProfile && (e.target.style.backgroundColor = '#B8963E')}
-                    >
+                    <button type="submit" disabled={savingProfile} className="btn-black" style={{ opacity: savingProfile ? 0.6 : 1 }}>
                       {savingProfile ? 'SAVING...' : 'SAVE CHANGES'}
                     </button>
-                  </div>
-                </form>
+                  </form>
+                </div>
               </div>
             )}
           </div>
         </div>
-      </div>
-    </motion.div>
-  )
-}
-
       </div>
     </div>
   )

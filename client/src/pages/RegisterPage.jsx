@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import useAuthStore from '../store/useAuthStore'
-import useScrollReveal from '../hooks/useScrollReveal'
 import toast from 'react-hot-toast'
 
 export default function RegisterPage() {
@@ -30,186 +28,73 @@ export default function RegisterPage() {
 
   const set = (key) => (e) => setForm(f => ({ ...f, [key]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }))
 
-  useScrollReveal()
+  const inputStyle = (field) => ({
+    width: '100%', padding: '12px 14px',
+    backgroundColor: 'white',
+    border: `1px solid ${focusedField === field ? '#0A0A0A' : 'rgba(0,0,0,0.12)'}`,
+    borderRadius: '12px',
+    fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#0A0A0A',
+    outline: 'none', transition: 'border-color 200ms ease',
+  })
 
   return (
-    <div className="min-h-screen grid md:grid-cols-2" style={{ backgroundColor: '#0F0D0B' }}>
-      {/* Left Panel: Image + Quote */}
-      <div className="hidden md:flex md:h-screen flex-col items-center justify-center relative overflow-hidden">
-        <img
-          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80"
-          alt="Fashion"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        {/* Dark overlay 50% */}
-        <div className="absolute inset-0 bg-black/50" />
-        {/* Quote */}
-        <div className="absolute inset-0 flex items-center justify-center px-12 z-10">
-          <blockquote className="text-center">
-            <p className="text-base md:text-2xl text-white leading-tight mb-6" style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontSize: 'clamp(20px, 4vw, 28px)' }}>
-              "Fashion is self-expression. Join the circle of modern luxury today."
+    <div style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1fr 1fr', backgroundColor: '#ECEEF0' }}>
+      {/* Left: image */}
+      <div className="hidden md:block" style={{ position: 'relative', overflow: 'hidden' }}>
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80" alt="Fashion"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)' }} />
+        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px' }}>
+          <blockquote style={{ textAlign: 'center' }}>
+            <p style={{ fontFamily: "'Barlow', sans-serif", fontSize: 'clamp(18px,2.5vw,26px)', fontWeight: 800, color: 'white', textTransform: 'uppercase', lineHeight: 1.1, marginBottom: '16px' }}>
+              "Fashion is self-expression.<br />Join the circle of<br />modern luxury."
             </p>
-            <p className="text-sm text-white/70" style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic' }}>— The Velour Collective</p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(255,255,255,0.6)', fontStyle: 'italic' }}>— The Velour Collective</p>
           </blockquote>
         </div>
       </div>
 
-      {/* Right Panel: Form */}
-      <div className="flex h-screen items-center justify-center px-16" style={{ backgroundColor: '#0F0D0B' }}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-sm"
-        >
-          {/* Logo */}
-          <h1 className="text-center mb-12" style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontSize: '28px', color: '#FDFCFA', letterSpacing: '0.35em' }}>VELOUR</h1>
+      {/* Right: form */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 24px', overflowY: 'auto' }}>
+        <div style={{ width: '100%', maxWidth: '400px' }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '24px', padding: '40px', boxShadow: '0 4px 24px rgba(0,0,0,0.06)' }}>
+            <h1 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '24px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', letterSpacing: '0.2em', textAlign: 'center', marginBottom: '4px' }}>VELOUR</h1>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(0,0,0,0.4)', textAlign: 'center', marginBottom: '28px' }}>Create your account</p>
 
-          {/* Header */}
-          <div className="mb-12">
-            <p className="text-sm font-200 tracking-wide" style={{ fontFamily: 'var(--font-body)', color: 'rgba(255,255,255,0.35)' }}>
-              Join Velour for exclusive access and early drops
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px' }}>
+              {[
+                { key: 'name', label: 'FULL NAME', type: 'text', placeholder: 'Jane Smith' },
+                { key: 'email', label: 'EMAIL', type: 'email', placeholder: 'you@example.com' },
+                { key: 'password', label: 'PASSWORD', type: 'password', placeholder: '••••••••' },
+                { key: 'confirm', label: 'CONFIRM PASSWORD', type: 'password', placeholder: '••••••••' },
+              ].map(({ key, label, type, placeholder }) => (
+                <div key={key}>
+                  <label style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#0A0A0A', display: 'block', marginBottom: '6px' }}>{label}</label>
+                  <input type={type} required value={form[key]} onChange={set(key)}
+                    onFocus={() => setFocusedField(key)} onBlur={() => setFocusedField(null)}
+                    style={inputStyle(key)} placeholder={placeholder} />
+                </div>
+              ))}
+
+              <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer', paddingTop: '4px' }}>
+                <input type="checkbox" checked={form.terms} onChange={set('terms')} style={{ accentColor: '#0A0A0A', marginTop: '2px' }} />
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(0,0,0,0.5)', lineHeight: 1.5 }}>
+                  I agree to the <a href="#" style={{ color: '#0A0A0A', fontWeight: 600 }}>Terms</a> and <a href="#" style={{ color: '#0A0A0A', fontWeight: 600 }}>Privacy Policy</a>
+                </span>
+              </label>
+
+              <button type="submit" disabled={loading} className="btn-black" style={{ width: '100%', marginTop: '8px', opacity: loading ? 0.6 : 1 }}>
+                {loading ? 'CREATING...' : 'CREATE ACCOUNT'}
+              </button>
+            </form>
+
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(0,0,0,0.4)', textAlign: 'center' }}>
+              Already have an account?{' '}
+              <Link to="/login" style={{ fontWeight: 600, color: '#0A0A0A', textDecoration: 'none' }}>SIGN IN</Link>
             </p>
           </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6 mb-10">
-            {/* Full Name */}
-            <div>
-              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'name' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.15em' }}>
-                FULL NAME
-              </label>
-              <input
-                type="text"
-                value={form.name}
-                onChange={set('name')}
-                onFocus={() => setFocusedField('name')}
-                onBlur={() => setFocusedField(null)}
-                required
-                className="w-full bg-transparent pb-3 pt-1 text-sm font-300 focus:outline-none transition-all"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  borderBottom: focusedField === 'name' ? '1px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                  color: '#FDFCFA',
-                }}
-                placeholder="Jane Smith"
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'email' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.15em' }}>
-                EMAIL
-              </label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={set('email')}
-                onFocus={() => setFocusedField('email')}
-                onBlur={() => setFocusedField(null)}
-                required
-                className="w-full bg-transparent pb-3 pt-1 text-sm font-300 focus:outline-none transition-all"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  borderBottom: focusedField === 'email' ? '1px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                  color: '#FDFCFA',
-                }}
-                placeholder="you@example.com"
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'password' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.15em' }}>
-                PASSWORD
-              </label>
-              <input
-                type="password"
-                value={form.password}
-                onChange={set('password')}
-                onFocus={() => setFocusedField('password')}
-                onBlur={() => setFocusedField(null)}
-                required
-                className="w-full bg-transparent pb-3 pt-1 text-sm font-300 focus:outline-none transition-all"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  borderBottom: focusedField === 'password' ? '1px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                  color: '#FDFCFA',
-                }}
-                placeholder="••••••••"
-              />
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label className="text-10px font-400 uppercase block mb-2 transition-all" style={{ fontFamily: 'var(--font-body)', color: focusedField === 'confirm' ? '#B8963E' : 'rgba(255,255,255,0.35)', letterSpacing: '0.15em' }}>
-                CONFIRM PASSWORD
-              </label>
-              <input
-                type="password"
-                value={form.confirm}
-                onChange={set('confirm')}
-                onFocus={() => setFocusedField('confirm')}
-                onBlur={() => setFocusedField(null)}
-                required
-                className="w-full bg-transparent pb-3 pt-1 text-sm font-300 focus:outline-none transition-all"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  borderBottom: focusedField === 'confirm' ? '1px solid #B8963E' : '1px solid rgba(184,150,62,0.2)',
-                  color: '#FDFCFA',
-                }}
-                placeholder="••••••••"
-              />
-            </div>
-
-            {/* Terms Checkbox */}
-            <label className="flex items-start gap-3 cursor-pointer py-2">
-              <input
-                type="checkbox"
-                checked={form.terms}
-                onChange={set('terms')}
-                style={{ accentColor: '#B8963E' }}
-              />
-              <span className="text-11px font-200 leading-relaxed" style={{ fontFamily: 'var(--font-body)', color: 'rgba(255,255,255,0.35)' }}>
-                I agree to the{' '}
-                <a href="#" className="font-400 transition-colors" style={{ color: '#B8963E' }}>
-                  Terms of Service
-                </a>
-                {' '}and{' '}
-                <a href="#" className="font-400 transition-colors" style={{ color: '#B8963E' }}>
-                  Privacy Policy
-                </a>
-              </span>
-            </label>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-8 py-3 text-11px font-400 tracking-widest uppercase rounded-none transition-all duration-300"
-              style={{
-                fontFamily: 'var(--font-body)',
-                backgroundColor: '#B8963E',
-                color: '#0F0D0B',
-                opacity: loading ? 0.6 : 1,
-              }}
-              onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = '#D4AF6A')}
-              onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = '#B8963E')}
-            >
-              {loading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
-            </button>
-          </form>
-
-          {/* Login Link */}
-          <p className="text-sm text-center font-200" style={{ fontFamily: 'var(--font-body)', color: 'rgba(255,255,255,0.35)' }}>
-            Already have an account?{' '}
-            <Link to="/login" className="font-400 transition-colors" style={{ color: '#B8963E' }}>
-              SIGN IN
-            </Link>
-          </p>
-        </motion.div>
+        </div>
       </div>
     </div>
   )
 }
-
