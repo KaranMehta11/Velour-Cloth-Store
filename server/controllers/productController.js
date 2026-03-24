@@ -16,7 +16,13 @@ const getProducts = asyncHandler(async (req, res) => {
     if (minPrice) query.price.$gte = Number(minPrice);
     if (maxPrice) query.price.$lte = Number(maxPrice);
   }
-  if (search) query.name = { $regex: search, $options: 'i' };
+  if (req.query.search) {
+    query.$or = [
+      { name: { $regex: req.query.search, $options: 'i' } },
+      { description: { $regex: req.query.search, $options: 'i' } },
+      { category: { $regex: req.query.search, $options: 'i' } },
+    ];
+  }
 
   let sortOption = { createdAt: -1 };
   if (sort === 'price_asc') sortOption = { price: 1 };

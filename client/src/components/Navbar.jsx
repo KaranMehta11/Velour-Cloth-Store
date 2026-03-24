@@ -8,9 +8,11 @@ import {
 import useAuthStore from '../store/useAuthStore'
 import useCartStore from '../store/useCartStore'
 import useWishlistStore from '../store/useWishlistStore'
+import SearchModal from './SearchModal'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const navigate = useNavigate()
 
   const { user } = useAuthStore()
@@ -126,7 +128,7 @@ export default function Navbar() {
 
           {/* Search */}
           <button
-            onClick={() => navigate('/shop')}
+            onClick={() => setSearchOpen(true)}
             style={iconBtnStyle}
             onMouseEnter={e => e.currentTarget.style.color = '#0A0A0A'}
             onMouseLeave={e => e.currentTarget.style.color = 'rgba(0,0,0,0.6)'}
@@ -230,6 +232,7 @@ export default function Navbar() {
           ))}
         </motion.div>
       )}
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   )
 }
