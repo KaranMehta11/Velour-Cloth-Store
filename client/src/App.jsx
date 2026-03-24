@@ -45,7 +45,7 @@ function App() {
     <>
       {showNavbar && <Navbar />}
       <CartDrawer />
-      <div className="page-enter" style={{ paddingTop: isAdminRoute ? 0 : '64px' }}>
+      <div className="page-enter" style={{ paddingTop: isAdminRoute ? 0 : '68px' }}>
         <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#ECEEF0' }}><LoadingSpinner /></div>}>
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<HomePage />} />

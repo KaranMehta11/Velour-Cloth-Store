@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import useCartStore from '../store/useCartStore'
 import useScrollReveal from '../hooks/useScrollReveal'
@@ -18,8 +17,7 @@ export default function CheckoutPage() {
   const [focusedField, setFocusedField] = useState(null)
   const [shipping, setShipping] = useState({ fullName: '', email: '', phone: '', address: '', address2: '', city: '', state: '', postal: '', country: 'IN' })
   const [loading, setLoading] = useState(false)
-  const { items, total: getTotal, clearCart } = useCartStore()
-  const navigate = useNavigate()
+  const { items, total: getTotal } = useCartStore()
   useScrollReveal()
 
   const cartTotal = getTotal()
@@ -30,26 +28,38 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async () => {
     setLoading(true)
     try {
-      const orderItems = items.map(item => ({
+      const sessionItems = items.map(item => ({
         name: item.product?.name || item.name,
         qty: item.qty,
         image: item.product?.images?.[0]?.url || '',
-        price: item.product?.discountPrice || item.product?.price || 0,
+        // backend expects paise for Stripe line items
+        price: Math.round((item.product?.discountPrice || item.product?.price || 0) * 100),
         size: item.size, color: item.color,
-        product: item.product?._id,
+        productId: item.product?._id,
       }))
-      const res = await api.post('/orders', {
-        orderItems,
-        shippingAddress: { address: shipping.address + (shipping.address2 ? `, ${shipping.address2}` : ''), city: shipping.city, postalCode: shipping.postal, country: shipping.country },
-        paymentMethod: 'stripe',
-        itemsPrice: cartTotal, shippingPrice: shippingCost, taxPrice: tax, totalPrice: orderTotal,
+      const res = await api.post('/payment/create-checkout-session', {
+        items: sessionItems,
+        shippingAddress: {
+          fullName: shipping.fullName,
+          email: shipping.email,
+          phone: shipping.phone,
+          address: shipping.address + (shipping.address2 ? `, ${shipping.address2}` : ''),
+          city: shipping.city,
+          postalCode: shipping.postal,
+          country: shipping.country,
+        },
       })
-      await clearCart()
-      navigate(`/order-success?orderId=${res.data.order._id}`)
+
+      if (!res.data?.url) {
+        throw new Error('No checkout URL returned')
+      }
+      window.location.href = res.data.url
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to place order')
-    } finally {
+      toast.error(err.response?.data?.message || err.message || 'Failed to start checkout')
       setLoading(false)
+      return
+    } finally {
+      // Keep loading true while browser navigates to Stripe.
     }
   }
 
@@ -154,7 +164,7 @@ export default function CheckoutPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <button className="btn-white" style={{ border: '1px solid rgba(0,0,0,0.12)' }} onClick={() => setStep(0)}>BACK</button>
                   <button className="btn-black" onClick={handlePlaceOrder} disabled={loading} style={{ opacity: loading ? 0.6 : 1 }}>
-                    {loading ? <><LoadingSpinner /> PLACING...</> : `PLACE ORDER`}
+                    {loading ? <><LoadingSpinner /> REDIRECTING...</> : `PLACE ORDER`}
                   </button>
                 </div>
               </div>
