@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend
 } from 'recharts'
 import api from '../../api/axios'
 import Badge from '../../components/Badge'
@@ -77,32 +77,30 @@ export default function AdminDashboard() {
         display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))',
         gap:'16px', marginBottom:'32px'
       }}>
-        <StatCard label="Total Revenue" value={`₹${(stats.stats?.totalRevenue || 0).toLocaleString('en-IN')}`} icon="💰" />
-        <StatCard label="Total Orders" value={stats.stats?.totalOrders || 0} icon="📦" />
-        <StatCard label="Customers" value={stats.stats?.totalUsers || 0} icon="👥" />
-        <StatCard label="Products" value={stats.stats?.totalProducts || 0} icon="🛍️" />
+        <StatCard label="Total Revenue" value={`₹${(stats.totalRevenue || 0).toLocaleString('en-IN')}`} icon="↗" />
+        <StatCard label="Total Orders" value={`${stats.totalOrders || 0} orders`} icon="↗" />
+        <StatCard label="Total Customers" value={stats.totalCustomers || 0} icon="↗" />
+        <StatCard label="Products in Stock" value={stats.productsInStock || 0} icon="↗" />
       </div>
 
-      {/* Chart */}
-      <div style={{
-        background:'rgba(28,24,20,0.92)', padding:'24px',
-        border:'1px solid rgba(184,150,62,0.15)', marginBottom:'32px'
-      }}>
+      {/* Revenue Last 7 Days */}
+      <div style={{ background:'rgba(28,24,20,0.92)', padding:'24px', border:'1px solid rgba(184,150,62,0.15)', marginBottom:'32px' }}>
         <h2 style={{
           color:'#FDFCFA', fontWeight:400, marginBottom:'16px',
           fontFamily:"'Cormorant Garamond', serif", fontSize:'18px'
         }}>
-          Revenue (Last 7 Days)
+          Revenue Last 7 Days
         </h2>
         <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={stats.revenueChart || []}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(184,150,62,0.1)" />
+          <LineChart data={stats.revenueByDay || stats.revenueChart || []}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
             <XAxis dataKey="date" tick={{ fill: '#B8963E', fontSize: 11 }} />
             <YAxis tick={{ fill: '#B8963E', fontSize: 11 }} />
             <Tooltip
               contentStyle={{ backgroundColor: 'rgba(28,24,20,0.95)', border:'1px solid #B8963E', borderRadius: '4px' }}
               labelStyle={{ color: '#B8963E' }}
               itemStyle={{ color: '#D4AF6A' }}
+              formatter={(value) => `₹${Math.round(value).toLocaleString('en-IN')}`}
             />
             <Line type="monotone" dataKey="revenue" stroke="#B8963E" strokeWidth={2} dot={{ fill: '#B8963E' }} />
           </LineChart>
@@ -113,6 +111,27 @@ export default function AdminDashboard() {
         display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(300px, 1fr))',
         gap:'32px'
       }}>
+        {/* Orders by status */}
+        <div style={{ background:'rgba(28,24,20,0.92)', padding:'24px', border:'1px solid rgba(184,150,62,0.15)' }}>
+          <h2 style={{ color:'#FDFCFA', fontWeight:400, marginBottom:'16px', fontFamily:"'Cormorant Garamond', serif", fontSize:'18px' }}>
+            Orders by Status
+          </h2>
+          <ResponsiveContainer width="100%" height={220}>
+            <PieChart>
+              <Pie
+                data={Object.entries(stats.ordersByStatus || {}).map(([name, value]) => ({ name, value }))}
+                dataKey="value"
+                nameKey="name"
+                innerRadius={55}
+                outerRadius={80}
+              >
+                {['#f97316', '#3b82f6', '#22c55e', '#ef4444'].map((c, i) => <Cell key={c + i} fill={c} />)}
+              </Pie>
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
         {/* Recent Orders */}
         <div style={{
           background:'rgba(28,24,20,0.92)', padding:'24px',
@@ -155,50 +174,28 @@ export default function AdminDashboard() {
             ))}
           </div>
         </div>
+      </div>
 
-        {/* Top Products */}
-        <div style={{
-          background:'rgba(28,24,20,0.92)', padding:'24px',
-          border:'1px solid rgba(184,150,62,0.15)'
-        }}>
-          <h2 style={{
-            color:'#FDFCFA', fontWeight:400, marginBottom:'16px',
-            fontFamily:"'Cormorant Garamond', serif", fontSize:'18px'
-          }}>
-            Top Selling
-          </h2>
-          <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
-            {(stats.topProducts || []).map((p, i) => (
-              <div key={p._id} style={{
-                display:'flex', alignItems:'center', gap:'12px', fontSize:'11px',
-                paddingBottom:'12px', borderBottom:'1px solid rgba(184,150,62,0.1)'
-              }}>
-                <span style={{
-                  color:'#B8963E', width:'16px', textAlign:'right', fontWeight:500
-                }}>
-                  {i + 1}
-                </span>
-                <img src={p.images?.[0]?.url} alt={p.name} style={{
-                  width:'32px', height:'40px', objectFit:'cover',
-                  backgroundColor:'rgba(184,150,62,0.1)'
-                }} />
-                <div style={{flex:1}}>
-                  <p style={{
-                    color:'#FDFCFA', overflow:'hidden',
-                    display:'-webkit-box', WebkitLineClamp:1, WebkitBoxOrient:'vertical'
-                  }}>
-                    {p.name}
-                  </p>
-                  <p style={{
-                    color:'#B8963E', fontSize:'10px', marginTop:'2px'
-                  }}>
-                    {p.sold} sold · ₹{(p.price || 0).toLocaleString('en-IN')}
-                  </p>
-                </div>
-              </div>
+      <div style={{ background:'rgba(28,24,20,0.92)', padding:'24px', border:'1px solid rgba(184,150,62,0.15)', marginTop:'32px' }}>
+        <h2 style={{ color:'#FDFCFA', fontWeight:400, marginBottom:'16px', fontFamily:"'Cormorant Garamond', serif", fontSize:'18px' }}>Top Products</h2>
+        <table style={{ width:'100%', fontSize:'12px', color:'#FDFCFA' }}>
+          <thead>
+            <tr>
+              <th style={{ textAlign:'left', paddingBottom:'10px' }}>Product</th>
+              <th style={{ textAlign:'left', paddingBottom:'10px' }}>Units Sold</th>
+              <th style={{ textAlign:'left', paddingBottom:'10px' }}>Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(stats.topProducts || []).slice(0, 5).map((p) => (
+              <tr key={p._id}>
+                <td style={{ padding:'8px 0' }}>{p.name}</td>
+                <td style={{ padding:'8px 0' }}>{p.sold}</td>
+                <td style={{ padding:'8px 0', color:'#B8963E' }}>₹{Math.round(p.revenue || 0).toLocaleString('en-IN')}</td>
+              </tr>
             ))}
-          </div>
-        </div>
+          </tbody>
+        </table>
       </div>
     </div>
   )

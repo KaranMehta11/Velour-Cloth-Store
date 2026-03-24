@@ -9,6 +9,7 @@ const getAdminStats = asyncHandler(async (req, res) => {
   const totalOrders = await Order.countDocuments();
   const totalUsers = await User.countDocuments({ role: 'user' });
   const totalProducts = await Product.countDocuments();
+  const productsInStock = await Product.countDocuments({ stock: { $gt: 0 } });
 
   const revenueData = await Order.aggregate([
     { $match: { isPaid: true } },
@@ -40,11 +41,36 @@ const getAdminStats = asyncHandler(async (req, res) => {
     });
   }
 
+  const monthBuckets = await Order.aggregate([
+    { $match: { isPaid: true, createdAt: { $gte: new Date(new Date().setMonth(new Date().getMonth() - 5)) } } },
+    { $group: { _id: { year: { $year: '$createdAt' }, month: { $month: '$createdAt' } }, revenue: { $sum: '$totalPrice' } } },
+    { $sort: { '_id.year': 1, '_id.month': 1 } },
+  ]);
+  const revenueByMonth = monthBuckets.map((m) => ({
+    month: `${String(m._id.month).padStart(2, '0')}/${m._id.year}`,
+    revenue: m.revenue,
+  }));
+
+  const ordersByStatusRaw = await Order.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]);
+  const ordersByStatus = { Processing: 0, Shipped: 0, Delivered: 0, Cancelled: 0 };
+  ordersByStatusRaw.forEach((s) => { ordersByStatus[s._id] = s.count; });
+
   res.json({
     success: true,
+    totalRevenue,
+    totalOrders,
+    totalCustomers: totalUsers,
+    totalProducts,
+    productsInStock,
+    revenueByDay: last7Days,
+    revenueByMonth,
+    ordersByStatus,
     stats: { totalRevenue, totalOrders, totalUsers, totalProducts },
     recentOrders,
-    topProducts,
+    topProducts: topProducts.map((p) => ({
+      ...p.toObject(),
+      revenue: (p.sold || 0) * (p.price || 0),
+    })),
     revenueChart: last7Days,
   });
 });
