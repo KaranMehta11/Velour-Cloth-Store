@@ -12,6 +12,8 @@ import ProductCard from '../components/ProductCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 import useScrollReveal from '../hooks/useScrollReveal'
 import toast from 'react-hot-toast'
+import useRecentlyViewed from '../hooks/useRecentlyViewed'
+import RecentlyViewed from '../components/RecentlyViewed'
 
 const formatPrice = (price) => {
   if (!price) return '₹0'
@@ -45,6 +47,7 @@ export default function ProductPage() {
   const [hoverRating, setHoverRating] = useState(0)
   const [submittingReview, setSubmittingReview] = useState(false)
   const [reviewPosted, setReviewPosted] = useState(false)
+  const { addToRecentlyViewed } = useRecentlyViewed()
 
   const { addItem } = useCartStore()
   const { toggle, isInWishlist } = useWishlistStore()
@@ -58,6 +61,7 @@ export default function ProductPage() {
         const p = res.data.product
         setProduct(p)
         setMainImage(p.images?.[0]?.url)
+        addToRecentlyViewed(p)
         setSelectedSize(p.sizes?.[0] || '')
         setSelectedColor(p.colors?.[0]?.name || '')
         document.title = `${p.name} — Velour`
@@ -364,6 +368,7 @@ export default function ProductPage() {
             </div>
           </div>
         )}
+        <RecentlyViewed />
       </div>
     </div>
   )

@@ -6,6 +6,7 @@ import api from '../api/axios'
 import ProductCard from '../components/ProductCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 import useScrollReveal from '../hooks/useScrollReveal'
+import RecentlyViewed from '../components/RecentlyViewed'
 
 export default function HomePage() {
   const [products, setProducts] = useState([])
@@ -530,6 +531,12 @@ export default function HomePage() {
             </button>
           </div>
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(255,255,255,0.2)', marginTop: '16px', letterSpacing: '0.05em' }}>No spam, unsubscribe anytime.</p>
+        </div>
+      </section>
+
+      <section style={{ backgroundColor: '#ECEEF0', padding: '48px 24px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <RecentlyViewed />
         </div>
       </section>
 

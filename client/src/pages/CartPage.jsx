@@ -5,6 +5,7 @@ import useAuthStore from '../store/useAuthStore'
 import useScrollReveal from '../hooks/useScrollReveal'
 import { useState } from 'react'
 import api from '../api/axios'
+import RecentlyViewed from '../components/RecentlyViewed'
 
 const formatPrice = (price) => {
   if (!price) return '₹0'
@@ -150,6 +151,7 @@ export default function CartPage() {
             </div>
           </div>
         )}
+        <RecentlyViewed />
       </div>
     </div>
   )
