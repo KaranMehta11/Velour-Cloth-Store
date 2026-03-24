@@ -42,7 +42,9 @@ export default function ProductPage() {
   const [selectedColor, setSelectedColor] = useState('')
   const [qty, setQty] = useState(1)
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' })
+  const [hoverRating, setHoverRating] = useState(0)
   const [submittingReview, setSubmittingReview] = useState(false)
+  const [reviewPosted, setReviewPosted] = useState(false)
 
   const { addItem } = useCartStore()
   const { toggle, isInWishlist } = useWishlistStore()
@@ -77,14 +79,18 @@ export default function ProductPage() {
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault()
-    if (!reviewForm.comment) { toast.error('Please write a comment'); return }
+    if (!reviewForm.comment || reviewForm.comment.trim().length < 10) {
+      toast.error('Comment must be at least 10 characters')
+      return
+    }
     setSubmittingReview(true)
     try {
       await api.post(`/products/${id}/review`, reviewForm)
-      toast.success('Review submitted!')
+      toast.success('Review posted!')
       setReviewForm({ rating: 5, comment: '' })
       const res = await api.get(`/products/${id}`)
       setProduct(res.data.product)
+      setReviewPosted(true)
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to submit review')
     } finally {
@@ -108,6 +114,13 @@ export default function ProductPage() {
   )
 
   const displayPrice = product.discountPrice || product.price
+  const alreadyReviewed = !!user && product.reviews?.some(r => (r.user?._id || r.user)?.toString() === user._id?.toString())
+  const effectiveRating = hoverRating || reviewForm.rating
+  const ratingDistribution = [5, 4, 3, 2, 1].map((star) => {
+    const count = (product.reviews || []).filter((r) => Math.round(r.rating) === star).length
+    const pct = product.numReviews ? (count / product.numReviews) * 100 : 0
+    return { star, count, pct }
+  })
 
   return (
     <div style={{ backgroundColor: '#ECEEF0', paddingBottom: '80px' }}>
@@ -238,32 +251,92 @@ export default function ProductPage() {
           <h2 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '32px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', marginBottom: '32px' }}>
             Reviews ({product.numReviews})
           </h2>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '24px', marginBottom: '32px' }}>
+            <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '20px' }}>
+              <p style={{ fontFamily: "'Barlow', sans-serif", fontSize: '48px', fontWeight: 900, color: '#0A0A0A', lineHeight: 1 }}>
+                {product.rating?.toFixed(1) || '0.0'}
+              </p>
+              <ReviewStars rating={product.rating || 0} />
+              <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(0,0,0,0.5)', marginTop: '8px' }}>
+                {product.numReviews} total reviews
+              </p>
+            </div>
+            <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {ratingDistribution.map(row => (
+                <div key={row.star} style={{ display: 'grid', gridTemplateColumns: '24px 1fr 30px', gap: '10px', alignItems: 'center' }}>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', color: '#0A0A0A' }}>{row.star}★</span>
+                  <div style={{ height: '8px', backgroundColor: '#ECEEF0', borderRadius: '999px', overflow: 'hidden' }}>
+                    <div style={{ width: `${row.pct}%`, height: '100%', backgroundColor: '#B8963E' }} />
+                  </div>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(0,0,0,0.5)' }}>{row.count}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {product.reviews?.length === 0 && (
-            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(0,0,0,0.4)' }}>No reviews yet. Be the first!</p>
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(0,0,0,0.4)', marginBottom: '24px' }}>
+              Be the first to review this product
+            </p>
           )}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '40px' }}>
             {product.reviews?.map(r => (
               <div key={r._id} style={{ padding: '20px', backgroundColor: 'white', borderRadius: '16px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                  <div style={{
+                    width: '34px', height: '34px', borderRadius: '50%', backgroundColor: '#0A0A0A',
+                    color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600
+                  }}>
+                    {(r.name || 'U').split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
+                  </div>
                   <ReviewStars rating={r.rating} size={12} />
                   <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', fontWeight: 600, color: '#0A0A0A' }}>{r.name}</span>
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(0,0,0,0.35)' }}>{new Date(r.date).toLocaleDateString()}</span>
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', color: 'rgba(0,0,0,0.35)' }}>
+                    {new Date(r.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                  </span>
                 </div>
                 <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(0,0,0,0.55)', lineHeight: 1.6 }}>{r.comment}</p>
               </div>
             ))}
           </div>
 
-          {user && (
+          {!user && (
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(0,0,0,0.55)', marginBottom: '16px' }}>
+              <Link to="/login" style={{ color: '#B8963E', textDecoration: 'none' }}>Login to write a review</Link>
+            </p>
+          )}
+
+          {user && alreadyReviewed && (
+            <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: 'rgba(0,0,0,0.55)', marginBottom: '16px' }}>
+              You have already reviewed this product
+            </p>
+          )}
+
+          {user && !alreadyReviewed && !reviewPosted && (
             <div style={{ maxWidth: '560px', backgroundColor: 'white', borderRadius: '20px', padding: '28px' }}>
               <h3 style={{ fontFamily: "'Barlow', sans-serif", fontSize: '22px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A', marginBottom: '20px' }}>Write a Review</h3>
               <form onSubmit={handleReviewSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div>
                   <label style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#0A0A0A', display: 'block', marginBottom: '8px' }}>Rating</label>
-                  <select value={reviewForm.rating} onChange={e => setReviewForm(f => ({ ...f, rating: Number(e.target.value) }))}
-                    style={{ width: '100%', border: '1px solid rgba(0,0,0,0.12)', borderRadius: '12px', padding: '10px 14px', fontFamily: "'Inter', sans-serif", fontSize: '13px', backgroundColor: 'white', color: '#0A0A0A', outline: 'none' }}>
-                    {[5, 4, 3, 2, 1].map(r => <option key={r} value={r}>{r} Star{r > 1 ? 's' : ''}</option>)}
-                  </select>
+                  <div style={{ display: 'flex', gap: '8px' }} onMouseLeave={() => setHoverRating(0)}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onMouseEnter={() => setHoverRating(star)}
+                        onClick={() => setReviewForm(f => ({ ...f, rating: star }))}
+                        style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                      >
+                        <FiStar
+                          size={20}
+                          color={star <= effectiveRating ? '#B8963E' : '#D4D4D8'}
+                          fill={star <= effectiveRating ? '#B8963E' : 'none'}
+                        />
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <label style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#0A0A0A', display: 'block', marginBottom: '8px' }}>Comment</label>
@@ -275,7 +348,7 @@ export default function ProductPage() {
                   />
                 </div>
                 <button type="submit" disabled={submittingReview} className="btn-black" style={{ opacity: submittingReview ? 0.6 : 1 }}>
-                  {submittingReview ? 'SUBMITTING...' : 'SUBMIT REVIEW'}
+                  {submittingReview ? 'POSTING...' : 'POST REVIEW'}
                 </button>
               </form>
             </div>
