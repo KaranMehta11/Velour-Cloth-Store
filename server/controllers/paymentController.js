@@ -6,6 +6,8 @@ const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const Coupon = require('../models/Coupon');
+const User = require('../models/User');
+const { sendOrderConfirmation } = require('../utils/emailService');
 
 // @desc Create Stripe checkout session
 // @route POST /api/payment/create-checkout-session
@@ -146,6 +148,8 @@ const stripeWebhook = asyncHandler(async (req, res) => {
       if (couponCode) {
         await Coupon.findOneAndUpdate({ code: couponCode }, { $inc: { usedCount: 1 } });
       }
+      const user = await User.findById(userId);
+      if (user) sendOrderConfirmation(user, order);
       // keep reference to avoid unused var lint in some setups
       void order;
     }

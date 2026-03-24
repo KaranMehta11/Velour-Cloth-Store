@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const { sendShippingUpdate } = require('../utils/emailService');
 
 // @desc Create order
 // @route POST /api/orders
@@ -68,7 +69,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
 // @route PUT /api/orders/:id/status
 const updateOrderStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
-  const order = await Order.findById(req.params.id);
+  const order = await Order.findById(req.params.id).populate('user', 'name email');
   if (!order) {
     res.status(404);
     throw new Error('Order not found');
@@ -77,6 +78,12 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   if (status === 'Delivered') {
     order.isDelivered = true;
     order.deliveredAt = Date.now();
+  }
+  if (status === 'Shipped') {
+    if (!order.trackingNumber) {
+      order.trackingNumber = `VL${String(order._id).slice(-10).toUpperCase()}`;
+    }
+    if (order.user?.email) sendShippingUpdate(order.user, order);
   }
   await order.save();
   res.json({ success: true, order });

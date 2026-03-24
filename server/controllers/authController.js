@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const User = require('../models/User');
 const { setTokenCookies, generateAccessToken } = require('../utils/generateToken');
 const jwt = require('jsonwebtoken');
+const { sendWelcomeEmail } = require('../utils/emailService');
 
 // @desc Register user
 // @route POST /api/auth/register
@@ -17,6 +18,7 @@ const register = asyncHandler(async (req, res) => {
     throw new Error('Email already exists');
   }
   const user = await User.create({ name, email, password });
+  sendWelcomeEmail(user);
   setTokenCookies(res, user._id);
   res.status(201).json({
     success: true,
