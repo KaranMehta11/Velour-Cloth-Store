@@ -22,6 +22,10 @@ export default function AdminProducts() {
   const [saving, setSaving] = useState(false)
   const [colorInput, setColorInput] = useState({ name: '', hex: '#000000' })
   const [deleteConfirm, setDeleteConfirm] = useState(null)
+  const [imageFiles, setImageFiles] = useState([])
+  const [imagePreviews, setImagePreviews] = useState([])
+  const [existingImages, setExistingImages] = useState([])
+  const [removeImageIds, setRemoveImageIds] = useState([])
 
   const fetchProducts = async () => {
     setLoading(true)
@@ -40,6 +44,10 @@ export default function AdminProducts() {
   const openCreate = () => {
     setEditing(null)
     setForm(emptyProduct)
+    setImageFiles([])
+    setImagePreviews([])
+    setExistingImages([])
+    setRemoveImageIds([])
     setModal(true)
   }
   const openEdit = (product) => {
@@ -51,6 +59,10 @@ export default function AdminProducts() {
       stock: product.stock, sizes: product.sizes || [],
       colors: product.colors || [], featured: product.featured,
     })
+    setImageFiles([])
+    setImagePreviews([])
+    setExistingImages(product.images || [])
+    setRemoveImageIds([])
     setModal(true)
   }
 
@@ -58,17 +70,24 @@ export default function AdminProducts() {
     e.preventDefault()
     setSaving(true)
     try {
-      const payload = {
-        name: form.name, description: form.description, category: form.category,
-        price: Number(form.price), discountPrice: form.discountPrice ? Number(form.discountPrice) : null,
-        stock: Number(form.stock), sizes: JSON.stringify(form.sizes),
-        colors: JSON.stringify(form.colors), featured: form.featured,
-      }
+      const formData = new FormData()
+      formData.append('name', form.name)
+      formData.append('description', form.description)
+      formData.append('category', form.category)
+      formData.append('price', Number(form.price))
+      formData.append('discountPrice', form.discountPrice ? Number(form.discountPrice) : '')
+      formData.append('stock', Number(form.stock))
+      formData.append('sizes', JSON.stringify(form.sizes))
+      formData.append('colors', JSON.stringify(form.colors))
+      formData.append('featured', form.featured)
+      if (removeImageIds.length) formData.append('removeImageIds', JSON.stringify(removeImageIds))
+      imageFiles.forEach(file => formData.append('images', file))
+
       if (editing) {
-        await api.put(`/products/${editing}`, payload)
+        await api.put(`/products/${editing}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
         toast.success('Product updated')
       } else {
-        await api.post('/products', payload)
+        await api.post('/products', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
         toast.success('Product created')
       }
       setModal(false)
@@ -95,6 +114,25 @@ export default function AdminProducts() {
       ...f,
       sizes: f.sizes.includes(size) ? f.sizes.filter(s => s !== size) : [...f.sizes, size],
     }))
+  }
+
+  const handleImageSelect = (event) => {
+    const files = Array.from(event.target.files || [])
+    if (!files.length) return
+    const allowed = files.slice(0, Math.max(0, 5 - existingImages.length - imageFiles.length))
+    if (!allowed.length) return
+    setImageFiles(prev => [...prev, ...allowed].slice(0, 5))
+    setImagePreviews(prev => [...prev, ...allowed.map(f => URL.createObjectURL(f))].slice(0, 5))
+  }
+
+  const removeNewImage = (idx) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== idx))
+    setImagePreviews(prev => prev.filter((_, i) => i !== idx))
+  }
+
+  const removeExistingImage = (publicId) => {
+    setExistingImages(prev => prev.filter((img) => img.public_id !== publicId))
+    setRemoveImageIds(prev => [...new Set([...prev, publicId])])
   }
 
   return (
@@ -291,6 +329,36 @@ export default function AdminProducts() {
                   </div>
                 </div>
 
+                <div>
+                  <label className="text-xs text-gray-400 uppercase tracking-widest block mb-2">Images (max 5)</label>
+                  <input id="product-images-input" type="file" accept="image/*" multiple className="hidden" onChange={handleImageSelect} />
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById('product-images-input')?.click()}
+                    className="w-full border border-dashed border-gray-700 text-gray-400 py-5 text-xs hover:text-white hover:border-velour-accent transition-colors"
+                  >
+                    Click to upload images
+                  </button>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {existingImages.map((img) => (
+                      <div key={img.public_id} className="relative">
+                        <img src={img.url} alt="" className="w-14 h-16 object-cover" />
+                        <button type="button" onClick={() => removeExistingImage(img.public_id)} className="absolute -top-1 -right-1 bg-black text-white w-4 h-4 text-[10px] flex items-center justify-center">
+                          <FiX size={10} />
+                        </button>
+                      </div>
+                    ))}
+                    {imagePreviews.map((src, i) => (
+                      <div key={`${src}-${i}`} className="relative">
+                        <img src={src} alt="" className="w-14 h-16 object-cover" />
+                        <button type="button" onClick={() => removeNewImage(i)} className="absolute -top-1 -right-1 bg-black text-white w-4 h-4 text-[10px] flex items-center justify-center">
+                          <FiX size={10} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -302,7 +370,6 @@ export default function AdminProducts() {
                 </label>
 
                 <div className="pt-4">
-                  <p className="text-xs text-gray-500 mb-3">Note: Image upload requires Cloudinary to be configured.</p>
                   <button
                     type="submit"
                     disabled={saving}

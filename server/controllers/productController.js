@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/Product');
-const { uploadToCloudinary, deleteFromCloudinary } = require('../utils/cloudinary');
+const { deleteFromCloudinary } = require('../utils/cloudinary');
 
 // @desc Get all products with filters
 // @route GET /api/products
@@ -61,14 +61,10 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route POST /api/products
 const createProduct = asyncHandler(async (req, res) => {
   const { name, description, price, discountPrice, category, sizes, colors, stock, featured } = req.body;
-  const images = [];
-
-  if (req.files && req.files.length > 0) {
-    for (const file of req.files) {
-      const result = await uploadToCloudinary(file.buffer, 'velour/products');
-      images.push({ url: result.secure_url, public_id: result.public_id });
-    }
-  }
+  const images = (req.files || []).map((file) => ({
+    url: file.path,
+    public_id: file.filename,
+  }));
 
   const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors || [];
   const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes || [];
@@ -90,17 +86,27 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error('Product not found');
   }
 
-  const { name, description, price, discountPrice, category, sizes, colors, stock, featured } = req.body;
+  const { name, description, price, discountPrice, category, sizes, colors, stock, featured, removeImageIds } = req.body;
   const parsedColors = typeof colors === 'string' ? JSON.parse(colors) : colors || product.colors;
   const parsedSizes = typeof sizes === 'string' ? JSON.parse(sizes) : sizes || product.sizes;
 
-  let images = product.images;
-  if (req.files && req.files.length > 0) {
-    const newImages = [];
-    for (const file of req.files) {
-      const result = await uploadToCloudinary(file.buffer, 'velour/products');
-      newImages.push({ url: result.secure_url, public_id: result.public_id });
+  let images = [...product.images];
+  const toRemove = typeof removeImageIds === 'string'
+    ? JSON.parse(removeImageIds)
+    : (removeImageIds || []);
+
+  if (Array.isArray(toRemove) && toRemove.length > 0) {
+    for (const publicId of toRemove) {
+      await deleteFromCloudinary(publicId).catch(() => {});
     }
+    images = images.filter((img) => !toRemove.includes(img.public_id));
+  }
+
+  if (req.files && req.files.length > 0) {
+    const newImages = req.files.map((file) => ({
+      url: file.path,
+      public_id: file.filename,
+    }));
     images = [...images, ...newImages];
   }
 
