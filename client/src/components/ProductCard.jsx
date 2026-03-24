@@ -86,6 +86,17 @@ export default function ProductCard({ product }) {
           </button>
         </div>
 
+        {product.stock <= 5 && (
+          <span style={{
+            position: 'absolute', top: '12px', left: '12px',
+            backgroundColor: '#f97316', color: 'white', fontSize: '9px',
+            padding: '3px 8px', borderRadius: 0, fontFamily: "'Inter', sans-serif",
+            fontWeight: 700, letterSpacing: '0.03em'
+          }}>
+            Low Stock
+          </span>
+        )}
+
         {/* SALE badge */}
         {product.discountPrice && (
           <div style={{

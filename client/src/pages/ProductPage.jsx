@@ -223,9 +223,28 @@ export default function ProductPage() {
               </div>
             </div>
 
+            {product.stock > 10 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e' }} />
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#22c55e', fontWeight: 500 }}>In Stock</span>
+              </div>
+            )}
+            {product.stock <= 10 && product.stock > 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#f97316' }} />
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#f97316', fontWeight: 500 }}>Only {product.stock} left — order soon!</span>
+              </div>
+            )}
+            {product.stock === 0 && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444' }} />
+                <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '13px', color: '#ef4444', fontWeight: 500 }}>Out of Stock</span>
+              </div>
+            )}
+
             {/* CTAs */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '32px' }}>
-              <button onClick={handleAddToCart} className="btn-black" style={{ width: '100%', padding: '18px', fontSize: '14px' }}>
+              <button onClick={handleAddToCart} disabled={product.stock === 0} className="btn-black" style={{ width: '100%', padding: '18px', fontSize: '14px', opacity: product.stock === 0 ? 0.5 : 1, cursor: product.stock === 0 ? 'not-allowed' : 'pointer' }}>
                 ADD TO CART — {formatPrice(displayPrice * qty)}
               </button>
               <button onClick={() => toggle(product._id)} className="btn-white"
