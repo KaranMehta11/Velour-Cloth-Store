@@ -14,6 +14,7 @@ import useScrollReveal from '../hooks/useScrollReveal'
 import toast from 'react-hot-toast'
 import useRecentlyViewed from '../hooks/useRecentlyViewed'
 import RecentlyViewed from '../components/RecentlyViewed'
+import SizeGuideModal from '../components/SizeGuideModal'
 
 const formatPrice = (price) => {
   if (!price) return '₹0'
@@ -47,6 +48,7 @@ export default function ProductPage() {
   const [hoverRating, setHoverRating] = useState(0)
   const [submittingReview, setSubmittingReview] = useState(false)
   const [reviewPosted, setReviewPosted] = useState(false)
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
   const { addToRecentlyViewed } = useRecentlyViewed()
 
   const { addItem } = useCartStore()
@@ -198,7 +200,12 @@ export default function ProductPage() {
               <div style={{ marginBottom: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                   <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#0A0A0A' }}>Size</p>
-                  <button style={{ fontFamily: "'Inter', sans-serif", fontSize: '11px', fontWeight: 600, color: '#B8963E', background: 'none', border: 'none', cursor: 'pointer' }}>SIZE GUIDE</button>
+                  <button
+                    onClick={() => setSizeGuideOpen(true)}
+                    style={{ background: 'none', border: 'none', fontFamily: "'Inter', sans-serif", fontSize: '12px', color: 'rgba(0,0,0,0.5)', textDecoration: 'underline', cursor: 'pointer' }}
+                  >
+                    Size Guide
+                  </button>
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {product.sizes.map(s => (
@@ -388,6 +395,7 @@ export default function ProductPage() {
           </div>
         )}
         <RecentlyViewed />
+        <SizeGuideModal isOpen={sizeGuideOpen} onClose={() => setSizeGuideOpen(false)} category={product.category} />
       </div>
     </div>
   )
