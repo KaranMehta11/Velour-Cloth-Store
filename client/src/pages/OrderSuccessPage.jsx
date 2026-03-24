@@ -101,6 +101,7 @@ export default function OrderSuccessPage() {
         )}
 
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <Link to="/account?tab=orders" className="btn-black" style={{ flex: 1, justifyContent: 'center' }}>TRACK ORDER</Link>
           <Link to="/account" className="btn-black" style={{ flex: 1, justifyContent: 'center' }}>VIEW MY ORDERS</Link>
           <Link to="/shop" className="btn-white" style={{ flex: 1, justifyContent: 'center', border: '1px solid rgba(0,0,0,0.12)' }}>CONTINUE SHOPPING</Link>
         </div>

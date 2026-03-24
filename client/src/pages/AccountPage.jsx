@@ -134,6 +134,9 @@ export default function AccountPage() {
                                 style={{ fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, color: '#B8963E', background: 'none', border: 'none', cursor: 'pointer' }}>
                                 {selectedOrder?._id === order._id ? 'CLOSE' : 'DETAILS'}
                               </button>
+                              <Link to={`/order/track/${order._id}`} style={{ marginLeft: '10px', fontFamily: "'Inter', sans-serif", fontSize: '12px', fontWeight: 600, color: '#0A0A0A', textDecoration: 'none' }}>
+                                TRACK ORDER
+                              </Link>
                             </div>
                           </div>
                           {selectedOrder?._id === order._id && (

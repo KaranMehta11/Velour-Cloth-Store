@@ -35,6 +35,13 @@ const orderSchema = new mongoose.Schema({
   isDelivered: { type: Boolean, default: false },
   deliveredAt: { type: Date },
   status: { type: String, enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'], default: 'Processing' },
+  trackingNumber: { type: String },
+  trackingSteps: [{
+    status: String,
+    description: String,
+    timestamp: Date,
+    completed: Boolean,
+  }],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);

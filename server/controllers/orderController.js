@@ -97,4 +97,46 @@ const markOrderAsPaid = asyncHandler(async (req, res) => {
   res.json({ success: true, order });
 });
 
-module.exports = { createOrder, getMyOrders, getOrderById, getAllOrders, updateOrderStatus, markOrderAsPaid };
+// @desc Get order tracking timeline
+// @route GET /api/orders/:id/tracking
+const getOrderTracking = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id).populate('user', 'name email');
+  if (!order) {
+    res.status(404);
+    throw new Error('Order not found');
+  }
+  if (order.user._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    res.status(403);
+    throw new Error('Not authorized to view this order');
+  }
+
+  const statusOrder = ['Order Placed', 'Processing', 'Shipped', 'Out for Delivery', 'Delivered'];
+  const currentStatusIndex = order.status === 'Delivered'
+    ? 4
+    : order.status === 'Shipped'
+      ? 2
+      : 1;
+
+  const steps = [
+    { status: 'Order Placed', description: 'Your order has been confirmed' },
+    { status: 'Processing', description: 'Your items are being prepared' },
+    { status: 'Shipped', description: 'Your order is on its way' },
+    { status: 'Out for Delivery', description: 'Almost there!' },
+    { status: 'Delivered', description: 'Enjoy your purchase!' },
+  ].map((s, idx) => ({
+    ...s,
+    completed: idx <= currentStatusIndex,
+    timestamp: order.trackingSteps?.[idx]?.timestamp || order.createdAt,
+  }));
+
+  order.trackingSteps = steps;
+  if (!order.trackingNumber && (order.status === 'Shipped' || order.status === 'Delivered')) {
+    order.trackingNumber = `VL${String(order._id).slice(-10).toUpperCase()}`;
+  }
+  await order.save();
+
+  void statusOrder;
+  res.json({ success: true, order });
+});
+
+module.exports = { createOrder, getMyOrders, getOrderById, getAllOrders, updateOrderStatus, markOrderAsPaid, getOrderTracking };
