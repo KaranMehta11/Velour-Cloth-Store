@@ -1,11 +1,12 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { FiGrid, FiPackage, FiShoppingBag, FiLogOut, FiHome } from 'react-icons/fi'
+import { FiGrid, FiPackage, FiShoppingBag, FiLogOut, FiHome, FiTag } from 'react-icons/fi'
 import useAuthStore from '../../store/useAuthStore'
 
 const adminLinks = [
   { to: '/admin', label: 'Dashboard', icon: FiGrid, end: true },
   { to: '/admin/products', label: 'Products', icon: FiShoppingBag },
   { to: '/admin/orders', label: 'Orders', icon: FiPackage },
+  { to: '/admin/coupons', label: 'Coupons', icon: FiTag },
 ]
 
 export default function AdminLayout() {

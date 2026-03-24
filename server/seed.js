@@ -4,6 +4,7 @@ const User = require('./models/User');
 const Product = require('./models/Product');
 const Order = require('./models/Order');
 const Cart = require('./models/Cart');
+const Coupon = require('./models/Coupon');
 
 const products = [
   // MEN (8 products)
@@ -386,6 +387,7 @@ const seed = async () => {
     await User.deleteMany({});
     await Order.deleteMany({});
     await Cart.deleteMany({});
+    await Coupon.deleteMany({});
     console.log('🗑️  Cleared existing data');
 
     // Create users
@@ -406,6 +408,13 @@ const seed = async () => {
     // Create products
     const created = await Product.insertMany(products);
     console.log(`📦 Created ${created.length} products`);
+
+    await Coupon.insertMany([
+      { code: 'VELOUR10', discountType: 'percentage', discountValue: 10, minOrderValue: 1000, maxUses: 100, isActive: true },
+      { code: 'FLAT500', discountType: 'fixed', discountValue: 500, minOrderValue: 2999, maxUses: 100, isActive: true },
+      { code: 'NEWUSER20', discountType: 'percentage', discountValue: 20, minOrderValue: 500, maxUses: 100, isActive: true },
+    ]);
+    console.log('🏷️  Seeded coupons: VELOUR10, FLAT500, NEWUSER20');
 
     console.log('✅ Seed complete!');
     process.exit(0);

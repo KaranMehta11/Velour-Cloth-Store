@@ -3,6 +3,8 @@ import { FiTrash2, FiShoppingBag } from 'react-icons/fi'
 import useCartStore from '../store/useCartStore'
 import useAuthStore from '../store/useAuthStore'
 import useScrollReveal from '../hooks/useScrollReveal'
+import { useState } from 'react'
+import api from '../api/axios'
 
 const formatPrice = (price) => {
   if (!price) return '₹0'
@@ -12,12 +14,29 @@ const formatPrice = (price) => {
 export default function CartPage() {
   const { items, updateItem, removeItem, total } = useCartStore()
   const { user } = useAuthStore()
+  const [couponCode, setCouponCode] = useState('')
+  const [couponData, setCouponData] = useState(null)
+  const [couponError, setCouponError] = useState('')
   const cartTotal = total()
   const shipping = cartTotal > 0 ? (cartTotal >= 4999 ? 0 : 299) : 0
   const tax = cartTotal * 0.18
-  const orderTotal = cartTotal + shipping + tax
+  const discount = couponData?.discountAmount || 0
+  const orderTotal = Math.max(0, cartTotal + shipping + tax - discount)
 
   useScrollReveal()
+
+  const handleApplyCoupon = async () => {
+    setCouponError('')
+    try {
+      const res = await api.post('/coupon/validate', { code: couponCode, cartTotal })
+      setCouponData(res.data)
+      localStorage.setItem('velour_coupon', JSON.stringify(res.data))
+    } catch (err) {
+      setCouponData(null)
+      setCouponError(err.response?.data?.message || 'Invalid/expired coupon')
+      localStorage.removeItem('velour_coupon')
+    }
+  }
 
   return (
     <div style={{ backgroundColor: '#ECEEF0', minHeight: '100vh', paddingBottom: '80px' }}>
@@ -88,6 +107,7 @@ export default function CartPage() {
 
                 {[
                   { label: 'Subtotal', val: formatPrice(cartTotal) },
+                  { label: couponData ? `Discount (${couponData.code})` : 'Discount', val: couponData ? `- ${formatPrice(discount)}` : '—', gold: !!couponData },
                   { label: 'Shipping', val: shipping === 0 ? 'FREE' : formatPrice(shipping), gold: shipping === 0 },
                   { label: 'GST (18%)', val: formatPrice(tax) },
                 ].map(row => (
@@ -99,6 +119,25 @@ export default function CartPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px 0', marginBottom: '20px' }}>
                   <span style={{ fontFamily: "'Barlow', sans-serif", fontSize: '16px', fontWeight: 900, textTransform: 'uppercase', color: '#0A0A0A' }}>TOTAL</span>
                   <span style={{ fontFamily: "'Barlow', sans-serif", fontSize: '18px', fontWeight: 900, color: '#0A0A0A' }}>{formatPrice(orderTotal)}</span>
+                </div>
+
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <input
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      placeholder="Promo code"
+                      style={{ flex: 1, border: '1px solid rgba(0,0,0,0.12)', padding: '10px', fontFamily: "'Inter', sans-serif", fontSize: '12px' }}
+                    />
+                    <button onClick={handleApplyCoupon} className="btn-black" style={{ padding: '10px 14px' }}>APPLY</button>
+                  </div>
+                  {couponData && (
+                    <p style={{ color: '#22c55e', fontFamily: "'Inter', sans-serif", fontSize: '11px', marginTop: '8px' }}>
+                      Coupon applied! You save {formatPrice(discount)}
+                      <button onClick={() => { setCouponData(null); setCouponCode(''); localStorage.removeItem('velour_coupon') }} style={{ marginLeft: '8px', border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer' }}>x</button>
+                    </p>
+                  )}
+                  {couponError && <p style={{ color: '#ef4444', fontFamily: "'Inter', sans-serif", fontSize: '11px', marginTop: '8px' }}>{couponError}</p>}
                 </div>
 
                 <Link to={user ? '/checkout' : '/login'} className="btn-black" style={{ display: 'block', width: '100%', textAlign: 'center', marginBottom: '12px', padding: '16px' }}>

@@ -22,6 +22,7 @@ const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'))
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
 const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'))
 const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'))
+const AdminCoupons = lazy(() => import('./pages/admin/AdminCoupons'))
 
 const NO_FOOTER_ROUTES = ['/login', '/register', '/admin']
 
@@ -61,6 +62,7 @@ function App() {
               <Route index element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />
               <Route path="orders" element={<AdminOrders />} />
+              <Route path="coupons" element={<AdminCoupons />} />
             </Route>
           </Routes>
         </Suspense>

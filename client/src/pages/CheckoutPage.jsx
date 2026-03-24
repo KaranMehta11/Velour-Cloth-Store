@@ -17,6 +17,13 @@ export default function CheckoutPage() {
   const [focusedField, setFocusedField] = useState(null)
   const [shipping, setShipping] = useState({ fullName: '', email: '', phone: '', address: '', address2: '', city: '', state: '', postal: '', country: 'IN' })
   const [loading, setLoading] = useState(false)
+  const [couponData] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('velour_coupon') || 'null')
+    } catch {
+      return null
+    }
+  })
   const { items, total: getTotal } = useCartStore()
   useScrollReveal()
 
@@ -39,6 +46,7 @@ export default function CheckoutPage() {
       }))
       const res = await api.post('/payment/create-checkout-session', {
         items: sessionItems,
+        couponCode: couponData?.code,
         shippingAddress: {
           fullName: shipping.fullName,
           email: shipping.email,

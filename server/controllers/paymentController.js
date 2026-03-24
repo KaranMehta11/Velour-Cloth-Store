@@ -5,6 +5,7 @@ const stripe = process.env.STRIPE_SECRET_KEY && process.env.STRIPE_SECRET_KEY !=
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const Coupon = require('../models/Coupon');
 
 // @desc Create Stripe checkout session
 // @route POST /api/payment/create-checkout-session
@@ -14,7 +15,7 @@ const createCheckoutSession = asyncHandler(async (req, res) => {
     throw new Error('Payment service not configured. Please add STRIPE_SECRET_KEY to .env');
   }
 
-  const { items = [], shippingAddress = {} } = req.body;
+  const { items = [], shippingAddress = {}, couponCode } = req.body;
 
   if (!Array.isArray(items) || items.length === 0) {
     res.status(400);
@@ -34,10 +35,22 @@ const createCheckoutSession = asyncHandler(async (req, res) => {
     quantity: Number(item.qty) || Number(item.quantity) || 1,
   }));
 
-  const totalPrice = lineItems.reduce(
+  let totalPrice = lineItems.reduce(
     (sum, li) => sum + li.price_data.unit_amount * li.quantity,
     0
   );
+
+  let appliedCouponCode = '';
+  if (couponCode) {
+    const coupon = await Coupon.findOne({ code: String(couponCode).toUpperCase() });
+    if (coupon && coupon.isActive && (!coupon.expiresAt || coupon.expiresAt >= new Date()) && coupon.usedCount < coupon.maxUses) {
+      const discountAmount = coupon.discountType === 'percentage'
+        ? Math.round((totalPrice * coupon.discountValue) / 100)
+        : Math.round(coupon.discountValue * 100);
+      totalPrice = Math.max(0, totalPrice - discountAmount);
+      appliedCouponCode = coupon.code;
+    }
+  }
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
@@ -50,6 +63,7 @@ const createCheckoutSession = asyncHandler(async (req, res) => {
       shippingAddress: JSON.stringify(shippingAddress),
       orderItems: JSON.stringify(items),
       totalPrice: String(totalPrice),
+      couponCode: appliedCouponCode,
     },
     customer_email: req.user.email,
   });
@@ -80,6 +94,7 @@ const stripeWebhook = asyncHandler(async (req, res) => {
     const shippingAddress = JSON.parse(session.metadata?.shippingAddress || '{}');
     const orderItems = JSON.parse(session.metadata?.orderItems || '[]');
     const totalPricePaise = Number(session.metadata?.totalPrice || 0);
+    const couponCode = session.metadata?.couponCode;
 
     const existingOrder = await Order.findOne({
       'paymentResult.id': session.payment_intent,
@@ -128,6 +143,9 @@ const stripeWebhook = asyncHandler(async (req, res) => {
       }
 
       await Cart.findOneAndUpdate({ user: userId }, { items: [] });
+      if (couponCode) {
+        await Coupon.findOneAndUpdate({ code: couponCode }, { $inc: { usedCount: 1 } });
+      }
       // keep reference to avoid unused var lint in some setups
       void order;
     }

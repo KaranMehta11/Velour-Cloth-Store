@@ -29,6 +29,7 @@ app.use('/api/cart', require('./routes/cartRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/wishlist', require('./routes/wishlistRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/coupon', require('./routes/coupon'));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'OK', message: 'Velour API is running' }));
